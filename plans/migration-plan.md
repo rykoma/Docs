@@ -43,6 +43,8 @@
 - 日本語トップ: `/ja/`
 - 英語トップ: `/en/`
 
+記事の URL は `_config.yml` の `permalink: :lang/:slug/` によって生成します。固定ページは `source/ja/<slug>/index.md` または `source/en/<slug>/index.md` に配置し、同じ URL 構造を生成します。
+
 `https://blog.rykoma.net/` にアクセスした場合は、ブラウザーの言語設定に応じて `/ja/` または `/en/` へリダイレクトします。言語に該当しない場合の既定言語は日本語とします。
 
 言語指定のない記事または固定ページ URL にアクセスした場合も、ブラウザーの言語設定に応じて対応する言語 URL へリダイレクトします。言語選択ページと実際のコンテンツ ページは分けて用意します。
@@ -55,6 +57,78 @@ alias:
 ```
 
 alias は移行した記事と固定ページを中心に管理し、将来追加する場合も URL の互換性を確認してから登録します。
+
+## Front Matter の記述規則
+
+記事には、次の Front Matter を使用します。`title`、`date`、`updated`、`lang`、`slug`、`categories`、`tags`、`description` は必須とします。`alias` は旧 URL との互換性が必要な場合だけ設定します。
+
+```yaml
+title: Example post
+date: 2026-08-19T22:45:36+09:00
+updated: 2026-08-19T22:45:36+09:00
+lang: ja
+slug: example-post
+categories:
+  - Technology
+tags:
+  - Microsoft Graph
+description: 記事の内容を要約する説明文です。
+alias:
+  - /2024/12/02/1878/
+```
+
+固定ページには、`title`、`lang`、`slug`、`description` を必須項目として使用します。固定ページでは `date`、`updated`、`categories`、`tags` を使用せず、生成する HTML にも表示しません。`alias` は記事と同様に、旧 URL との互換性が必要な場合だけ設定します。
+
+- `date` と `updated` は、タイムゾーンを含む ISO 8601 形式 (`YYYY-MM-DDTHH:mm:ss+09:00`) で記述します。記事では `updated` を省略せず、初回公開時も `date` と同じ日時を設定します。
+- `lang` は `ja` または `en` だけを使用します。
+- `slug` は英語小文字、数字、ハイフンだけを使用する kebab-case とし、ハイフンを含めて 60 文字以下とします。
+- `slug` は、同じ記事または固定ページの ja/en 翻訳ペアだけで共有できます。翻訳ペア以外では、記事と固定ページをまたいでサイト全体で一意にします。
+- `categories` は記事が主に扱う技術を表します。`Microsoft Graph`、`Exchange Online PowerShell`、`Outlook Add-ins` のような値を使用します。
+- `tags` は記事内容に関連するキーワードを表します。カテゴリ名をそのままタグに設定しても構いません。
+- `categories` と `tags` は、記事の言語を問わず英語表記を使用します。複数単語は `Microsoft Graph` のように各単語の先頭を大文字にします。
+- `description` は、日本語では 120 文字程度、英語では 160 文字程度を目安にします。
+- `alias` の並び順には意味を持たせません。移行対象では元の WordPress URL を末尾スラッシュの有無を含めて正確に記録します。移行後に新規作成する記事や固定ページには互換性のための alias を設定しませんが、URL の変更または廃止に伴う互換性維持が必要な場合は追加できます。
+- `title` と `description` などの文字列は、YAML の解釈に引用符が必要な場合だけ引用符で囲みます。
+- ja/en の翻訳ペアは、内容が大きく異なる場合も同じ slug を使用します。
+
+`hexo generate` の前にカスタム検証スクリプトを実行します。記事または固定ページごとに必須項目、許可項目、値の形式を検証し、必須項目の不足、禁止項目、未定義の Front Matter、形式違反、翻訳ペア以外での slug の重複を検出した場合はビルド エラーとして停止します。
+
+## リポジトリ構成の方針
+
+日本語記事と英語記事は、`source/_posts/ja/` と `source/_posts/en/` のようにディレクトリを分割して管理します。固定ページも同様に `source/ja/` と `source/en/` を切って配置します。
+
+記事の画像は Hexo のページごとのアセット フォルダー機能 (`post_asset_folder: true`) を使用し、各記事のアセット フォルダー内に配置します。固定ページの画像は `source/ja/<slug>/assets/` または `source/en/<slug>/assets/` に配置します。
+
+Hexo 本体の設定はリポジトリ ルートの `_config.yml` で管理し、`timezone` は `Asia/Tokyo` に設定します。テーマの設定は `themes/hexo-theme-landscape/_config.yml` で管理します。
+
+依存パッケージは npm で管理し、`node_modules` は `.gitignore` によって Git 管理対象から除外します。
+
+テーマは `themes/hexo-theme-landscape/` にリポジトリ内で直接配置し、Git で管理します。アップストリームの自動追従は行わず、必要に応じて手動でカスタマイズします。
+
+ソース (Markdown、テーマ、設定ファイルなど) は `main` ブランチで管理し、ビルド成果物は `gh-pages` ブランチへ GitHub Actions が公開します。ソース ブランチと公開ブランチは明確に分離します。
+
+## 言語選択ページの実装方針
+
+言語選択ページは、ブラウザーの言語設定に応じて `/ja/` または `/en/` の対応するページへ JavaScript でリダイレクトする静的な `index.html` とします。
+
+記事作成の負担を減らすため、次の仕組みを導入します。
+
+- 記事作成時は、npm スクリプト等でラップした `hexo new` の実行によって、`source/_posts/ja/` と `source/_posts/en/` に同じ slug のファイルを同時に生成します。
+- `hexo generate` 実行時は、Hexo のカスタム Generator (`hexo.extend.generator.register()`) を自作し、同じ slug を持つ ja/en の記事または固定ページのペアごとに言語選択ページ (`/<slug>/index.html`) を自動生成します。
+- カスタム Generator は `scripts/` 配下に配置し、`hexo generate` 実行時に自動的に読み込まれるようにします。
+
+標準の `hexo-generator-index` は使用せず、カスタム Generator がトップページ (`/`) の言語別リダイレクトと、`/ja/` および `/en/` の言語別記事一覧を生成します。言語選択ページのロジックは、トップページ (`/`) と記事/固定ページ (`/<slug>/`) で共通の実装を使い回します。
+
+ja/en いずれか一方の言語しか存在しない slug については、カスタム Generator が自動判定し、存在する言語で「翻訳準備中」の案内と、既存ページへのリンクを表示する簡易ページを生成します。両言語が揃った場合のみ、通常の JavaScript リダイレクト ページを生成します。
+
+JavaScript が無効なブラウザーへの配慮は行わず、対応対象から除外します。ただし、検索エンジンのクローラー対策として、言語選択ページの HTML には JavaScript とは別に `<noscript>` タグまたは通常の `<a>` タグで両言語ページへの実体リンクを埋め込み、クローラーが両言語ページを確実に発見できるようにします。
+
+両言語が揃っている記事および固定ページには、`<head>` に `hreflang` の `alternate` リンクを付与し、検索エンジンに言語別ページの対応関係を伝えます。片方の言語しか存在しない場合は付与しません。
+
+```html
+<link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/my-slug/">
+<link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/my-slug/">
+```
 
 ## 移行ステップ
 
@@ -76,9 +150,10 @@ WordPress から移行対象を棚卸しし、欠落や重複を把握します�
 - 記事一覧作成
 - 固定ページ一覧作成
 - 画像資産整理
+- 既存カテゴリとタグの精査
 - URL マッピング作成
 
-URL マッピングには、少なくとも旧 URL、新 URL、言語、コンテンツ種別、移行状況、確認状況を記録します。不要な下書き、重複画像、未使用資産は移行対象から明確に除外します。
+URL マッピングには、少なくとも旧 URL、新 URL、言語、コンテンツ種別、移行状況、確認状況を記録します。既存記事のカテゴリとタグは移行時に精査し、Front Matter の記述規則に従って設定します。不要な下書き、重複画像、未使用資産は移行対象から明確に除外します。
 
 ### Phase 3: Hexo 構築
 
@@ -119,6 +194,13 @@ Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`�
 
 トップ、言語選択、記事、固定ページ、画像、404 ページ、旧 WordPress URL を確認します。Google Analytics と Google AdSense がテーマ変更後も正しく動作すること、canonical URL や言語 alternate が期待どおりであることを確認します。
 
+Phase 5 で判断する検討事項は次のとおりです。
+
+- 言語選択ページの canonical URL の扱い (言語選択ページに `noindex` を付与するか、実コンテンツ ページを直接インデックスさせるか)
+- 記事/固定ページの言語選択ページ (`/<slug>/`) で、ブラウザー言語が ja/en どちらでもない場合の既定言語 (トップページと同様に日本語優先とするか)
+- `sitemap.xml` に言語選択ページと実コンテンツ ページの両方を載せるか、実コンテンツ ページだけにするか (canonical の方針と連動)
+- 404 ページの多言語対応 (ブラウザー言語で ja/en の 404 ページへ振り分けるか、単一の共通 404 ページにするか)
+
 ### Phase 6: 廃止
 
 新サイトの安定稼働と切り戻し不要の判断後に、旧環境を廃止します。
@@ -133,12 +215,12 @@ Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`�
 
 ### Phase 1: 設計
 
-- [ ] URL 設計を確定した
-- [ ] `/ja/` と `/en/` の多言語構成を確定した
-- [ ] 言語選択ページとコンテンツ ページを分離した
-- [ ] Front Matter の項目と記述規則を確定した
-- [ ] リポジトリ構成を確定した
-- [ ] URL 構造、alias、独自ドメインを変更しない方針を確認した
+- [x] URL 設計を確定した
+- [x] `/ja/` と `/en/` の多言語構成を確定した
+- [x] 言語選択ページとコンテンツ ページを分離した
+- [x] Front Matter の項目と記述規則を確定した
+- [x] リポジトリ構成を確定した
+- [x] URL 構造、alias、独自ドメインを変更しない方針を確認した
 
 ### Phase 2: 資産整理
 
