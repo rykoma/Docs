@@ -74,6 +74,24 @@ Google Analytics and Google AdSense must remain available after migration. Consi
 - Validate the custom-domain configuration and avoid overwriting `CNAME` during deployment.
 - Prefer least-privilege permissions and document required secrets or repository settings.
 
+## Local development and preview
+
+- The Landscape theme is vendored under `themes/landscape/` and is the source of truth for theme customizations. Do not edit the copy under `node_modules/`.
+- `source/_posts/ja/` and `source/_posts/en/` provide the language directories in the generated URL. Keep `_config.yml` at `permalink: :slug/`; adding `:lang` duplicates the language directory.
+- The custom generator in `scripts/multilingual-generator.js` owns the root language selector, language-specific homepages, and language-neutral article selectors. Language-specific homepages use Landscape's `index`/`archive` layouts and `hexo-pagination`.
+- The shared Landscape header is rendered without template caching because the language switcher depends on the current page.
+- For a local preview, run `npm ci`, then `npm run build`, and start `npm run server -- --port 4001`. Open `/ja/` or `/en/` directly; `/` is intentionally a JavaScript language selector.
+- Port `4000` may be occupied by another worktree's Hexo server. Use port `4001` for this worktree unless the port is confirmed to be free.
+- To verify the project-site deployment path, generate with `_config.yml,_config.github-pages.yml`, `--url https://rykoma.github.io/Docs`, and `--root /Docs/`. To verify the custom-domain path, use `_config.yml`, `--url https://blog.rykoma.net`, and `--root /`.
+
+## Migration phase status
+
+- Phase 4 is the site-experience and shared-feature preparation phase. The language-specific homepages and page language switcher are implemented, but Phase 4 is not complete. Do not begin the Phase 5 bulk content migration until the remaining shared features and quality gates are complete.
+- Phase 4 includes the Landscape design review, language-aware Archives/categories/tags, non-duplicated language-filtered Recent posts, language-specific RSS, empty-page behavior, responsive and accessibility review, and migration validation preparation.
+- An empty page means a language homepage with no posts, a category or tag with no matching posts, or an archive period with no posts. Decide whether to generate it, return 404, or show guidance before bulk migration.
+- Before Phase 5, migrate at least one Japanese/English translation pair as a representative sample. Include Markdown, code, tables, images, internal links, and external links, and verify the homepages, article pages, generated pages, Recent posts, RSS, language switching, and both `/Docs/` and `/` URL roots. Treat this sample as a validation fixture, not as part of the bulk migration count.
+- Prepare automated checks for required Front Matter and value formats, slug uniqueness, alias formats, internal links, and image references before importing the remaining content.
+
 ## Expected Copilot behavior
 
 Proactively propose:
