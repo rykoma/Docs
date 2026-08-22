@@ -183,7 +183,7 @@ Hexo の実行環境と公開経路を構築します。
 - GitHub Pages 設定
 - `blog.rykoma.net` のカスタム ドメイン設定
 
-GitHub Actions はソース ブランチからサイトをビルドし、生成物を `gh-pages` ブランチへ公開します。公開設定、権限、`CNAME`、必要なシークレットを確認し、ビルド失敗を検知できるようにします。
+GitHub Actions はソース ブランチからサイトをビルドし、生成物を `gh-pages` ブランチへ公開します。公開設定、権限、`CNAME`、必要なシークレットを確認し、ビルド失敗を検知できるようにします。切り替え前の検証期間は既定の GitHub Pages FQDN で確認できるように、通常デプロイでは `CNAME` を生成しません。独自ドメインへの切り替え時にだけ、手動実行の入力を使って `CNAME` を生成して公開します。
 
 ### Phase 4: コンテンツ移行
 
@@ -250,11 +250,11 @@ Phase 5 で判断する検討事項は次のとおりです。
 
 ### Phase 3: Hexo 構築
 
-- [ ] Hexo を初期化した
-- [ ] `hexo-theme-landscape` を設定した
-- [ ] `hexo-generator-alias` を設定した
-- [ ] ローカル ビルドが成功した
-- [ ] GitHub Actions のビルドとデプロイを設定した
+- [x] Hexo を初期化した
+- [x] `hexo-theme-landscape` を設定した
+- [x] `hexo-generator-alias` を設定した
+- [x] ローカル ビルドが成功した
+- [x] GitHub Actions のビルドとデプロイを設定した
 - [ ] `gh-pages` ブランチへの公開を確認した
 - [ ] GitHub Pages の公開設定を確認した
 - [ ] `blog.rykoma.net` と `CNAME` を設定した
