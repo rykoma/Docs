@@ -21,9 +21,18 @@ PowerShell で次のコマンドを実行します。
 - `wordpress-exclusions.csv`: 下書きと WordPress の内部レコード
 - `wordpress-export-inventory.md`: 入力 XML のハッシュと集計
 
+## 確定結果
+
+- 公開記事 75 件と公開固定ページ 4 件を棚卸ししました。
+- すべての公開コンテンツを日本語 (`ja`) として記録しました。英語コンテンツおよび翻訳ペアは、今回のエクスポートにはありません。
+- 移行対象は 78 件、移行対象外は固定ページ ID 1289 の 1 件です。ID 1289 は旧 Contact Form 7 ページで、現行の問い合わせページ ID 1862 に統合する判断です。
+- 添付ファイル 94 件のうち 89 件を移行対象としました。
+- 添付ファイル ID 5 は確認の結果、移行対象外としました。ID 9、10、61、81 は本文で参照されない RSS または SNS アイコンのため、移行対象外としました。新サイトで必要になった場合は、別途準備します。
+- 記事ごとに slug、カテゴリ、タグを決定し、カテゴリ名はタグにも含めました。
+- ID 1296 の slug は 60 文字制限に合わせて `check-delegate-private-calendar-permissions-powershell` としました。
+- 旧 URL と新 URL のマッピングを作成し、新 URL の重複がないことを確認しました。
+- 入力 XML はリポジトリに追加せず、SHA-256 を `wordpress-export-inventory.md` に記録しました。
+
 ## 次の作業
 
-1. `wordpress-content-decisions.csv` の `Slug`、`New categories`、`New tags`、`Migration status` を入力します。`Language` は全行で `ja` とします。
-2. `wordpress-url-mapping.csv` を再生成し、新 URL が `/ja/<slug>/` になっていることを確認します。
-3. 画像の実際の参照先を記事本文と照合し、重複または未使用の資産を除外します。
-4. `Verification status` を、確認段階に応じて更新します。
+Phase 3 として Hexo の実行環境、設定、テーマ、alias、GitHub Actions、GitHub Pages の構築に進みます。
