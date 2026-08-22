@@ -1,0 +1,66 @@
+<header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="<%- url_for() %>" id="logo"><%= config.title %></a>
+      </h1>
+      <% if (theme.subtitle || config.subtitle){ %>
+        <h2 id="subtitle-wrap">
+          <a href="<%- url_for() %>" id="subtitle"><%= theme.subtitle || config.subtitle %></a>
+        </h2>
+      <% } %>
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        <% for (var i in theme.menu){ %>
+          <a class="main-nav-link" href="<%- url_for(theme.menu[i]) %>"><%= i %></a>
+        <% } %>
+      </nav>
+      <nav id="sub-nav">
+        <% if (theme.language_switcher && theme.language_switcher.enable && (page.lang || page.language)) { %>
+          <%
+            const pathParts = (page.path || '').split('/').filter(Boolean);
+            const languageHome = page.language_switcher;
+            const currentLanguage = languageHome ? page.language : (pathParts[0] || page.lang || page.language);
+            const isIndex = Boolean(languageHome);
+            const currentSlug = !isIndex && pathParts[1] && pathParts[1] !== 'page' && pathParts[1] !== 'index.html'
+              ? pathParts[1]
+              : null;
+            const localizedPosts = site.posts.toArray();
+            const currentPost = currentSlug && localizedPosts.find(post =>
+              post.lang === currentLanguage && post.slug.split('/').pop() === currentSlug
+            );
+            const languageUrls = languageHome || {
+              ja: url_for(currentPost ? localizedPosts.find(post =>
+                post.lang === 'ja' && post.slug.split('/').pop() === currentSlug
+              )?.path : 'ja/'),
+              en: url_for(currentPost ? localizedPosts.find(post =>
+                post.lang === 'en' && post.slug.split('/').pop() === currentSlug
+              )?.path : 'en/')
+            };
+          %>
+          <label class="language-switcher-label" for="language-switcher"><%= theme.language_switcher.label %></label>
+          <select id="language-switcher" class="language-switcher" aria-label="<%= theme.language_switcher.label %>" onchange="if (this.value) window.location.href = this.value;">
+            <% for (const language of ['ja', 'en']) { %>
+              <option value="<%- languageUrls[language] %>"<%= currentLanguage === language ? ' selected' : '' %><%= currentPost && !localizedPosts.some(post => post.lang === language && post.slug.split('/').pop() === currentSlug) ? ' disabled' : '' %>><%= theme.language_switcher[language] %></option>
+            <% } %>
+          </select>
+        <% } %>
+        <% if (theme.links) { %>
+          <% for (const i in theme.links) {%>
+            <a class="nav-icon" href="<%- url_for(theme.links[i]) %>"><span class="fa fa-<%= i %>"></span></a>
+          <% } %>
+        <% } %>
+        <% if (theme.rss){ %>
+          <a class="nav-icon" href="<%- url_for(theme.rss) %>" title="<%= __('rss_feed') %>"><span class="fa fa-rss"></span></a>
+        <% } %>
+        <a class="nav-icon nav-search-btn" title="<%= __('search') %>"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <%- search_form({button: '&#xF002;', text: __('search')}) %>
+      </div>
+    </div>
+  </div>
+</header>
