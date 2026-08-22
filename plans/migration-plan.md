@@ -300,10 +300,9 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] `hexo-generator-alias` を設定した
 - [x] ローカル ビルドが成功した
 - [x] GitHub Actions のビルドとデプロイを設定した
-- [ ] `gh-pages` ブランチへの公開を確認した
-- [ ] GitHub Pages の公開設定を確認した
-- [ ] `blog.rykoma.net` と `CNAME` を設定した
-- [ ] 必要な権限とシークレットを最小限に設定した
+- [x] `gh-pages` ブランチへの公開を確認した
+- [x] GitHub Pages の公開設定を確認した
+- [x] 必要な権限とシークレットを最小限に設定した
 
 ### Phase 4: サイト体験・共通機能準備
 
@@ -341,6 +340,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [ ] 日本語と英語の記事、固定ページを確認した
 - [ ] 旧 WordPress URL から新 URL へリダイレクトできる
 - [ ] 404 ページを確認した
+- [ ] `blog.rykoma.net` の `CNAME` を設定した
 - [ ] 独自ドメインで HTTPS 接続できる
 - [ ] Google Analytics の計測を確認した
 - [ ] Google AdSense の表示と計測を確認した
