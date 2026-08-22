@@ -185,7 +185,9 @@ Hexo の実行環境と公開経路を構築します。
 
 GitHub Actions はソース ブランチからサイトをビルドし、生成物を `gh-pages` ブランチへ公開します。公開設定、権限、`CNAME`、必要なシークレットを確認し、ビルド失敗を検知できるようにします。切り替え前の検証期間は既定の GitHub Pages FQDN で確認できるように、通常デプロイでは `CNAME` を生成しません。独自ドメインへの切り替え時にだけ、手動実行の入力を使って `CNAME` を生成して公開します。
 
-検証時は `--url https://rykoma.github.io/Docs` を指定してビルドし、既定の GitHub Pages FQDN で内容を確認します。独自ドメインへ切り替える際にのみ `--url https://blog.rykoma.net` を指定してビルドし、あわせて `CNAME` を生成します。
+検証時は `_config.github-pages.yml` を追加指定し、`--url https://rykoma.github.io/Docs` と `--root /Docs/` でビルドします。`root` を `/Docs/` にすることで、CSS、JavaScript、画像などのアセットを GitHub Pages のプロジェクト サイト配下から参照します。検証時は `CNAME` を生成しません。
+
+独自ドメインへ切り替える際は `_config.yml` の `url: https://blog.rykoma.net` と `root: /` を使用し、`--url https://blog.rykoma.net` と `--root /` でビルドします。この場合だけ手動実行の `enable_cname: true` を指定して `public/CNAME` に `blog.rykoma.net` を生成します。`deploy_url` と `deploy_root` の組み合わせは、検証時は `https://rykoma.github.io/Docs` と `/Docs/`、切り替え時は `https://blog.rykoma.net` と `/` に固定します。
 
 ### Phase 4: コンテンツ移行
 

@@ -11,6 +11,7 @@ timezone: Asia/Tokyo
 
 # URL
 url: https://blog.rykoma.net
+root: /
 permalink: :lang/:slug/
 permalink_defaults:
 pretty_urls:
