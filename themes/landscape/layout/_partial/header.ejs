@@ -20,7 +20,7 @@
       <nav id="main-nav">
         <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
         <% for (var i in theme.menu){ %>
-          <a class="main-nav-link" href="<%- i === 'Home' ? currentLanguageHome : url_for(theme.menu[i]) %>"><%= i %></a>
+          <a class="main-nav-link" href="<%- i === 'Home' ? currentLanguageHome : i === 'Archives' ? url_for(`${currentLanguage}/${config.archive_dir}/`) : url_for(theme.menu[i]) %>"><%= i %></a>
         <% } %>
       </nav>
       <nav id="sub-nav">
@@ -30,15 +30,17 @@
             const currentSlug = !isIndex && pathParts[1] && pathParts[1] !== 'page' && pathParts[1] !== 'index.html'
               ? pathParts[1]
               : null;
+            const taxonomyType = page.category ? 'categories' : page.tag ? 'tags' : (pathParts[0] === 'categories' || pathParts[0] === 'tags' ? pathParts[0] : (pathParts[1] === 'categories' || pathParts[1] === 'tags' ? pathParts[1] : null));
+            const taxonomyName = page.category || page.tag || (taxonomyType === pathParts[0] ? pathParts[1] : (taxonomyType && pathParts[2] ? pathParts.slice(2).join('/') : null));
             const localizedPosts = site.posts.toArray();
             const currentPost = currentSlug && localizedPosts.find(post =>
               post.lang === currentLanguage && post.slug.split('/').pop() === currentSlug
             );
             const languageUrls = languageHome || {
-              ja: url_for(currentPost ? localizedPosts.find(post =>
+              ja: taxonomyName ? url_for(`ja/${taxonomyType}/${encodeURIComponent(taxonomyName)}/`) : url_for(currentPost ? localizedPosts.find(post =>
                 post.lang === 'ja' && post.slug.split('/').pop() === currentSlug
               )?.path : 'ja/'),
-              en: url_for(currentPost ? localizedPosts.find(post =>
+              en: taxonomyName ? url_for(`en/${taxonomyType}/${encodeURIComponent(taxonomyName)}/`) : url_for(currentPost ? localizedPosts.find(post =>
                 post.lang === 'en' && post.slug.split('/').pop() === currentSlug
               )?.path : 'en/')
             };

@@ -1,9 +1,15 @@
 const pagination = require('hexo-pagination');
 
-// Resolves the blog title for a given language. `config.titles` maps a
-// language code to its localized title; `config.title` is the fallback for
-// pages where the language cannot be determined (e.g. the root
-// language-selector page).
+const languages = ['ja', 'en'];
+
+const escapeHtml = (value) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 const resolveSiteTitle = (config, lang) => {
   const titles = config.titles || {};
   return (lang && titles[lang]) || config.title;
@@ -13,13 +19,15 @@ hexo.extend.helper.register('site_title', function (lang) {
   return resolveSiteTitle(this.config, lang);
 });
 
-const escapeHtml = (value) =>
-  String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+const sortPosts = (posts, orderBy = '-date') =>
+  posts.sort((a, b) => {
+    const direction = orderBy.startsWith('-') ? -1 : 1;
+    const field = orderBy.replace(/^-/, '');
+    return (a[field] > b[field] ? 1 : a[field] < b[field] ? -1 : 0) * direction;
+  });
+
+const localizedPath = (path, language) =>
+  `${language}/${String(path).replace(/^\/+/, '')}`;
 
 const languageSelector = (jaUrl, enUrl, title) => {
   const serializedJaUrl = JSON.stringify(jaUrl);
@@ -51,66 +59,275 @@ const languageSelector = (jaUrl, enUrl, title) => {
 `;
 };
 
-hexo.extend.generator.register('multilingual-pages', function () {
-  const root = this.config.root.endsWith('/') ? this.config.root : `${this.config.root}/`;
-  const posts = this.locals.get('posts');
-  const jaUrl = `${root}ja/`;
-  const enUrl = `${root}en/`;
-  const indexConfig = this.config.index_generator || {};
-  const paginationFormat = `${this.config.pagination_dir || 'page'}/%d/`;
-  const pages = [
-    {
-      path: 'index.html',
-      data: languageSelector(jaUrl, enUrl, `${resolveSiteTitle(this.config, 'ja')} / ${resolveSiteTitle(this.config, 'en')}`),
-    },
-  ];
+const addLanguageSelector = (pages, root, path, localizedUrls, title) => {
+  pages.push({
+    path: `${path.replace(/^\/+/, '').replace(/\/?$/, '/')}index.html`,
+    data: languageSelector(
+      `${root}${localizedUrls.ja}`,
+      `${root}${localizedUrls.en}`,
+      title,
+    ),
+  });
+};
 
-  for (const language of ['ja', 'en']) {
-    const languagePosts = posts
-      .filter(post => post.lang === language)
-      .sort(indexConfig.order_by || '-date');
-    pages.push(...pagination(`${language}/`, languagePosts, {
-      perPage: indexConfig.per_page || this.config.per_page,
+const pageData = (language, urls, data = {}) => ({
+  ...data,
+  language,
+  language_switcher: urls,
+});
+
+hexo.extend.helper.register('language_archives', function (posts, options = {}) {
+  const type = options.type || 'monthly';
+  const showCount = options.show_count === true;
+  const language = this.page.lang || this.page.language || this.config.language;
+  const format = language === 'ja' ? 'YYYY 年 M 月' : 'MMMM YYYY';
+  const groups = new Map();
+
+  posts.forEach(post => {
+    const year = post.date.year();
+    const month = post.date.month() + 1;
+    const key = type === 'monthly' ? `${year}-${month}` : String(year);
+    const group = groups.get(key) || {year, month, count: 0};
+    group.count++;
+    groups.set(key, group);
+  });
+
+  const items = [...groups.values()].sort((a, b) =>
+    b.year - a.year || b.month - a.month
+  );
+  const archiveDir = this.config.archive_dir;
+  const list = items.map(item => {
+    const date = this.date(new Date(item.year, item.month - 1), format);
+    const monthPath = type === 'monthly' ? `${item.month < 10 ? '0' : ''}${item.month}/` : '';
+    const path = localizedPath(`${archiveDir}/${item.year}/${monthPath}`, language);
+    const count = showCount ? `<span class="archive-list-count">${item.count}</span>` : '';
+    return `<li class="archive-list-item"><a class="archive-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(date)}</a>${count}</li>`;
+  }).join('');
+
+  return items.length ? `<ul class="archive-list">${list}</ul>` : '';
+});
+
+const taxonomyHelper = (posts, type) => function (options = {}) {
+  const language = this.page.lang || this.page.language || this.config.language;
+  const counts = new Map();
+  posts.forEach(post => {
+    const values = type === 'category' ? post.categories : post.tags;
+    values.forEach(value => counts.set(value.name, (counts.get(value.name) || 0) + 1));
+  });
+  const directory = type === 'category' ? this.config.category_dir : this.config.tag_dir;
+  const className = type === 'category' ? 'category' : 'tag';
+  const items = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  const links = items.map(([name, count]) => {
+    const path = localizedPath(`${directory}/${encodeURIComponent(name)}/`, language);
+    const countHtml = options.show_count ? `<span class="${className}-list-count">${count}</span>` : '';
+    return `<li class="${className}-list-item"><a class="${className}-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(name)}</a>${countHtml}</li>`;
+  }).join('');
+  return items.length ? `<ul class="${className}-list">${links}</ul>` : '';
+};
+
+hexo.extend.helper.register('language_categories', function (posts, options) {
+  return taxonomyHelper(posts, 'category').call(this, options);
+});
+
+hexo.extend.helper.register('language_tags', function (posts, options) {
+  return taxonomyHelper(posts, 'tag').call(this, options);
+});
+
+hexo.extend.helper.register('language_tagcloud', function (posts) {
+  const counts = new Map();
+  posts.forEach(post => post.tags.forEach(tag => counts.set(tag.name, (counts.get(tag.name) || 0) + 1)));
+  const max = Math.max(...counts.values(), 1);
+  const language = this.page.lang || this.page.language || this.config.language;
+  return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => {
+    const size = 100 + Math.round((count / max) * 100);
+    const path = localizedPath(`${this.config.tag_dir}/${encodeURIComponent(name)}/`, language);
+    return `<a href="${escapeHtml(this.url_for(path))}" class="tagcloud-link" style="font-size: ${size}%;">${escapeHtml(name)}</a>`;
+  }).join(' ');
+});
+
+hexo.extend.generator.register('multilingual-pages', function () {
+  const config = this.config;
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const allPosts = this.locals.get('posts').toArray();
+  const {Query} = this.model('Post');
+  const postQuery = posts => new Query(posts);
+  const indexConfig = config.index_generator || {};
+  const paginationFormat = `${config.pagination_dir || 'page'}/%d/`;
+  const pages = [{
+    path: 'index.html',
+    data: languageSelector(
+      `${root}ja/`,
+      `${root}en/`,
+      `${resolveSiteTitle(config, 'ja')} / ${resolveSiteTitle(config, 'en')}`,
+    ),
+  }];
+  const localizedUrls = {};
+
+  for (const language of languages) {
+    localizedUrls[language] = `${language}/`;
+    const posts = sortPosts(allPosts.filter(post => post.lang === language), indexConfig.order_by);
+    pages.push(...pagination(`${language}/`, postQuery(posts), {
+      perPage: indexConfig.per_page || config.per_page,
       format: paginationFormat,
       layout: ['index', 'archive'],
-      data: {
-        language,
-        language_switcher: {
-          ja: jaUrl,
-          en: enUrl,
-        },
-      },
+      data: pageData(language, {ja: `${root}ja/`, en: `${root}en/`}),
     }));
   }
 
-  const postsForPairing = posts.toArray();
-  const slugs = new Map();
-  postsForPairing.forEach((post) => {
-    if (!post.lang || !post.slug) {
-      return;
-    }
-
+  const slugPairs = new Map();
+  allPosts.forEach(post => {
+    if (!post.lang || !post.slug) return;
     const slug = post.slug.split('/').pop();
-    if (!slugs.has(slug)) {
-      slugs.set(slug, {});
-    }
-    slugs.get(slug)[post.lang] = post;
+    const pair = slugPairs.get(slug) || {};
+    pair[post.lang] = post;
+    slugPairs.set(slug, pair);
   });
-
-  slugs.forEach((localizedPosts, slug) => {
-    const jaPost = localizedPosts.ja;
-    const enPost = localizedPosts.en;
-    if (jaPost && enPost) {
+  slugPairs.forEach(pair => {
+    if (pair.ja && pair.en) {
       pages.push({
-        path: `${slug}/index.html`,
+        path: `${pair.ja.slug.split('/').pop()}/index.html`,
         data: languageSelector(
-          `${root}${jaPost.path}`,
-          `${root}${enPost.path}`,
-          `${jaPost.title} / ${enPost.title}`,
+          `${root}${pair.ja.path}`,
+          `${root}${pair.en.path}`,
+          `${pair.ja.title} / ${pair.en.title}`,
         ),
       });
     }
   });
 
+  const archiveConfig = config.archive_generator || {};
+  const perPage = archiveConfig.per_page || config.per_page;
+  const makeArchivePages = (language, posts) => {
+    const archiveDir = config.archive_dir;
+    const archiveRoot = `${language}/${archiveDir}/`;
+    const urls = {ja: `${root}ja/${archiveDir}/`, en: `${root}en/${archiveDir}/`};
+    const archivePages = pagination(archiveRoot, postQuery(sortPosts(posts, archiveConfig.order_by)), {
+      perPage,
+      layout: ['archive', 'index'],
+      format: paginationFormat,
+      data: pageData(language, urls, {archive: true}),
+    });
+    const byYear = new Map();
+    posts.forEach(post => {
+      const year = post.date.year();
+      const month = post.date.month() + 1;
+      const yearPosts = byYear.get(year) || new Map();
+      const monthPosts = yearPosts.get(month) || [];
+      monthPosts.push(post);
+      yearPosts.set(month, monthPosts);
+      byYear.set(year, yearPosts);
+    });
+    byYear.forEach((months, year) => {
+      const yearPath = `${archiveRoot}${year}/`;
+      const yearUrls = {
+        ja: `${root}ja/${archiveDir}/${year}/`,
+        en: `${root}en/${archiveDir}/${year}/`,
+      };
+      archivePages.push(...pagination(yearPath, postQuery(sortPosts([].concat(...months.values()), archiveConfig.order_by)), {
+        perPage, layout: ['archive', 'index'], format: paginationFormat,
+        data: pageData(language, yearUrls, {archive: true, year}),
+      }));
+      months.forEach((monthPosts, month) => {
+        const monthPath = `${yearPath}${String(month).padStart(2, '0')}/`;
+        const monthUrls = {
+          ja: `${root}ja/${archiveDir}/${year}/${String(month).padStart(2, '0')}/`,
+          en: `${root}en/${archiveDir}/${year}/${String(month).padStart(2, '0')}/`,
+        };
+        archivePages.push(...pagination(monthPath, postQuery(sortPosts(monthPosts, archiveConfig.order_by)), {
+          perPage, layout: ['archive', 'index'], format: paginationFormat,
+          data: pageData(language, monthUrls, {archive: true, year, month}),
+        }));
+      });
+    });
+    return archivePages;
+  };
+
+  const archivePagesByLanguage = {};
+  for (const language of languages) {
+    const posts = allPosts.filter(post => post.lang === language);
+    archivePagesByLanguage[language] = makeArchivePages(language, posts);
+    pages.push(...archivePagesByLanguage[language]);
+  }
+  if (archivePagesByLanguage.ja.length && archivePagesByLanguage.en.length) {
+    const archiveUrls = {
+      ja: `${root}ja/${config.archive_dir}/`,
+      en: `${root}en/${config.archive_dir}/`,
+    };
+    const archiveTitle = `${resolveSiteTitle(config, 'ja')} / ${resolveSiteTitle(config, 'en')}`;
+    addLanguageSelector(pages, root, config.archive_dir, {
+      ja: `ja/${config.archive_dir}/`,
+      en: `en/${config.archive_dir}/`,
+    }, archiveTitle);
+    const archivePeriods = new Set();
+    allPosts.forEach(post => {
+      archivePeriods.add(`${config.archive_dir}/${post.date.year()}/`);
+      archivePeriods.add(`${config.archive_dir}/${post.date.year()}/${String(post.date.month() + 1).padStart(2, '0')}/`);
+    });
+    archivePeriods.forEach(period => addLanguageSelector(pages, root, period, {
+      ja: `ja/${period}`,
+      en: `en/${period}`,
+    }, archiveTitle));
+  }
+
+  const makeTaxonomyPages = (language, collection, directory, type) => {
+    const posts = allPosts.filter(post => post.lang === language);
+    const urls = {
+      ja: `${root}ja/${directory}/`,
+      en: `${root}en/${directory}/`,
+    };
+    const result = [];
+    collection.forEach(item => {
+      const itemPosts = posts.filter(post => {
+        const values = type === 'category' ? post.categories : post.tags;
+        return values.some(value => value.name === item.name);
+      });
+      if (!itemPosts.length) return;
+      const basePath = `${language}/${item.path}`;
+      const itemUrls = {
+        ja: `${root}ja/${item.path}`,
+        en: `${root}en/${item.path}`,
+      };
+      result.push(...pagination(basePath, postQuery(sortPosts(itemPosts)), {
+        perPage: config[`${type}_generator`]?.per_page || config.per_page,
+        layout: [type, 'archive', 'index'],
+        format: paginationFormat,
+        data: pageData(language, itemUrls, {[type]: item.name}),
+      }));
+    });
+    return result;
+  };
+
+  for (const [collectionName, directory, type] of [
+    ['categories', config.category_dir, 'category'],
+    ['tags', config.tag_dir, 'tag'],
+  ]) {
+    const collection = this.locals.get(collectionName);
+    const localized = {};
+    for (const language of languages) {
+      localized[language] = makeTaxonomyPages(language, collection, directory, type);
+      pages.push(...localized[language]);
+    }
+    collection.forEach(item => {
+      if (localized.ja.some(page => page.path.includes(`/${item.path}`)) &&
+          localized.en.some(page => page.path.includes(`/${item.path}`))) {
+        addLanguageSelector(pages, root, item.path, {
+          ja: `ja/${item.path}`,
+          en: `en/${item.path}`,
+        }, `${item.name} - ${resolveSiteTitle(config, 'ja')} / ${resolveSiteTitle(config, 'en')}`);
+      }
+    });
+  }
+
   return pages;
+});
+
+// Replace the standard generators so they cannot emit unfiltered duplicate routes.
+hexo.extend.generator.register('archive', () => []);
+hexo.extend.generator.register('category', () => []);
+hexo.extend.generator.register('tag', () => []);
+
+hexo.extend.filter.register('before_generate', () => {
+  hexo.extend.generator.register('archive', () => []);
+  hexo.extend.generator.register('category', () => []);
+  hexo.extend.generator.register('tag', () => []);
 });

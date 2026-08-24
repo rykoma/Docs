@@ -1,9 +1,11 @@
-<% if (site.posts.length){ %>
+<% const language = page.lang || page.language; %>
+<% const posts = site.posts.toArray().filter(post => !language || post.lang === language).sort((a, b) => b.date - a.date); %>
+<% if (posts.length){ %>
   <div class="widget-wrap">
     <h3 class="widget-title"><%= __('recent_posts') %></h3>
     <div class="widget">
       <ul>
-        <% site.posts.sort('date', -1).limit(theme.recent_posts_limits).each(function(post){ %>
+        <% posts.slice(0, theme.recent_posts_limits).forEach(function(post){ %>
           <li>
             <a href="<%- url_for(post.path) %>"><%= post.title || '(no title)' %></a>
           </li>
