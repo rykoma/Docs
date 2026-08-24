@@ -23,12 +23,54 @@
     stopSearchAnim(function(){
       $('.search-form-input').focus();
     });
+
   });
 
   $('.search-form-input').on('blur', function(){
     startSearchAnim();
     $searchWrap.removeClass('on');
     stopSearchAnim();
+  });
+
+  // Language menu
+  var $languageSwitcher = $('.language-switcher'),
+    $languageButton = $('.language-switcher-button'),
+    $languageMenu = $('.language-switcher-menu');
+
+  var closeLanguageMenu = function(){
+    $languageButton.attr('aria-expanded', 'false');
+    $languageMenu.prop('hidden', true);
+  };
+
+  $languageButton.on('click', function(){
+    var isOpen = $(this).attr('aria-expanded') === 'true';
+    $(this).attr('aria-expanded', String(!isOpen));
+    $languageMenu.prop('hidden', isOpen);
+    if (!isOpen) $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])').first().focus();
+  });
+
+  $languageButton.on('keydown', function(e){
+    if (e.key === 'Escape' && $(this).attr('aria-expanded') === 'true') {
+      e.preventDefault();
+      closeLanguageMenu();
+    }
+  });
+
+  $languageMenu.on('keydown', '[role="menuitem"]', function(e){
+    var $items = $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])'),
+      index = $items.index(this);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      $items.eq((index + (e.key === 'ArrowDown' ? 1 : -1) + $items.length) % $items.length).focus();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLanguageMenu();
+      $languageButton.focus();
+    }
+  });
+
+  $(document).on('click', function(e){
+    if ($languageSwitcher.length && !$(e.target).closest('.language-switcher').length) closeLanguageMenu();
   });
 
   // Share
