@@ -1,5 +1,18 @@
 const pagination = require('hexo-pagination');
 
+// Resolves the blog title for a given language. `config.titles` maps a
+// language code to its localized title; `config.title` is the fallback for
+// pages where the language cannot be determined (e.g. the root
+// language-selector page).
+const resolveSiteTitle = (config, lang) => {
+  const titles = config.titles || {};
+  return (lang && titles[lang]) || config.title;
+};
+
+hexo.extend.helper.register('site_title', function (lang) {
+  return resolveSiteTitle(this.config, lang);
+});
+
 const escapeHtml = (value) =>
   String(value)
     .replace(/&/g, '&amp;')
@@ -48,7 +61,7 @@ hexo.extend.generator.register('multilingual-pages', function () {
   const pages = [
     {
       path: 'index.html',
-      data: languageSelector(jaUrl, enUrl, this.config.title),
+      data: languageSelector(jaUrl, enUrl, `${resolveSiteTitle(this.config, 'ja')} / ${resolveSiteTitle(this.config, 'en')}`),
     },
   ];
 

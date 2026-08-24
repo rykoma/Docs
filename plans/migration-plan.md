@@ -34,6 +34,19 @@
 | 記事管理 | Markdown + Git |
 | 対応言語 | 日本語、英語 |
 
+## ブログのタイトル
+
+WordPress では日本語のみで運用しており、ブログタイトルは「Developer Messaging 研究所」でした。Hexo + GitHub Pages への移行後は日本語と英語の両方を扱うため、言語ごとにタイトルを次のとおり使い分けます。
+
+| 言語 | ブログタイトル |
+| --- | --- |
+| 日本語 (`/ja/`) | Developer Messaging 研究所 |
+| 英語 (`/en/`) | Developer Messaging Lab |
+
+日本語版は WordPress からのブランド継続性を優先して既存のタイトルを維持し、英語版は英語話者に自然に伝わる表現として「Developer Messaging Lab」を新たに採用します。両者は「Developer Messaging」という核となる概念を共有しつつ、「研究所」を英語の "Lab" に対応させることで、言語ごとに自然な響きを保ちます。
+
+実装は `_config.yml` の `titles` (言語コードごとのタイトル) と `title` (言語が判定できないページ向けの既定値) で管理し、`scripts/multilingual-generator.js` の `site_title` ヘルパーを通じて Landscape テーマ側 (ヘッダー、`<title>` タグ、Open Graph、RSS、フッターの著作権表示) で参照します。ルートの言語選択ページ (`/`) や、記事の言語ペア選択ページ (`/<slug>/`) では両言語のタイトルを併記します。
+
 ## URL と多言語の方針
 
 新規 URL は記事 ID や日付を使用せず、英語小文字の kebab-case スラッグを使用します。

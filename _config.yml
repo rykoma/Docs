@@ -1,7 +1,14 @@
 # Hexo Configuration
 
 # Site
-title: blog.rykoma.net
+# `title` is the fallback used when a page's language cannot be determined
+# (e.g. the root language-selector page). Language-specific titles are
+# defined under `titles` and take priority whenever the current page has a
+# known language.
+title: Developer Messaging 研究所
+titles:
+  ja: Developer Messaging 研究所
+  en: Developer Messaging Lab
 subtitle: ''
 description: ''
 keywords:
