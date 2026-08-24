@@ -8,10 +8,10 @@
       <div class="outer">
         <section id="main"><%- body %></section>
         <% if (theme.sidebar && theme.sidebar !== 'bottom'){ %>
-          <%- partial('_partial/sidebar', null, {cache: !config.relative_link}) %>
+          <%- partial('_partial/sidebar', null, {cache: false}) %>
         <% } %>
       </div>
-      <%- partial('_partial/footer', null, {cache: !config.relative_link}) %>
+      <%- partial('_partial/footer', null, {cache: false}) %>
     </div>
     <%- partial('_partial/mobile-nav', null, {cache: false}) %>
     <%- partial('_partial/after-footer') %>

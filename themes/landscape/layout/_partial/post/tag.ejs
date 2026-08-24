@@ -1,6 +1,8 @@
 <% if (post.tags && post.tags.length){ %>
-  <%- list_tags(post.tags, {
-    show_count: false,
-    class: 'article-tag'
-  }) %>
+  <% const language = page.lang || page.language || 'ja'; %>
+  <ul class="article-tag-list" itemprop="keywords">
+    <% post.tags.each(function(tag){ %>
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="<%- url_for(language + '/' + config.tag_dir + '/' + encodeURIComponent(tag.name) + '/') %>" rel="tag"><%= tag.name %></a></li>
+    <% }) %>
+  </ul>
 <% } %>
