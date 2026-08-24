@@ -1,5 +1,10 @@
 <nav id="mobile-nav">
   <% for (var i in theme.menu){ %>
-    <a href="<%- url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
+    <%
+      const mobilePathParts = (page.path || '').split('/').filter(Boolean);
+      const mobileLanguage = page.language_switcher ? page.language : (mobilePathParts[0] || page.lang || page.language);
+      const mobileHome = url_for(`${mobileLanguage === 'en' ? 'en' : 'ja'}/`);
+    %>
+    <a href="<%- i === 'Home' ? mobileHome : url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
   <% } %>
 </nav>

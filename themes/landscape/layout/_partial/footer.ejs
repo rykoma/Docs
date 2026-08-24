@@ -7,8 +7,8 @@
       <% if (theme.copyright){ %>
         <%- render(theme.copyright, 'pug'); %>
       <% } %>
-      &copy; <%= date(new Date(), 'YYYY') %> <%= config.author || site_title(page.lang || page.language) %><br>
-      <%= __('powered_by') %> <a href="https://hexo.io/" target="_blank">Hexo</a>
+      &copy; <%= date(new Date(), 'YYYY') %>
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer"><%= config.author || site_title(page.lang || page.language) %></a>
     </div>
   </div>
 </footer>
