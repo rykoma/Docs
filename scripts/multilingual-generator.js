@@ -26,8 +26,13 @@ const resolveSiteTitle = (config, lang) => {
 const absoluteUrl = (config, path) => {
   let baseUrl = String(config.url || '').replace(/\/+$/, '');
   const root = String(config.root || '/').replace(/^\/?/, '/').replace(/\/+$/, '');
+  const rootPath = root.replace(/^\/+|\/+$/g, '');
   if (root && baseUrl.endsWith(root)) baseUrl = baseUrl.slice(0, -root.length);
-  const relativePath = String(path).replace(/^\/+/, '');
+  let relativePath = String(path).replace(/^\/+/, '');
+  if (rootPath && (relativePath === rootPath || relativePath.startsWith(`${rootPath}/`))) {
+    relativePath = relativePath.slice(rootPath.length).replace(/^\/+/, '');
+  }
+  relativePath = relativePath.replace(/index\.html$/, '');
   return `${baseUrl}${root}/${relativePath}`;
 };
 
@@ -68,6 +73,10 @@ hexo.extend.helper.register('site_title', function (lang) {
   return resolveSiteTitle(this.config, lang);
 });
 
+hexo.extend.helper.register('absolute_url', function (path) {
+  return absoluteUrl(this.config, path);
+});
+
 const sortPosts = (posts, orderBy = '-date') =>
   posts.sort((a, b) => {
     const direction = orderBy.startsWith('-') ? -1 : 1;
@@ -87,6 +96,7 @@ const languageSelector = (jaUrl, enUrl, title) => {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,follow">
   <title>${escapeHtml(title)}</title>
   <script>
     (() => {
@@ -111,6 +121,7 @@ const languageSelector = (jaUrl, enUrl, title) => {
 const addLanguageSelector = (pages, root, path, localizedUrls, title) => {
   pages.push({
     path: `${path.replace(/^\/+/, '').replace(/\/?$/, '/')}index.html`,
+    language_selector: true,
     data: languageSelector(
       `${root}${localizedUrls.ja}`,
       `${root}${localizedUrls.en}`,
@@ -204,6 +215,7 @@ hexo.extend.generator.register('multilingual-pages', function () {
   const paginationFormat = `${config.pagination_dir || 'page'}/%d/`;
   const pages = [{
     path: 'index.html',
+    language_selector: true,
     data: languageSelector(
       `${root}ja/`,
       `${root}en/`,
@@ -368,6 +380,71 @@ hexo.extend.generator.register('multilingual-pages', function () {
   }
 
   return pages;
+});
+
+hexo.extend.generator.register('seo-files', function () {
+  const config = this.config;
+  const allPosts = this.locals.get('posts').toArray();
+  const allPages = this.locals.get('pages').toArray();
+  const generatedPages = [];
+  const addPage = (path, lastmod) => {
+    if (!path) return;
+    const normalized = String(path).replace(/^\/+/, '');
+    if (!normalized || normalized.includes('/page/')) return;
+    generatedPages.push({path: normalized, lastmod});
+  };
+
+  languages.forEach(language => addPage(`${language}/`));
+  [...allPosts, ...allPages]
+    .filter(page => page.lang === 'ja' || page.lang === 'en')
+    .forEach(page => addPage(page.path, page.updated || page.date));
+
+  for (const language of languages) {
+    const posts = allPosts.filter(post => post.lang === language);
+    if (posts.length) addPage(`${language}/${config.archive_dir}/`);
+    const years = new Map();
+    posts.forEach(post => {
+      const year = post.date.year();
+      const month = post.date.month() + 1;
+      const months = years.get(year) || new Set();
+      months.add(month);
+      years.set(year, months);
+    });
+    years.forEach((months, year) => {
+      addPage(`${language}/${config.archive_dir}/${year}/`);
+      months.forEach(month => addPage(
+        `${language}/${config.archive_dir}/${year}/${String(month).padStart(2, '0')}/`,
+      ));
+    });
+
+    for (const [collectionName, directory, type] of [
+      ['categories', config.category_dir, 'category'],
+      ['tags', config.tag_dir, 'tag'],
+    ]) {
+      const names = new Set();
+      posts.forEach(post => {
+        const values = type === 'category' ? post.categories : post.tags;
+        values.forEach(value => names.add(value.name));
+      });
+      names.forEach(name => addPage(
+        `${language}/${directory}/${encodeURIComponent(name)}/`,
+      ));
+    }
+  }
+
+  const uniquePages = new Map(generatedPages.map(page => [page.path, page]));
+  const urls = [...uniquePages.values()].map(({path, lastmod}) => {
+    const lastmodTag = lastmod ? `\n    <lastmod>${escapeXml(new Date(lastmod).toISOString())}</lastmod>` : '';
+    return `  <url>\n    <loc>${escapeXml(absoluteUrl(config, path))}</loc>${lastmodTag}\n  </url>`;
+  }).join('\n');
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  const sitemapUrl = absoluteUrl(config, 'sitemap.xml');
+  const robots = `User-agent: *\nAllow: /\n\nSitemap: ${sitemapUrl}\n`;
+
+  return [
+    {path: 'sitemap.xml', data: sitemap},
+    {path: 'robots.txt', data: robots},
+  ];
 });
 
 hexo.extend.generator.register('multilingual-rss', function () {

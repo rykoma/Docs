@@ -3,6 +3,14 @@
   <%- partial('google-analytics') %>
   <%
   var title = page.title;
+  var pathParts = (page.path || '').split('/').filter(Boolean);
+  var isPagination = Number(page.current || 1) > 1 || pathParts.some(function (part, index) {
+    return part === 'page' && /^\d+$/.test(pathParts[index + 1] || '');
+  });
+  var canonicalUrl = !isPagination && !page.language_selector ? absolute_url(page.path) : null;
+  var alternateUrls = {};
+  var content = site.posts.toArray().concat(site.pages.toArray());
+  var currentSlug = page.slug ? page.slug.split('/').pop() : pathParts[pathParts.length - 1];
 
   if (is_archive()){
     title = __('archive_a');
@@ -17,8 +25,29 @@
   } else if (is_tag()){
     title = __('tag') + ': ' + page.tag;
   }
+
+  if (page.language_switcher && !isPagination) {
+    alternateUrls = page.language_switcher;
+  } else if (!isPagination && (page.lang || page.language) && currentSlug) {
+    for (var language of ['ja', 'en']) {
+      var localized = content.find(function (item) {
+        return item.lang === language && item.slug && item.slug.split('/').pop() === currentSlug;
+      });
+      if (localized) alternateUrls[language] = localized.path;
+    }
+  }
   %>
   <title><% if (title){ %><%= title %> | <% } %><%= site_title(page.lang || page.language) %></title>
+  <% if (isPagination) { %>
+    <meta name="robots" content="noindex,follow">
+  <% } else if (canonicalUrl) { %>
+    <link rel="canonical" href="<%= canonicalUrl %>">
+  <% } %>
+  <% for (var language of ['ja', 'en']) { %>
+    <% if (alternateUrls[language]) { %>
+      <link rel="alternate" hreflang="<%= language %>" href="<%= absolute_url(alternateUrls[language]) %>">
+    <% } %>
+  <% } %>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <%- open_graph({title: title || site_title(page.lang || page.language), site_name: site_title(page.lang || page.language), twitter_id: theme.twitter, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
   <% if (theme.rss) { %>

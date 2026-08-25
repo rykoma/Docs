@@ -251,6 +251,8 @@ npx hexo generate --config _config.yml --url https://blog.rykoma.net --root /
 - アクセシビリティとレスポンシブ表示の確認
 - favicon、robots、サイトマップ、canonical、hreflang の実装方針整理
 
+SEO の方針は次のとおりとします。言語選択ページ (`/`、`/<slug>/`) は `noindex` とし、canonical を付けず、sitemap から除外します。実コンテンツ、言語別トップ、記事が存在する分類・Archive は self-canonical とし、sitemap に含めます。ページネーションは `noindex,follow` とし、sitemap から除外します。翻訳対応するページだけ `ja` / `en` の hreflang を相互指定し、`x-default` は使用しません。canonical、hreflang、robots.txt、sitemap の URL は `site.url` と `site.root` から生成します。
+
 ここでいう「記事が 0 件のページ」とは、まだその言語の記事が 1 件もない言語別トップページ、該当する記事がない category / tag ページ、記事が存在しない archive ページを指します。これらのページを生成するか、404 とするか、また生成する場合に利用者へどのような案内を表示するかを Phase 4 で決めます。
 
 Archives、categories、tags、Recent posts ウィジェットは、表示中の言語の記事だけを対象とします。Recent posts ウィジェットでは、表示中の言語に対応する記事タイトルだけを表示し、翻訳ペアによる重複を発生させません。RSS は言語別フィードを基本とし、フィード URL と各言語ページからのリンクを確定します。
@@ -362,7 +364,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [ ] Phase 5 の本格移行前に、少なくとも 1 件の日本語 / 英語の翻訳ペアを代表例として移行し、Markdown、コード、表、画像、内部リンク、外部リンクを確認した
 - [ ] アクセシビリティとレスポンシブ表示を確認した
 - [x] favicon のデザインを確定し、`source/favicon.png` / `source/favicon.svg` を反映した
-- [ ] robots、サイトマップ、canonical、hreflang の方針を整理した
+- [x] robots、サイトマップ、canonical、hreflang の方針を整理し、実装した
 
 ### Phase 5: コンテンツ移行
 
