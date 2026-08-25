@@ -87,6 +87,14 @@ const sortPosts = (posts, orderBy = '-date') =>
 const localizedPath = (path, language) =>
   `${language}/${String(path).replace(/^\/+/, '')}`;
 
+const taxonomySlug = (context, type, name) => {
+  const collectionName = type === 'category' ? 'categories' : 'tags';
+  const item = context.site[collectionName].toArray().find(entry => entry.name === name);
+  if (item?.path) return item.path.replace(/^\/+/, '');
+  const directory = type === 'category' ? context.config.category_dir : context.config.tag_dir;
+  return `${directory}/${encodeURIComponent(name)}/`;
+};
+
 const languageSelector = (jaUrl, enUrl, title) => {
   const serializedJaUrl = JSON.stringify(jaUrl);
   const serializedEnUrl = JSON.stringify(enUrl);
@@ -174,11 +182,10 @@ const taxonomyHelper = (posts, type) => function (options = {}) {
     const values = type === 'category' ? post.categories : post.tags;
     values.forEach(value => counts.set(value.name, (counts.get(value.name) || 0) + 1));
   });
-  const directory = type === 'category' ? this.config.category_dir : this.config.tag_dir;
   const className = type === 'category' ? 'category' : 'tag';
   const items = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   const links = items.map(([name, count]) => {
-    const path = localizedPath(`${directory}/${encodeURIComponent(name)}/`, language);
+    const path = localizedPath(taxonomySlug(this, type, name), language);
     const countHtml = options.show_count ? `<span class="${className}-list-count">${count}</span>` : '';
     return `<li class="${className}-list-item"><a class="${className}-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(name)}</a>${countHtml}</li>`;
   }).join('');
@@ -200,15 +207,21 @@ hexo.extend.helper.register('language_tagcloud', function (posts) {
   const language = this.page.lang || this.page.language || this.config.language;
   return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([name, count]) => {
     const size = 100 + Math.round((count / max) * 100);
-    const path = localizedPath(`${this.config.tag_dir}/${encodeURIComponent(name)}/`, language);
+    const path = localizedPath(taxonomySlug(this, 'tag', name), language);
     return `<a href="${escapeHtml(this.url_for(path))}" class="tagcloud-link" style="font-size: ${size}%;">${escapeHtml(name)}</a>`;
   }).join(' ');
+});
+
+hexo.extend.helper.register('language_taxonomy_url', function (language, type, name) {
+  return this.url_for(`${language}/${taxonomySlug(this, type, name)}`);
 });
 
 hexo.extend.generator.register('multilingual-pages', function () {
   const config = this.config;
   const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
   const allPosts = this.locals.get('posts').toArray();
+  const allPages = this.locals.get('pages').toArray();
+  const allContent = allPosts.concat(allPages);
   const {Query} = this.model('Post');
   const postQuery = posts => new Query(posts);
   const indexConfig = config.index_generator || {};
@@ -236,11 +249,11 @@ hexo.extend.generator.register('multilingual-pages', function () {
   }
 
   const slugPairs = new Map();
-  allPosts.forEach(post => {
-    if (!post.lang || !post.slug) return;
-    const slug = post.slug.split('/').pop();
+  allContent.forEach(content => {
+    if (!content.lang || !content.slug) return;
+    const slug = content.slug.split('/').pop();
     const pair = slugPairs.get(slug) || {};
-    pair[post.lang] = post;
+    pair[content.lang] = content;
     slugPairs.set(slug, pair);
   });
   slugPairs.forEach(pair => {

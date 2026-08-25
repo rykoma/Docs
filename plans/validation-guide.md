@@ -38,4 +38,4 @@ npx hexo generate --config _config.yml,_config.github-pages.yml --url https://ry
 npx hexo generate --config _config.yml --url https://blog.rykoma.net --root /
 ```
 
-本格移行前は、既存の `hello-world` ja/en 記事とテスト内の固定ページ用フィクスチャで検証します。代表コンテンツの移行確認は別途実施します。
+代表サンプルとして `create-draft-meeting-with-microsoft-graph` (画像付き記事)、`microsoft-graph-email-attachments` (画像なし記事)、`about` (固定ページ) の ja/en ペアを移行し、トップページ、記事・固定ページ、言語切り替え、画像、内部リンク、外部リンクを確認します。
