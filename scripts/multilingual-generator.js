@@ -42,7 +42,7 @@ const rssFeed = (config, language, posts) => {
       <link>${escapeXml(postUrl)}</link>
       <guid isPermaLink="true">${escapeXml(postUrl)}</guid>
       <pubDate>${escapeXml(rssDate(post.date))}</pubDate>
-      <description>${escapeXml(post.description || post.excerpt || post.content)}</description>
+      <description>${escapeXml(post.description)}</description>
     </item>`;
   }).join('\n');
 
@@ -387,4 +387,20 @@ hexo.extend.filter.register('before_generate', () => {
   hexo.extend.generator.register('archive', () => []);
   hexo.extend.generator.register('category', () => []);
   hexo.extend.generator.register('tag', () => []);
+});
+
+// RSS feed requires `description` on every post (used verbatim as the item
+// description); missing values would otherwise silently fall back to an
+// empty <description> tag or leak raw HTML content into the feed.
+hexo.extend.filter.register('before_generate', () => {
+  const posts = hexo.locals.get('posts').toArray();
+  const missing = posts
+    .filter(post => post.lang && !post.description)
+    .map(post => post.source);
+
+  if (missing.length) {
+    throw new Error(
+      `RSS の description が未設定の記事があります。front matter に description を追加してください:\n${missing.map(path => `  - ${path}`).join('\n')}`,
+    );
+  }
 });

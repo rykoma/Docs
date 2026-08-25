@@ -62,7 +62,15 @@ WordPress では日本語のみで運用しており、ブログタイトルは�
 
 言語指定のない記事または固定ページ URL にアクセスした場合も、ブラウザーの言語設定に応じて対応する言語 URL へリダイレクトします。言語選択ページと実際のコンテンツ ページは分けて用意します。
 
-RSS は言語ごとに `/ja/rss.xml` と `/en/rss.xml` を生成し、各 feed の item は同じ言語の記事だけを含めます。feed 内の URL は `config.url` と `root` を反映した絶対 URL とし、独自ドメインと GitHub Pages の両方で確認します。
+RSS は言語ごとに `/ja/rss.xml` と `/en/rss.xml` を生成し、各 feed の item は同じ言語の記事だけを含めます。feed 内の URL は `config.url` と `root` を反映した絶対 URL とし、独自ドメインと GitHub Pages の両方で確認します。item の説明文には記事の `description` をそのまま使用するため、`description` が未設定の記事があるとビルド エラーになります (`scripts/multilingual-generator.js` の `before_generate` フィルターで検証)。本文抜粋や本文全体を description の代わりに使うことはありません。
+
+RSS の description チェックは暫定対応であり、今後は次の項目を含む Front Matter 全体の検証スクリプトを別途整備します。
+
+- 記事: `title`、`date`、`updated`、`lang`、`slug`、`categories`、`tags`、`description` の必須項目チェック
+- 固定ページ: `title`、`lang`、`slug`、`description` の必須項目チェックと、記事専用項目 (`date`、`updated`、`categories`、`tags`) の禁止チェック
+- 値の形式チェック (`lang` が `ja`/`en` のみ、`slug` の kebab-case と文字数上限、`date`/`updated` の ISO 8601 形式)
+- 未定義の Front Matter キーの検出
+- 翻訳ペア以外での `slug` 重複の検出
 
 旧 WordPress URL から新 URL へのリダイレクトには `hexo-generator-alias` を使用します。移行対象の Front Matter には、必要に応じて次のような alias を設定します。
 
