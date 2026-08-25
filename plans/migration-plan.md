@@ -359,8 +359,8 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] RSS の `description` はプレーンテキスト限定とし、HTML タグらしき記述を検出するチェックを追加した
 - [x] RSS フィードを W3C Feed Validator 等で検証した (Direct Input モードで ja/en とも Valid RSS feed、公開後は URL 指定モードでの再検証を推奨)
 - [x] 404 ページと、記事が 0 件の言語別トップ・分類ページの表示方針を確定した
-- [ ] 移行前の Front Matter、リンク、画像検証を準備した
-- [ ] 記事・固定ページの Front Matter 全体を検証するスクリプトを整備した (`title`/`date`/`updated`/`lang`/`slug`/`categories`/`tags`/`description` の必須項目、固定ページでの記事専用項目の禁止、`lang`/`slug`/日時形式の妥当性、未定義キーの検出、翻訳ペア以外での `slug` 重複検出)
+- [x] 移行前の Front Matter、リンク、画像検証を準備した
+- [x] 記事・固定ページの Front Matter 全体を検証するスクリプトを整備した (`title`/`date`/`updated`/`lang`/`slug`/`categories`/`tags`/`description` の必須項目、固定ページでの記事専用項目の禁止、`lang`/`slug`/日時形式の妥当性、未定義キーの検出、翻訳ペア以外での `slug` 重複検出)
 - [ ] Phase 5 の本格移行前に、少なくとも 1 件の日本語 / 英語の翻訳ペアを代表例として移行し、Markdown、コード、表、画像、内部リンク、外部リンクを確認した
 - [ ] アクセシビリティとレスポンシブ表示を確認した
 - [x] favicon のデザインを確定し、`source/favicon.png` / `source/favicon.svg` を反映した

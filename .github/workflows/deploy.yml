@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: Build site
-        run: npx hexo generate --config "${{ steps.deployment.outputs.config }}" --url "${{ steps.deployment.outputs.url }}" --root "${{ steps.deployment.outputs.root }}"
+        run: npm run validate && npx hexo generate --config "${{ steps.deployment.outputs.config }}" --url "${{ steps.deployment.outputs.url }}" --root "${{ steps.deployment.outputs.root }}"
 
       - name: Ensure CNAME
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.enable_cname == 'true' }}
