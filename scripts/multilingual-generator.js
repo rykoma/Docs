@@ -10,9 +10,58 @@ const escapeHtml = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
+const escapeXml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
 const resolveSiteTitle = (config, lang) => {
   const titles = config.titles || {};
   return (lang && titles[lang]) || config.title;
+};
+
+const absoluteUrl = (config, path) => {
+  let baseUrl = String(config.url || '').replace(/\/+$/, '');
+  const root = String(config.root || '/').replace(/^\/?/, '/').replace(/\/+$/, '');
+  if (root && baseUrl.endsWith(root)) baseUrl = baseUrl.slice(0, -root.length);
+  const relativePath = String(path).replace(/^\/+/, '');
+  return `${baseUrl}${root}/${relativePath}`;
+};
+
+const rssDate = date => new Date(date).toUTCString();
+
+const rssFeed = (config, language, posts) => {
+  const description = (config.rss_descriptions || {})[language] || '';
+  // Match hexo-generator-feed's default `limit: 20` (0 = unlimited) so the
+  // feed doesn't grow without bound as more posts are published.
+  const limit = (config.feed || {}).limit ?? 20;
+  const limitedPosts = limit > 0 ? posts.slice(0, limit) : posts;
+  const items = limitedPosts.map(post => {
+    const postUrl = absoluteUrl(config, post.path);
+    return `    <item>
+      <title>${escapeXml(post.title)}</title>
+      <link>${escapeXml(postUrl)}</link>
+      <guid isPermaLink="true">${escapeXml(postUrl)}</guid>
+      <pubDate>${escapeXml(rssDate(post.date))}</pubDate>
+      <description>${escapeXml(post.description)}</description>
+    </item>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeXml(resolveSiteTitle(config, language))}</title>
+    <link>${escapeXml(absoluteUrl(config, `${language}/`))}</link>
+    <description>${escapeXml(description)}</description>
+    <language>${language}</language>
+    <atom:link href="${escapeXml(absoluteUrl(config, `${language}/rss.xml`))}" rel="self" type="application/rss+xml"/>
+${items}
+  </channel>
+</rss>
+`;
 };
 
 hexo.extend.helper.register('site_title', function (lang) {
@@ -321,6 +370,19 @@ hexo.extend.generator.register('multilingual-pages', function () {
   return pages;
 });
 
+hexo.extend.generator.register('multilingual-rss', function () {
+  const config = this.config;
+  const allPosts = this.locals.get('posts').toArray();
+
+  return languages.map(language => ({
+    path: `${language}/rss.xml`,
+    data: rssFeed(config, language, sortPosts(
+      allPosts.filter(post => post.lang === language),
+      '-date',
+    )),
+  }));
+});
+
 // Replace the standard generators so they cannot emit unfiltered duplicate routes.
 hexo.extend.generator.register('archive', () => []);
 hexo.extend.generator.register('category', () => []);
@@ -330,4 +392,40 @@ hexo.extend.filter.register('before_generate', () => {
   hexo.extend.generator.register('archive', () => []);
   hexo.extend.generator.register('category', () => []);
   hexo.extend.generator.register('tag', () => []);
+});
+
+// RSS feed requires `description` on every post (used verbatim as the item
+// description); missing values would otherwise silently fall back to an
+// empty <description> tag or leak raw HTML content into the feed.
+//
+// `description` must stay plain text: it is XML-escaped, not wrapped in
+// CDATA, so any HTML tags would show up as literal escaped text (e.g.
+// `&lt;b&gt;`) in feed readers instead of being rendered. This regex is a
+// heuristic, not a full HTML parser — it flags anything that looks like an
+// opening/closing tag (`<name ...>` / `</name>`) and may produce false
+// positives for things like generic type notation (`<T>`) or comparisons
+// (`A<B`). Adjust the wording if that becomes a real problem.
+const HTML_TAG_PATTERN = /<\/?[a-z][a-z0-9-]*(\s[^<>]*)?>/i;
+
+hexo.extend.filter.register('before_generate', () => {
+  const posts = hexo.locals.get('posts').toArray();
+  const missing = posts
+    .filter(post => post.lang && !post.description)
+    .map(post => post.source);
+
+  if (missing.length) {
+    throw new Error(
+      `RSS の description が未設定の記事があります。front matter に description を追加してください:\n${missing.map(path => `  - ${path}`).join('\n')}`,
+    );
+  }
+
+  const htmlLike = posts
+    .filter(post => post.lang && post.description && HTML_TAG_PATTERN.test(post.description))
+    .map(post => post.source);
+
+  if (htmlLike.length) {
+    throw new Error(
+      `description に HTML タグらしき記述を検出しました。description はプレーンテキストで記述してください (誤検知の場合は表現を調整してください):\n${htmlLike.map(path => `  - ${path}`).join('\n')}`,
+    );
+  }
 });
