@@ -342,9 +342,13 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] 自動生成ページで ja/en 記事が重複表示されない
 - [x] Recent posts ウィジェットを表示中の言語に対応させた
 - [x] Recent posts ウィジェットで翻訳ペアが重複表示されない
-- [ ] 言語別 RSS を生成し、リンクを確認した
+- [x] 言語別 RSS (`/ja/rss.xml`、`/en/rss.xml`) を生成し、ヘッダー アイコンと `<head>` の feed link を確認した
+- [x] RSS item の description 必須チェックを追加した (本文全体・抜粋へのフォールバックを廃止)
+- [ ] RSS item 数の上限を検討し、必要であれば実装した
+- [ ] RSS フィードを W3C Feed Validator 等で検証した
 - [x] 404 ページと、記事が 0 件の言語別トップ・分類ページの表示方針を確定した
 - [ ] 移行前の Front Matter、リンク、画像検証を準備した
+- [ ] 記事・固定ページの Front Matter 全体を検証するスクリプトを整備した (`title`/`date`/`updated`/`lang`/`slug`/`categories`/`tags`/`description` の必須項目、固定ページでの記事専用項目の禁止、`lang`/`slug`/日時形式の妥当性、未定義キーの検出、翻訳ペア以外での `slug` 重複検出)
 - [ ] Phase 5 の本格移行前に、少なくとも 1 件の日本語 / 英語の翻訳ペアを代表例として移行し、Markdown、コード、表、画像、内部リンク、外部リンクを確認した
 - [ ] アクセシビリティとレスポンシブ表示を確認した
 - [x] favicon のデザインを確定し、`source/favicon.png` / `source/favicon.svg` を反映した
