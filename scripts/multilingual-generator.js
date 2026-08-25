@@ -51,12 +51,13 @@ const rssFeed = (config, language, posts) => {
   }).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(resolveSiteTitle(config, language))}</title>
     <link>${escapeXml(absoluteUrl(config, `${language}/`))}</link>
     <description>${escapeXml(description)}</description>
     <language>${language}</language>
+    <atom:link href="${escapeXml(absoluteUrl(config, `${language}/rss.xml`))}" rel="self" type="application/rss+xml"/>
 ${items}
   </channel>
 </rss>

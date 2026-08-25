@@ -68,6 +68,10 @@ RSS 2.0 は仕様上、公開日時 (`pubDate`) だけを持ち、更新日時�
 
 RSS の `description` は XML エスケープしたプレーンテキストとして出力し、CDATA によるリッチな HTML 埋め込みは行いません。そのため `description` には常にプレーンテキストのみを記述する運用とし、HTML タグを書かないルールとします。この運用ルールを補助するため、`description` に HTML タグらしき記述 (`<tag ...>` や `</tag>` の形) が含まれていた場合はビルド エラーにする軽量チェックを `scripts/multilingual-generator.js` の `before_generate` フィルターに追加しました。このチェックは正規表現による近似判定であり、完全な HTML 判定ではありません。ジェネリクス表記 (`<T>`) や不等号を使った表現などで誤検知する可能性があるため、誤検知時は表現を調整して回避します。
 
+各 `channel` には `<atom:link rel="self">` を追加し、feed 自身の絶対 URL (`config.url` と `root` を反映) を示します。
+
+`/ja/rss.xml` と `/en/rss.xml` は、W3C Feed Validator (https://validator.w3.org/feed/、Direct Input モードでのローカル生成物の検証) で "Valid RSS feed" と判定されています。Direct Input モードでは feed を取得した実際の URL が存在しないため、`Self reference doesn't match document location` という警告が出ますが、これは検証方法に起因するものであり、実際に公開後の URL から取得して検証すれば発生しません。公開後、あらためて URL 指定モードでの再検証を推奨します。
+
 RSS の description チェックは暫定対応であり、今後は次の項目を含む Front Matter 全体の検証スクリプトを別途整備します。
 
 - 記事: `title`、`date`、`updated`、`lang`、`slug`、`categories`、`tags`、`description` の必須項目チェック
@@ -351,7 +355,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] RSS item 数の上限を検討し、実装した (`feed.limit: 20`、hexo-generator-feed の既定値と一致)
 - [x] RSS の `pubDate` の扱い (公開日時のみ、更新日時は反映しない) を確認した
 - [x] RSS の `description` はプレーンテキスト限定とし、HTML タグらしき記述を検出するチェックを追加した
-- [ ] RSS フィードを W3C Feed Validator 等で検証した
+- [x] RSS フィードを W3C Feed Validator 等で検証した (Direct Input モードで ja/en とも Valid RSS feed、公開後は URL 指定モードでの再検証を推奨)
 - [x] 404 ページと、記事が 0 件の言語別トップ・分類ページの表示方針を確定した
 - [ ] 移行前の Front Matter、リンク、画像検証を準備した
 - [ ] 記事・固定ページの Front Matter 全体を検証するスクリプトを整備した (`title`/`date`/`updated`/`lang`/`slug`/`categories`/`tags`/`description` の必須項目、固定ページでの記事専用項目の禁止、`lang`/`slug`/日時形式の妥当性、未定義キーの検出、翻訳ペア以外での `slug` 重複検出)
