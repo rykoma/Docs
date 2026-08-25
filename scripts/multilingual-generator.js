@@ -35,7 +35,11 @@ const rssDate = date => new Date(date).toUTCString();
 
 const rssFeed = (config, language, posts) => {
   const description = (config.rss_descriptions || {})[language] || '';
-  const items = posts.map(post => {
+  // Match hexo-generator-feed's default `limit: 20` (0 = unlimited) so the
+  // feed doesn't grow without bound as more posts are published.
+  const limit = (config.feed || {}).limit ?? 20;
+  const limitedPosts = limit > 0 ? posts.slice(0, limit) : posts;
+  const items = limitedPosts.map(post => {
     const postUrl = absoluteUrl(config, post.path);
     return `    <item>
       <title>${escapeXml(post.title)}</title>
