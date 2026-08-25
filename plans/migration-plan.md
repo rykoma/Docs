@@ -62,6 +62,8 @@ WordPress では日本語のみで運用しており、ブログタイトルは�
 
 言語指定のない記事または固定ページ URL にアクセスした場合も、ブラウザーの言語設定に応じて対応する言語 URL へリダイレクトします。言語選択ページと実際のコンテンツ ページは分けて用意します。
 
+RSS は言語ごとに `/ja/rss.xml` と `/en/rss.xml` を生成し、各 feed の item は同じ言語の記事だけを含めます。feed 内の URL は `config.url` と `root` を反映した絶対 URL とし、独自ドメインと GitHub Pages の両方で確認します。
+
 旧 WordPress URL から新 URL へのリダイレクトには `hexo-generator-alias` を使用します。移行対象の Front Matter には、必要に応じて次のような alias を設定します。
 
 ```yaml

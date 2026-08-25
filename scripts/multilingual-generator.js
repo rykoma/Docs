@@ -10,9 +10,53 @@ const escapeHtml = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
+const escapeXml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
 const resolveSiteTitle = (config, lang) => {
   const titles = config.titles || {};
   return (lang && titles[lang]) || config.title;
+};
+
+const absoluteUrl = (config, path) => {
+  let baseUrl = String(config.url || '').replace(/\/+$/, '');
+  const root = String(config.root || '/').replace(/^\/?/, '/').replace(/\/+$/, '');
+  if (root && baseUrl.endsWith(root)) baseUrl = baseUrl.slice(0, -root.length);
+  const relativePath = String(path).replace(/^\/+/, '');
+  return `${baseUrl}${root}/${relativePath}`;
+};
+
+const rssDate = date => new Date(date).toUTCString();
+
+const rssFeed = (config, language, posts) => {
+  const description = (config.rss_descriptions || {})[language] || '';
+  const items = posts.map(post => {
+    const postUrl = absoluteUrl(config, post.path);
+    return `    <item>
+      <title>${escapeXml(post.title)}</title>
+      <link>${escapeXml(postUrl)}</link>
+      <guid isPermaLink="true">${escapeXml(postUrl)}</guid>
+      <pubDate>${escapeXml(rssDate(post.date))}</pubDate>
+      <description>${escapeXml(post.description || post.excerpt || post.content)}</description>
+    </item>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>${escapeXml(resolveSiteTitle(config, language))}</title>
+    <link>${escapeXml(absoluteUrl(config, `${language}/`))}</link>
+    <description>${escapeXml(description)}</description>
+    <language>${language}</language>
+${items}
+  </channel>
+</rss>
+`;
 };
 
 hexo.extend.helper.register('site_title', function (lang) {
@@ -319,6 +363,19 @@ hexo.extend.generator.register('multilingual-pages', function () {
   }
 
   return pages;
+});
+
+hexo.extend.generator.register('multilingual-rss', function () {
+  const config = this.config;
+  const allPosts = this.locals.get('posts').toArray();
+
+  return languages.map(language => ({
+    path: `${language}/rss.xml`,
+    data: rssFeed(config, language, sortPosts(
+      allPosts.filter(post => post.lang === language),
+      '-date',
+    )),
+  }));
 });
 
 // Replace the standard generators so they cannot emit unfiltered duplicate routes.
