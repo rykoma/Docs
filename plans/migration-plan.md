@@ -344,7 +344,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] Recent posts ウィジェットで翻訳ペアが重複表示されない
 - [x] 言語別 RSS (`/ja/rss.xml`、`/en/rss.xml`) を生成し、ヘッダー アイコンと `<head>` の feed link を確認した
 - [x] RSS item の description 必須チェックを追加した (本文全体・抜粋へのフォールバックを廃止)
-- [ ] RSS item 数の上限を検討し、必要であれば実装した
+- [x] RSS item 数の上限を検討し、実装した (`feed.limit: 20`、hexo-generator-feed の既定値と一致)
 - [ ] RSS フィードを W3C Feed Validator 等で検証した
 - [x] 404 ページと、記事が 0 件の言語別トップ・分類ページの表示方針を確定した
 - [ ] 移行前の Front Matter、リンク、画像検証を準備した
