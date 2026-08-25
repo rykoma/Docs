@@ -396,6 +396,16 @@ hexo.extend.filter.register('before_generate', () => {
 // RSS feed requires `description` on every post (used verbatim as the item
 // description); missing values would otherwise silently fall back to an
 // empty <description> tag or leak raw HTML content into the feed.
+//
+// `description` must stay plain text: it is XML-escaped, not wrapped in
+// CDATA, so any HTML tags would show up as literal escaped text (e.g.
+// `&lt;b&gt;`) in feed readers instead of being rendered. This regex is a
+// heuristic, not a full HTML parser — it flags anything that looks like an
+// opening/closing tag (`<name ...>` / `</name>`) and may produce false
+// positives for things like generic type notation (`<T>`) or comparisons
+// (`A<B`). Adjust the wording if that becomes a real problem.
+const HTML_TAG_PATTERN = /<\/?[a-z][a-z0-9-]*(\s[^<>]*)?>/i;
+
 hexo.extend.filter.register('before_generate', () => {
   const posts = hexo.locals.get('posts').toArray();
   const missing = posts
@@ -405,6 +415,16 @@ hexo.extend.filter.register('before_generate', () => {
   if (missing.length) {
     throw new Error(
       `RSS の description が未設定の記事があります。front matter に description を追加してください:\n${missing.map(path => `  - ${path}`).join('\n')}`,
+    );
+  }
+
+  const htmlLike = posts
+    .filter(post => post.lang && post.description && HTML_TAG_PATTERN.test(post.description))
+    .map(post => post.source);
+
+  if (htmlLike.length) {
+    throw new Error(
+      `description に HTML タグらしき記述を検出しました。description はプレーンテキストで記述してください (誤検知の場合は表現を調整してください):\n${htmlLike.map(path => `  - ${path}`).join('\n')}`,
     );
   }
 });

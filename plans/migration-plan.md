@@ -66,6 +66,8 @@ RSS は言語ごとに `/ja/rss.xml` と `/en/rss.xml` を生成し、各 feed �
 
 RSS 2.0 は仕様上、公開日時 (`pubDate`) だけを持ち、更新日時を表す標準要素を持ちません (更新日時と公開日時を明確に分けて扱えるのは Atom 形式です)。本サイトは RSS のみを提供する方針のため、`pubDate` には記事の `date` (公開日) を使用し、`updated` (更新日) を feed には反映しません。記事を更新しても feed 上で新着として再通知されることはなく、feed は常に公開順の一覧になります。この挙動は意図した仕様であり、追加の実装は不要と判断しました。
 
+RSS の `description` は XML エスケープしたプレーンテキストとして出力し、CDATA によるリッチな HTML 埋め込みは行いません。そのため `description` には常にプレーンテキストのみを記述する運用とし、HTML タグを書かないルールとします。この運用ルールを補助するため、`description` に HTML タグらしき記述 (`<tag ...>` や `</tag>` の形) が含まれていた場合はビルド エラーにする軽量チェックを `scripts/multilingual-generator.js` の `before_generate` フィルターに追加しました。このチェックは正規表現による近似判定であり、完全な HTML 判定ではありません。ジェネリクス表記 (`<T>`) や不等号を使った表現などで誤検知する可能性があるため、誤検知時は表現を調整して回避します。
+
 RSS の description チェックは暫定対応であり、今後は次の項目を含む Front Matter 全体の検証スクリプトを別途整備します。
 
 - 記事: `title`、`date`、`updated`、`lang`、`slug`、`categories`、`tags`、`description` の必須項目チェック
@@ -348,6 +350,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [x] RSS item の description 必須チェックを追加した (本文全体・抜粋へのフォールバックを廃止)
 - [x] RSS item 数の上限を検討し、実装した (`feed.limit: 20`、hexo-generator-feed の既定値と一致)
 - [x] RSS の `pubDate` の扱い (公開日時のみ、更新日時は反映しない) を確認した
+- [x] RSS の `description` はプレーンテキスト限定とし、HTML タグらしき記述を検出するチェックを追加した
 - [ ] RSS フィードを W3C Feed Validator 等で検証した
 - [x] 404 ページと、記事が 0 件の言語別トップ・分類ページの表示方針を確定した
 - [ ] 移行前の Front Matter、リンク、画像検証を準備した
