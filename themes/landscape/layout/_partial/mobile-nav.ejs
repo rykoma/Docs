@@ -5,6 +5,6 @@
       const mobileLanguage = page.language_switcher ? page.language : (mobilePathParts[0] || page.lang || page.language);
       const mobileHome = url_for(`${mobileLanguage === 'en' ? 'en' : 'ja'}/`);
     %>
-    <a href="<%- i === 'Home' ? mobileHome : url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
+    <a href="<%- i === 'Home' ? mobileHome : i === 'About' ? url_for(`${mobileLanguage === 'en' ? 'en' : 'ja'}/about/`) : url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
   <% } %>
 </nav>

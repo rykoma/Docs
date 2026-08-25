@@ -2,7 +2,7 @@
   <div class="article-category">
     <% const language = page.lang || page.language || 'ja'; %>
     <% post.categories.each(function(category){ %>
-      <a class="article-category-link" href="<%- url_for(language + '/' + config.category_dir + '/' + encodeURIComponent(category.name) + '/') %>"><%= category.name %></a>
+      <a class="article-category-link" href="<%- language_taxonomy_url(language, 'category', category.name) %>"><%= category.name %></a>
     <% }) %>
   </div>
 <% } %>

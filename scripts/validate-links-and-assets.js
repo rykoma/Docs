@@ -43,6 +43,13 @@ function validate(baseRoot = root) {
         const isMarkdownImage = match[1] === '!';
         const reference = (match[2] || match[1]).replace(/[?#].*$/, '');
         if (!reference || externalPattern.test(reference)) continue;
+        const assetPathMatch = reference.match(/^\{%\s*asset_path\s+([^%]+?)\s*%\}$/);
+        if (assetPathMatch) {
+          const assetDirectory = path.join(path.dirname(filePath), path.basename(filePath, path.extname(filePath)));
+          const target = path.resolve(assetDirectory, assetPathMatch[1].trim());
+          if (!isExistingPath(target)) errors.push(`${path.relative(baseRoot, filePath)}: 参照先がありません "${assetPathMatch[1].trim()}"`);
+          continue;
+        }
         if (isMarkdownImage || match[0].startsWith('<img')) {
           const target = path.resolve(path.dirname(filePath), reference);
           if (!isExistingPath(target)) errors.push(`${path.relative(baseRoot, filePath)}: 参照先がありません "${reference}"`);
