@@ -9,6 +9,13 @@ title: Developer Messaging 研究所
 titles:
   ja: Developer Messaging 研究所
   en: Developer Messaging Lab
+rss_descriptions:
+  ja: Developer Messaging 研究所の最新記事
+  en: The latest posts from Developer Messaging Lab
+# Language-specific RSS feeds (/ja/rss.xml, /en/rss.xml) cap item count at
+# `feed.limit`, matching hexo-generator-feed's default of 20 (0 = unlimited).
+feed:
+  limit: 20
 subtitle: ''
 description: ''
 keywords:

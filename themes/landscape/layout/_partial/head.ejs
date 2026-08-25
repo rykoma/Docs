@@ -21,10 +21,8 @@
   <title><% if (title){ %><%= title %> | <% } %><%= site_title(page.lang || page.language) %></title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <%- open_graph({title: title || site_title(page.lang || page.language), site_name: site_title(page.lang || page.language), twitter_id: theme.twitter, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
-  <% if (config.feed) { %>
-    <%- feed_tag(Object.assign({}, config.feed, {title: site_title(page.lang || page.language)})) %>
-  <% } else if (theme.rss) { %>
-    <%- feed_tag(theme.rss, {title: site_title(page.lang || page.language)}) %>
+  <% if (theme.rss) { %>
+    <%- feed_tag(`${(page.lang || page.language) === 'en' ? 'en' : 'ja'}/rss.xml`, {title: site_title(page.lang || page.language)}) %>
   <% } %>
   <% if (theme.favicon){ %>
     <%- favicon_tag(theme.favicon) %>
