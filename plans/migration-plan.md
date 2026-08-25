@@ -337,7 +337,8 @@ Phase 6 で判断する検討事項は次のとおりです。
 - [ ] 移行前の Front Matter、リンク、画像検証を準備した
 - [ ] Phase 5 の本格移行前に、少なくとも 1 件の日本語 / 英語の翻訳ペアを代表例として移行し、Markdown、コード、表、画像、内部リンク、外部リンクを確認した
 - [ ] アクセシビリティとレスポンシブ表示を確認した
-- [ ] favicon、robots、サイトマップ、canonical、hreflang の方針を整理した
+- [x] favicon のデザインを確定し、`source/favicon.png` / `source/favicon.svg` を反映した
+- [ ] robots、サイトマップ、canonical、hreflang の方針を整理した
 
 ### Phase 5: コンテンツ移行
 
