@@ -169,6 +169,7 @@
 
     startMobileNavAnim();
     $container.toggleClass('mobile-nav-on');
+    $(this).attr('aria-expanded', String($container.hasClass('mobile-nav-on')));
     stopMobileNavAnim();
   });
 
@@ -176,5 +177,6 @@
     if (isMobileNavAnim || !$container.hasClass('mobile-nav-on')) return;
 
     $container.removeClass('mobile-nav-on');
+    $('#main-nav-toggle').attr('aria-expanded', 'false');
   });
 })(jQuery);
