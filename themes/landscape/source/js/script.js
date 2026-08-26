@@ -1,6 +1,8 @@
 (function($){
   // Search
   var $searchWrap = $('#search-form-wrap'),
+    $searchInput = $('.search-form-input'),
+    $searchSubmit = $('.search-form-submit'),
     isSearchAnim = false,
     searchAnimDuration = 200;
 
@@ -15,34 +17,46 @@
     }, searchAnimDuration);
   };
 
+  var setSearchFocusable = function(isFocusable){
+    var tabIndex = isFocusable ? '0' : '-1';
+    $searchInput.attr('tabindex', tabIndex);
+    $searchSubmit.attr('tabindex', tabIndex);
+  };
+
   $('.nav-search-btn').on('click', function(){
     if (isSearchAnim) return;
 
     startSearchAnim();
     $searchWrap.addClass('on');
+    setSearchFocusable(true);
     stopSearchAnim(function(){
-      $('.search-form-input').focus();
+      $searchInput.focus();
     });
 
   });
 
-  $('.search-form-input').on('blur', function(e){
+  $searchInput.on('blur', function(e){
     if (e.relatedTarget && $(e.relatedTarget).closest('.nav-search-btn').length) return;
     startSearchAnim();
     $searchWrap.removeClass('on');
-    stopSearchAnim();
+    stopSearchAnim(function(){
+      setSearchFocusable(false);
+    });
   });
 
-  $('.search-form-input').on('keydown', function(e){
+  $searchInput.on('keydown', function(e){
     if (e.key !== 'Escape') return;
 
     e.preventDefault();
     startSearchAnim();
     $searchWrap.removeClass('on');
     stopSearchAnim(function(){
+      setSearchFocusable(false);
       $('.nav-search-btn').focus();
     });
   });
+
+  setSearchFocusable(false);
 
   // Language menu
   var $languageSwitcher = $('.language-switcher'),
@@ -52,13 +66,26 @@
   var closeLanguageMenu = function(){
     $languageButton.attr('aria-expanded', 'false');
     $languageMenu.prop('hidden', true);
+    $languageMenu.find('[role="menuitem"]').attr('tabindex', '-1');
+  };
+
+  var enableLanguageMenuItems = function(){
+    $languageMenu.find('[role="menuitem"]').each(function(){
+      var $item = $(this);
+      $item.attr('tabindex', $item.attr('aria-disabled') === 'true' ? '-1' : '0');
+    });
   };
 
   $languageButton.on('click', function(){
     var isOpen = $(this).attr('aria-expanded') === 'true';
     $(this).attr('aria-expanded', String(!isOpen));
     $languageMenu.prop('hidden', isOpen);
-    if (!isOpen) $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])').first().focus();
+    if (!isOpen) {
+      enableLanguageMenuItems();
+      $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])').first().focus();
+    } else {
+      closeLanguageMenu();
+    }
   });
 
   $languageButton.on('keydown', function(e){
@@ -84,6 +111,8 @@
   $(document).on('click', function(e){
     if ($languageSwitcher.length && !$(e.target).closest('.language-switcher').length) closeLanguageMenu();
   });
+
+  closeLanguageMenu();
 
   // Share
   $('body').on('click', function(){
@@ -160,6 +189,9 @@
   if ($.fancybox){
     $('.fancybox').fancybox();
   }
+
+  // Remove heading anchors from tab order
+  $('.article-entry .headerlink').attr('tabindex', '-1');
 
   // Mobile nav
   var $container = $('#container'),

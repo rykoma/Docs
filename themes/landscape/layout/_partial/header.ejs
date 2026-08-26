@@ -53,7 +53,7 @@
             <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="<%= theme.language_switcher.label %>">
             <% for (const language of ['ja', 'en']) { %>
               <li role="none">
-                <a role="menuitem" href="<%- languageUrls[language] %>"<%- currentLanguage === language ? ' aria-current="page"' : '' %><%- currentContent && !localizedContent.some(content => content.lang === language && content.slug.split('/').pop() === currentSlug) ? ' aria-disabled="true" tabindex="-1"' : '' %>><%= theme.language_switcher[language] %><%= currentLanguage === language ? ` (${currentLanguage === 'ja' ? '現在' : 'current'})` : '' %></a>
+                <a role="menuitem" href="<%- languageUrls[language] %>" tabindex="-1"<%- currentLanguage === language ? ' aria-current="page"' : '' %><%- currentContent && !localizedContent.some(content => content.lang === language && content.slug.split('/').pop() === currentSlug) ? ' aria-disabled="true"' : '' %>><%= theme.language_switcher[language] %><%= currentLanguage === language ? ` (${currentLanguage === 'ja' ? '現在' : 'current'})` : '' %></a>
               </li>
             <% } %>
             </ul>
