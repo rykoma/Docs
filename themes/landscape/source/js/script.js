@@ -26,10 +26,22 @@
 
   });
 
-  $('.search-form-input').on('blur', function(){
+  $('.search-form-input').on('blur', function(e){
+    if (e.relatedTarget && $(e.relatedTarget).closest('.nav-search-btn').length) return;
     startSearchAnim();
     $searchWrap.removeClass('on');
     stopSearchAnim();
+  });
+
+  $('.search-form-input').on('keydown', function(e){
+    if (e.key !== 'Escape') return;
+
+    e.preventDefault();
+    startSearchAnim();
+    $searchWrap.removeClass('on');
+    stopSearchAnim(function(){
+      $('.nav-search-btn').focus();
+    });
   });
 
   // Language menu
