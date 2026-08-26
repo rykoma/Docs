@@ -21,9 +21,15 @@
   &:before
     content: "\2022"
 
-.article-category-link
+.article-category-label
   @extend $block-caption
-  margin: 0 12px 1em
+  margin: 0 0 1em 12px
+
+.article-category-text
+  @extend $block-caption
+
+.article-category-separator
+  @extend $block-caption
 
 .article-header
   padding: article-padding article-padding 0
@@ -37,6 +43,10 @@
   transition: color 0.2s
   a&:hover
     color: color-link
+  a&:focus-visible
+    outline: 2px solid color-link
+    outline-offset: 4px
+    text-decoration: underline
 
 .article-entry
   @extend $base-style
@@ -56,6 +66,23 @@
     text-decoration: none
     &:hover
       text-decoration: underline
+    &:focus-visible
+      outline: 2px solid color-link
+      outline-offset: 2px
+      text-decoration: underline
+      img
+        outline: 3px solid color-link
+        outline-offset: 3px
+        box-shadow: 0 0 0 4px rgba(57, 113, 141, 0.25)
+        border-radius: 2px
+    &.fancybox
+      display: inline-block
+      line-height: 0
+    &.fancybox:focus-visible
+      outline: 3px solid color-link
+      outline-offset: 3px
+      box-shadow: 0 0 0 4px rgba(57, 113, 141, 0.25)
+      border-radius: 2px
   ul, ol, dl
     margin-top: line-height
     margin-bottom: line-height
@@ -155,6 +182,10 @@
 .article-tag-list-link
   &:before
     content: "#"
+  &:focus-visible
+    outline: 2px solid color-link
+    outline-offset: 2px
+    text-decoration: underline
 
 .article-comment-link
   float: right
@@ -189,6 +220,11 @@
   text-align: center
   display: block
   &:hover
+    color: color-default
+  &:focus-visible
+    outline: 3px solid color-link
+    outline-offset: 4px
+    border-radius: 3px
     color: color-default
   @media mq-normal
     width: 50%
