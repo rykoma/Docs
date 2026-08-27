@@ -193,6 +193,215 @@
   // Remove heading anchors from tab order
   $('.article-entry .headerlink').attr('tabindex', '-1');
 
+  // Code block actions
+  var codeBlockLanguageLabels = {
+      'bash': 'Bash',
+      'csharp': 'C#',
+      'css': 'CSS',
+      'html': 'HTML',
+      'http-request': 'HTTP Request',
+      'http-response': 'HTTP Response',
+      'java': 'Java',
+      'javascript': 'JavaScript',
+      'json': 'JSON',
+      'markdown': 'Markdown',
+      'powershell': 'PowerShell',
+      'python': 'Python',
+      'shell': 'Shell',
+      'sql': 'SQL',
+      'typescript': 'TypeScript',
+      'xml': 'XML',
+      'yaml': 'YAML'
+    },
+    isJapanesePage = window.location.pathname.indexOf('/ja/') === 0,
+    codeBlockLabels = isJapanesePage ? {
+      copy: 'コピー',
+      copied: 'コピーしました',
+      copyFailed: 'コピーに失敗しました',
+      selectAll: 'すべて選択',
+      toolbar: 'コード ブロックの操作',
+      language: '言語'
+    } : {
+      copy: 'Copy',
+      copied: 'Copied!',
+      copyFailed: 'Copy failed',
+      selectAll: 'Select all',
+      toolbar: 'Code block actions',
+      language: 'Language'
+    };
+
+  var getCodeLanguage = function($block, $code){
+    var classes = (($block.attr('class') || '') + ' ' + ($code.attr('class') || '')).split(/\s+/),
+      language;
+
+    $.each(classes, function(i, className){
+      var match = className.match(/^(?:lang|language)-(.+)$/);
+      if (match) language = match[1].toLowerCase();
+      if (codeBlockLanguageLabels[className]) language = className;
+    });
+
+    if (!language) return codeBlockLabels.language;
+    if (language === 'js') language = 'javascript';
+    if (language === 'ps') language = 'powershell';
+    if (language === 'sh') language = 'shell';
+    if (codeBlockLanguageLabels[language]) return codeBlockLanguageLabels[language];
+
+    return language.split(/[-_]/).map(function(part){
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    }).join(' ');
+  };
+
+  var getCodeText = function(codeTarget){
+    var text = typeof codeTarget.innerText === 'string'
+      ? codeTarget.innerText
+      : codeTarget.textContent;
+    return text.replace(/\r\n?/g, '\n').replace(/\n$/, '');
+  };
+
+  var copyCodeWithFallback = function(text){
+    return new Promise(function(resolve, reject){
+      var $textarea = $('<textarea>')
+        .val(text)
+        .attr({
+          'aria-hidden': 'true',
+          tabindex: '-1'
+        })
+        .css({
+          position: 'fixed',
+          left: '-9999px',
+          top: '0'
+        })
+        .appendTo('body');
+      $textarea[0].select();
+      var copied;
+      try {
+        copied = document.execCommand('copy');
+      } finally {
+        $textarea.remove();
+      }
+      if (copied) {
+        resolve();
+      } else {
+        reject(new Error('The browser could not copy the code block.'));
+      }
+    });
+  };
+
+  var copyCode = function(text){
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(function(){
+        return copyCodeWithFallback(text);
+      });
+    }
+
+    return copyCodeWithFallback(text);
+  };
+
+  var selectCode = function(codeTarget){
+    var selection = window.getSelection(),
+      range = document.createRange();
+    range.selectNodeContents(codeTarget);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  var enableCodeScrolling = function($codeTarget){
+    if ($codeTarget.parent().hasClass('code-block-scroll')) return;
+    $codeTarget.wrap($('<div>', {class: 'code-block-scroll'}));
+    $codeTarget.parent()
+      .on('focusin', function(){
+        $(this).addClass('is-focused');
+      })
+      .on('focusout', function(){
+        $(this).removeClass('is-focused');
+      });
+  };
+
+  var createCodeBlockHeader = function($block, $code, codeTarget){
+    if ($block.is('pre') && $block.prev('.code-block-header').length) return;
+    if (!$block.is('pre') && $block.children('.code-block-header').length) return;
+
+    var $header = $('<div>', {
+        class: 'code-block-header',
+        role: 'toolbar',
+        'aria-label': codeBlockLabels.toolbar
+      }),
+      $language = $('<span>', {
+        class: 'code-block-language',
+        text: getCodeLanguage($block, $code)
+      }),
+      $actions = $('<span>', {class: 'code-block-actions'}),
+      $copyButton = $('<button>', {
+        type: 'button',
+        class: 'code-block-action',
+        'aria-label': codeBlockLabels.copy
+      }),
+      $selectButton = $('<button>', {
+        type: 'button',
+        class: 'code-block-action',
+        'aria-label': codeBlockLabels.selectAll
+      });
+
+    $copyButton.append($('<span>', {
+      class: 'fa fa-copy',
+      'aria-hidden': 'true'
+    })).append($('<span>', {
+      class: 'code-block-action-label',
+      text: codeBlockLabels.copy
+    }));
+    $selectButton.append($('<span>', {
+      class: 'fa fa-i-cursor',
+      'aria-hidden': 'true'
+    })).append($('<span>', {
+      class: 'code-block-action-label',
+      text: codeBlockLabels.selectAll
+    }));
+
+    $copyButton.on('click', function(){
+      var $label = $(this).find('.code-block-action-label');
+      copyCode(getCodeText(codeTarget)).then(function(){
+        $label.text(codeBlockLabels.copied);
+        $copyButton.attr('aria-label', codeBlockLabels.copied);
+        setTimeout(function(){
+          $label.text(codeBlockLabels.copy);
+          $copyButton.attr('aria-label', codeBlockLabels.copy);
+        }, 2000);
+      }, function(){
+        $label.text(codeBlockLabels.copyFailed);
+        $copyButton.attr('aria-label', codeBlockLabels.copyFailed);
+      });
+    });
+    $selectButton.on('click', function(){
+      selectCode(codeTarget);
+    });
+
+    $actions.append($copyButton, $selectButton);
+    $header.append($language, $actions);
+    if ($block.is('pre')) {
+      $header.insertBefore($block);
+    } else {
+      $block.prepend($header);
+    }
+  };
+
+  $('.article-entry figure.highlight').each(function(){
+    var $figure = $(this),
+      $codeTarget = $figure.find('td.code > pre').first(),
+      $code = $codeTarget.find('code').first();
+    if ($codeTarget.length) {
+      enableCodeScrolling($codeTarget);
+      createCodeBlockHeader($figure, $code, $codeTarget[0]);
+    }
+  });
+
+  $('.article-entry pre > code').each(function(){
+    var $code = $(this),
+      $pre = $code.parent();
+    if (!$pre.closest('figure.highlight, .gist').length) {
+      createCodeBlockHeader($pre, $code, $pre[0]);
+    }
+  });
+
   // Mobile nav
   var $container = $('#container'),
     isMobileNavAnim = false,
