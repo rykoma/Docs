@@ -1,5 +1,12 @@
+// #mobile-nav is a PC-hidden (mobile-only) drawer. Without an explicit
+// display: none default, it stayed in normal flow outside of mq-mobile and
+// its links remained reachable by Tab even though nothing was visible.
+#mobile-nav
+  display: none
+
 @media mq-mobile
   #mobile-nav
+    display: block
     position: absolute
     top: 0
     left: 0
