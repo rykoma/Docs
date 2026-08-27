@@ -19,11 +19,9 @@ You can use Microsoft Graph to create a meeting as a draft. The request is simil
 | `isDraft` | `true` | Save the meeting as a draft |
 | `subject` | Meeting subject | Display the subject in the calendar |
 
-```http
+```http-request
 POST https://graph.microsoft.com/v1.0/me/events
-```
 
-```json
 {
     "subject": "Let's go for lunch",
     "body": {
@@ -60,6 +58,6 @@ This creates the meeting as a draft in the calendar. It does not create a draft 
 
 To send the draft meeting, change its `isDraft` property to `false` with a PATCH request. For example:
 
-```http
+```http-request
 PATCH https://graph.microsoft.com/v1.0/me/events/AAMkAGQ4MzIxNjhmLWYwMDAtNGI5Ni04MDNmLWM2MGRhYTUwYTc1YgBGAAAAAADq6mx0Pru-RrZDSJCvqSogBwCl3zuFppFfS45yc92LhnXOAAAAAAENAACl3zuFppFfS45yc92LhnXOAAeZQUnsAAA=
 ```

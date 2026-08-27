@@ -21,11 +21,9 @@ Microsoft Graph を使用して下書き状態の会議を作成できます。�
 | `isDraft` | `true` | 会議を下書きとして保存する |
 | `subject` | 会議の件名 | 予定表に表示する件名 |
 
-```http
+```http-request
 POST https://graph.microsoft.com/v1.0/me/events
-```
 
-```json
 {
     "subject": "Let's go for lunch",
     "body": {
@@ -62,6 +60,6 @@ POST https://graph.microsoft.com/v1.0/me/events
 
 下書き状態の会議を送信するには、作成した会議の `isDraft` プロパティを PATCH リクエストで `false` に変更します。例えば、次のようになります。
 
-```http
+```http-request
 PATCH https://graph.microsoft.com/v1.0/me/events/AAMkAGQ4MzIxNjhmLWYwMDAtNGI5Ni04MDNmLWM2MGRhYTUwYTc1YgBGAAAAAADq6mx0Pru-RrZDSJCvqSogBwCl3zuFppFfS45yc92LhnXOAAAAAAENAACl3zuFppFfS45yc92LhnXOAAeZQUnsAAA=
 ```
