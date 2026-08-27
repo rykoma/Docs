@@ -42,16 +42,58 @@ $line-numbers
       padding: 0
   .highlight
     @extend $code-block
+    overflow: hidden
+    padding-bottom: 0
+    .code-block-header
+      margin-top: -15px
+      margin-right: article-padding * -1
+      margin-bottom: 15px
+      margin-left: article-padding * -1
     pre
       border: none
       margin: 0
       padding: 0
     table
       margin: 0
-      width: auto
+      width: 100%
+      table-layout: fixed
     td
       border: none
       padding: 0
+      vertical-align: top
+    .gutter
+      width: 50px
+      pre
+        position: relative
+        top: -2px
+    .code
+      min-width: 0
+    .code-block-scroll
+      max-width: none
+      width: s('calc(100% + %s)', article-padding)
+      padding-bottom: 8px
+      overflow-x: auto
+      overflow-y: hidden
+      -webkit-overflow-scrolling: touch
+      scrollbar-color: #777 highlight-current-line
+      scrollbar-width: thin
+      &:focus, &:focus-within, &.is-focused
+        outline: 2px solid color-link
+        outline-offset: -2px
+      &::-webkit-scrollbar
+        height: 12px
+      &::-webkit-scrollbar-track
+        background: highlight-current-line
+        border-top: 1px solid highlight-background
+      &::-webkit-scrollbar-thumb
+        background: #777
+        border: 3px solid highlight-current-line
+        border-radius: 6px
+      &::-webkit-scrollbar-thumb:hover
+        background: #999
+      pre
+        width: max-content
+        min-width: 100%
     figcaption
       clearfix()
       font-size: 0.85em
@@ -73,6 +115,59 @@ $line-numbers
       height: font-size * line-height
     .line.marked
       background: highlight-selection
+
+  .code-block-header
+    display: flex
+    align-items: center
+    justify-content: space-between
+    box-sizing: border-box
+    min-height: 42px
+    margin: 0 article-padding * -1
+    padding: 8px article-padding
+    background: lighten(highlight-background, 10%)
+    border-bottom: 1px solid color-border
+    color: highlight-foreground
+    font-family: font-sans
+    font-size: 0.85em
+    line-height: 1.4
+    .code-block-language
+      font-weight: bold
+      letter-spacing: 0.02em
+    .code-block-actions
+      display: flex
+      gap: 8px
+    .code-block-action
+      display: inline-flex
+      align-items: center
+      gap: 5px
+      min-height: 28px
+      padding: 3px 8px
+      border: 1px solid rgba(204, 204, 204, 0.45)
+      border-radius: 3px
+      background: transparent
+      color: highlight-foreground
+      cursor: pointer
+      font: inherit
+      transition: background 0.2s, color 0.2s
+      &:hover
+        background: color-link
+        border-color: color-link
+        color: #fff
+      &:focus-visible
+        outline: 2px solid color-link
+        outline-offset: 2px
+      .fa
+        font-size: 1em
+    @media mq-mobile
+      align-items: flex-start
+      flex-direction: column
+      gap: 8px
+      .code-block-actions
+        width: 100%
+      .code-block-action
+        flex: 1
+        justify-content: center
+
   .gist
     margin: 0 article-padding * -1
     border-style: solid
@@ -113,6 +208,30 @@ $line-numbers
             text-decoration: underline
 
 pre
+  .http-method-get
+    color: #66ccff
+  .http-method-post
+    color: highlight-green
+  .http-method-put
+    color: highlight-purple
+  .http-method-patch
+    color: highlight-orange
+  .http-method-delete
+    color: highlight-red
+  .http-status-2xx
+    color: highlight-green
+  .http-status-3xx
+    color: highlight-blue
+  .http-status-4xx
+    color: highlight-orange
+  .http-status-5xx
+    color: highlight-red
+  .http-header-value
+    color: highlight-aqua
+  .attr
+    color: highlight-orange
+  .punctuation
+    color: highlight-foreground
   .comment
   .title
     color: highlight-comment
