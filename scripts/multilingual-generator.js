@@ -485,6 +485,17 @@ const siteHostname = (config) => {
   return url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || url;
 };
 
+// Standalone pages bypass the theme's `head.ejs` partial, so the favicon
+// link (theme.favicon, e.g. `/favicon.png`) has to be added explicitly to
+// keep the browser tab icon consistent with the rest of the site.
+const faviconTag = (config, theme) => {
+  const faviconPath = theme && theme.favicon;
+  if (!faviconPath) return '';
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const relativePath = String(faviconPath).replace(/^\/+/, '');
+  return `  <link rel="shortcut icon" href="${escapeHtml(`${root}${relativePath}`)}">\n`;
+};
+
 const notFoundContent = {
   ja: {
     title: (host) => `ページが見つかりません | ${host}`,
@@ -507,7 +518,7 @@ const notFoundFontSans = '-apple-system, BlinkMacSystemFont, "Segoe UI", ' +
   '"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", ' +
   '"Helvetica Neue", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif';
 
-const notFoundPage = (config, language) => {
+const notFoundPage = (config, theme, language) => {
   const host = siteHostname(config);
   const {title, message, linkText} = notFoundContent[language];
   const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
@@ -521,7 +532,7 @@ const notFoundPage = (config, language) => {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>${escapeHtml(title(host))}</title>
-  <style>
+${faviconTag(config, theme)}  <style>
     * {
       box-sizing: border-box;
     }
@@ -605,7 +616,7 @@ const notFoundPage = (config, language) => {
 `;
 };
 
-const notFoundRedirect = (config) => {
+const notFoundRedirect = (config, theme) => {
   const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
   const jaUrl = `${root}ja/404.html`;
   const enUrl = `${root}en/404.html`;
@@ -620,7 +631,7 @@ const notFoundRedirect = (config) => {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Not Found</title>
-  <script>
+${faviconTag(config, theme)}  <script>
     (() => {
       const root = ${serializedRoot};
       const path = window.location.pathname;
@@ -653,11 +664,12 @@ const notFoundRedirect = (config) => {
 
 hexo.extend.generator.register('not-found-pages', function () {
   const config = this.config;
+  const theme = this.theme.config;
   return [
-    {path: '404.html', data: notFoundRedirect(config)},
+    {path: '404.html', data: notFoundRedirect(config, theme)},
     ...languages.map(language => ({
       path: `${language}/404.html`,
-      data: notFoundPage(config, language),
+      data: notFoundPage(config, theme, language),
     })),
   ];
 });
