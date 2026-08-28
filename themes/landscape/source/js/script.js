@@ -115,9 +115,23 @@
   closeLanguageMenu();
 
   // Share
+  var setShareMenuItemsFocusable = function($box, isFocusable){
+    $box.find('.article-share-links a').attr('tabindex', isFocusable ? '0' : '-1');
+  };
+
+  var closeShareMenu = function($box){
+    if (!$box || !$box.length) return;
+    $box.removeClass('on').prop('hidden', true);
+    setShareMenuItemsFocusable($box, false);
+    if ($box.data('shareButton')) $box.data('shareButton').attr('aria-expanded', 'false');
+  };
+
   $('body').on('click', function(){
-    $('.article-share-box.on').removeClass('on');
+    $('.article-share-box.on').each(function(){
+      closeShareMenu($(this));
+    });
   }).on('click', '.article-share-link', function(e){
+    e.preventDefault();
     e.stopPropagation();
 
     var $this = $(this),
@@ -131,18 +145,17 @@
       var box = $('#' + id);
 
       if (box.hasClass('on')){
-        box.removeClass('on');
+        closeShareMenu(box);
         return;
       }
     } else {
       var html = [
-        '<div id="' + id + '" class="article-share-box">',
-          '<input class="article-share-input" value="' + url + '">',
+        '<div id="' + id + '" class="article-share-box" hidden>',
           '<div class="article-share-links">',
-            '<a href="https://x.com/intent/post?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-x" target="_blank" title="X" aria-label="Share on X"><span class="article-share-x-icon" aria-hidden="true">𝕏</span></a>',
-            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook" aria-label="Share on Facebook"><span class="fa fa-facebook"></span></a>',
-            '<a href="https://pinterest.com/pin/create/button/?url=' + encodedUrl + '&description=' + encodeURIComponent(title) + '" class="article-share-pinterest" target="_blank" title="Pinterest" aria-label="Share on Pinterest"><span class="fa fa-pinterest"></span></a>',
-            '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn" aria-label="Share on LinkedIn"><span class="fa fa-linkedin"></span></a>',
+            '<a href="https://x.com/intent/post?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-x" target="_blank" title="X" aria-label="Share on X" tabindex="-1"><span class="article-share-x-icon" aria-hidden="true">𝕏</span></a>',
+            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook" aria-label="Share on Facebook" tabindex="-1"><span class="fa fa-facebook"></span></a>',
+            '<a href="https://pinterest.com/pin/create/button/?url=' + encodedUrl + '&description=' + encodeURIComponent(title) + '" class="article-share-pinterest" target="_blank" title="Pinterest" aria-label="Share on Pinterest" tabindex="-1"><span class="fa fa-pinterest"></span></a>',
+            '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn" aria-label="Share on LinkedIn" tabindex="-1"><span class="fa fa-linkedin"></span></a>',
           '</div>',
         '</div>'
       ].join('');
@@ -152,17 +165,43 @@
       $('body').append(box);
     }
 
-    $('.article-share-box.on').hide();
+    $('.article-share-box.on').not(box).each(function(){
+      closeShareMenu($(this));
+    });
 
     box.css({
       top: offset.top + 25,
       left: offset.left
-    }).addClass('on');
+    }).prop('hidden', false).addClass('on');
+    box.data('shareButton', $this);
+    $this.attr('aria-expanded', 'true').attr('aria-controls', id);
+    setShareMenuItemsFocusable(box, true);
+    box.find('.article-share-links a').first().focus();
   }).on('click', '.article-share-box', function(e){
     e.stopPropagation();
-  }).on('click', '.article-share-box-input', function(){
-    $(this).select();
-  }).on('click', '.article-share-box-link', function(e){
+  }).on('keydown', '.article-share-box', function(e){
+    var $box = $(this);
+    var $items = $box.find('.article-share-links a');
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (!e.shiftKey && e.target === $items.last()[0]) {
+        closeShareMenu($box);
+        $('#article-nav-newer, #article-nav-older').first().focus();
+      } else if (e.shiftKey && e.target === $items.first()[0]) {
+        closeShareMenu($box);
+        $box.data('shareButton').focus();
+      } else {
+        e.preventDefault();
+        $items.eq($items.index(e.target) + (e.shiftKey ? -1 : 1)).focus();
+      }
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeShareMenu($box);
+      $box.data('shareButton').focus();
+    }
+  }).on('click', '.article-share-links a', function(e){
     e.preventDefault();
     e.stopPropagation();
 
