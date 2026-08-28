@@ -60,7 +60,12 @@
         <button type="button" class="nav-icon nav-search-btn" title="<%= __('search') %>" aria-label="<%= __('search') %>"><span class="fa fa-search" aria-hidden="true"></span></button>
       </nav>
       <div id="search-form-wrap">
-        <%- search_form({button: '&#xF002;', text: __('search')}) %>
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="<%= config.url.replace(/^https?:\/\//, '') %>">
+          <label for="search-form-input" class="sr-only"><%= __('search') %></label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="<%= __('search') %>">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="<%= __('search') %>">&#xF002;</button>
+        </form>
       </div>
     </div>
     <div id="header-title" class="inner">

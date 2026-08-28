@@ -1,10 +1,22 @@
 (function($){
   // Search
   var $searchWrap = $('#search-form-wrap'),
+    $searchForm = $('.search-form'),
     $searchInput = $('.search-form-input'),
+    $searchQuery = $('.search-form-query'),
     $searchSubmit = $('.search-form-submit'),
     isSearchAnim = false,
     searchAnimDuration = 200;
+
+  // Restrict Bing search results to this site by prefixing the query
+  // with a site: operator. The visible input keeps showing only what the
+  // user typed; the site: operator is set on a hidden field that is the
+  // one actually submitted.
+  $searchForm.on('submit', function(){
+    var siteDomain = $searchForm.data('site-domain');
+    var query = $searchInput.val().trim();
+    $searchQuery.val(siteDomain ? 'site:' + siteDomain + (query ? ' ' + query : '') : query);
+  });
 
   var startSearchAnim = function(){
     isSearchAnim = true;
@@ -35,14 +47,17 @@
 
   });
 
-  $searchInput.on('blur', function(e){
-    if (e.relatedTarget && $(e.relatedTarget).closest('.nav-search-btn').length) return;
+  var handleSearchBlur = function(e){
+    if (e.relatedTarget && $(e.relatedTarget).closest('.search-form-input, .search-form-submit').length) return;
     startSearchAnim();
     $searchWrap.removeClass('on');
     stopSearchAnim(function(){
       setSearchFocusable(false);
     });
-  });
+  };
+
+  $searchInput.on('blur', handleSearchBlur);
+  $searchSubmit.on('blur', handleSearchBlur);
 
   $searchInput.on('keydown', function(e){
     if (e.key !== 'Escape') return;
