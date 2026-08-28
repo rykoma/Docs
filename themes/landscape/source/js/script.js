@@ -252,7 +252,7 @@
       'xml': 'XML',
       'yaml': 'YAML'
     },
-    isJapanesePage = window.location.pathname.indexOf('/ja/') === 0,
+    isJapanesePage = /(?:^|\/)ja\//.test(window.location.pathname),
     codeBlockLabels = isJapanesePage ? {
       copy: 'コピー',
       copied: 'コピーしました',
@@ -389,8 +389,9 @@
       text: codeBlockLabels.copy
     }));
     $selectButton.append($('<span>', {
-      class: 'fa fa-i-cursor',
-      'aria-hidden': 'true'
+      class: 'code-block-action-icon',
+      'aria-hidden': 'true',
+      text: 'I'
     })).append($('<span>', {
       class: 'code-block-action-label',
       text: codeBlockLabels.selectAll

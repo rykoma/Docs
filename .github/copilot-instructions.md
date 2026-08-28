@@ -83,6 +83,9 @@ Google Analytics and Google AdSense must remain available after migration. Consi
 - For a local preview, run `npm ci`, then `npm run build`, and start `npm run server -- --port 4001`. Open `/ja/` or `/en/` directly; `/` is intentionally a JavaScript language selector.
 - Port `4000` may be occupied by another worktree's Hexo server. Use port `4001` for this worktree unless the port is confirmed to be free.
 - To verify the project-site deployment path, generate with `_config.yml,_config.github-pages.yml`, `--url https://rykoma.github.io/Docs`, and `--root /Docs/`. To verify the custom-domain path, use `_config.yml`, `--url https://blog.rykoma.net`, and `--root /`.
+- Client-side, page-dependent language text (e.g. code-block action button labels in `themes/landscape/source/js/script.js`) is decided in the browser from `window.location.pathname`, not from `navigator.language`. When adding or fixing such text, follow the existing `codeBlockLabels` pattern there rather than the browser's language.
+- When matching the language segment in `pathname`, do not assume the site is served from the domain root. A leading `/Docs/` base path (the project-site verification path above) shifts the language segment, so prefix checks like `pathname.indexOf('/ja/') === 0` silently fall through to the English/default branch under that base path. Match the `/ja/` (or `/en/`) segment anywhere in the path (for example with a regex such as `/(?:^|\/)ja\//`) so the same logic works under both the root and `/Docs/` base paths.
+- After changing `themes/landscape/source/css/**/*.styl`, `hexo generate` may report `0 files generated` and skip a stale `public/css/style.css` if the cache is not invalidated. Run `npx hexo clean` before `npm run build` when a Stylus-only change does not seem to take effect.
 
 ## Migration phase status
 
