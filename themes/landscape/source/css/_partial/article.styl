@@ -196,8 +196,13 @@
   cursor: pointer
   float: right
   margin-left: 20px
-  &:before
-    padding-right: 6px
+  &:focus-visible
+    outline: 2px solid color-link
+    outline-offset: 3px
+    border-radius: 2px
+    color: color-default
+  .fa-share:before
+    padding-right: 10px
 
 #article-nav
   clearfix()
@@ -268,19 +273,6 @@
   &.on
     display: block
 
-.article-share-input
-  width: 100%
-  background: none
-  box-sizing: border-box
-  font: 14px font-sans
-  padding: 0 15px
-  color: color-default
-  outline: none
-  border: 1px solid color-border
-  border-radius: 3px 3px 0 0
-  height: 36px
-  line-height: 36px
-
 .article-share-links
   clearfix()
   background: color-background
@@ -299,12 +291,22 @@ $article-share-link
     text-align: center
   &:hover
     color: #fff
+  &:focus-visible
+    outline: 3px solid color-link
+    outline-offset: -3px
 
-.article-share-twitter
+.article-share-x
   @extend $article-share-link
+  .article-share-x-icon
+    font-size: 20px
+    font-weight: 700
+    line-height: 20px
+    absolute-center(@font-size)
+    top: calc(50% - 1px)
+    text-align: center
   &:hover
-    background: color-twitter
-    text-shadow: 0 1px darken(color-twitter, 20%)
+    background: #000
+    text-shadow: 0 1px #000
 
 .article-share-facebook
   @extend $article-share-link
