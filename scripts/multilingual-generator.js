@@ -473,6 +473,207 @@ hexo.extend.generator.register('multilingual-rss', function () {
   }));
 });
 
+// GitHub Pages serves a single site-wide `/404.html` for every unresolved
+// URL (there is no per-directory 404 support), so the actual localized
+// content lives at `/ja/404.html` and `/en/404.html`. The root `/404.html`
+// only inspects the *originally requested* path (still visible via
+// `location.pathname` even though the browser receives a 404 status) and
+// redirects to the matching localized page, falling back to the browser
+// language only when the requested path has no `ja`/`en` prefix.
+const siteHostname = (config) => {
+  const url = String(config.url || '');
+  return url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || url;
+};
+
+// Standalone pages bypass the theme's `head.ejs` partial, so the favicon
+// link (theme.favicon, e.g. `/favicon.png`) has to be added explicitly to
+// keep the browser tab icon consistent with the rest of the site.
+const faviconTag = (config, theme) => {
+  const faviconPath = theme && theme.favicon;
+  if (!faviconPath) return '';
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const relativePath = String(faviconPath).replace(/^\/+/, '');
+  return `  <link rel="shortcut icon" href="${escapeHtml(`${root}${relativePath}`)}">\n`;
+};
+
+const notFoundContent = {
+  ja: {
+    title: (host) => `ページが見つかりません | ${host}`,
+    message: 'ページが見つかりません。',
+    linkText: 'トップページへ戻る',
+  },
+  en: {
+    title: (host) => `404 Not Found | ${host}`,
+    message: 'Page not found.',
+    linkText: 'Return to the top page',
+  },
+};
+
+// Palette and font stack borrowed from the Landscape theme's own header
+// (see themes/landscape/source/css/_partial/header.styl and
+// _variables.styl) so this standalone page still feels visually
+// consistent with the rest of the site, without depending on the theme's
+// layouts, partials, or CSS build.
+const notFoundFontSans = '-apple-system, BlinkMacSystemFont, "Segoe UI", ' +
+  '"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", ' +
+  '"Helvetica Neue", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif';
+
+const notFoundPage = (config, theme, language) => {
+  const host = siteHostname(config);
+  const {title, message, linkText} = notFoundContent[language];
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const topUrl = `${root}${language}/`;
+  const siteTitle = resolveSiteTitle(config, language);
+
+  return `<!doctype html>
+<html lang="${language}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>${escapeHtml(title(host))}</title>
+${faviconTag(config, theme)}  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: ${notFoundFontSans};
+      color: #555;
+      background: #eee;
+    }
+    header {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 140px;
+      background: linear-gradient(135deg, #21425a, #39718d);
+    }
+    .site-title {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-decoration: none;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+    .site-title:hover,
+    .site-title:focus-visible {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .not-found-code {
+      margin: 0;
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: #21425a;
+      letter-spacing: 2px;
+    }
+    .not-found-message {
+      margin: 0.5rem 0 1.5rem;
+      font-size: 1.1rem;
+    }
+    .not-found-link {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      background: #258fb8;
+      color: #fff;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+    .not-found-link:hover,
+    .not-found-link:focus-visible {
+      background: #1d7194;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="site-title" href="${escapeHtml(topUrl)}">${escapeHtml(siteTitle)}</a>
+  </header>
+  <main>
+    <p class="not-found-code">404</p>
+    <p class="not-found-message">${escapeHtml(message)}</p>
+    <a class="not-found-link" href="${escapeHtml(topUrl)}">${escapeHtml(linkText)}</a>
+  </main>
+</body>
+</html>
+`;
+};
+
+const notFoundRedirect = (config, theme) => {
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const jaUrl = `${root}ja/404.html`;
+  const enUrl = `${root}en/404.html`;
+  const serializedRoot = JSON.stringify(root);
+  const serializedJaUrl = JSON.stringify(jaUrl);
+  const serializedEnUrl = JSON.stringify(enUrl);
+
+  return `<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Not Found</title>
+${faviconTag(config, theme)}  <script>
+    (() => {
+      const root = ${serializedRoot};
+      const path = window.location.pathname;
+      let relative = path.indexOf(root) === 0 ? path.slice(root.length) : path;
+      while (relative.charAt(0) === '/') relative = relative.slice(1);
+      let lang;
+      if (relative === 'ja' || relative.indexOf('ja/') === 0) {
+        lang = 'ja';
+      } else if (relative === 'en' || relative.indexOf('en/') === 0) {
+        lang = 'en';
+      } else {
+        const languages = navigator.languages || [navigator.language];
+        const match = languages.find((value) => /^(ja|en)(-|$)/i.test(value));
+        lang = match && /^en/i.test(match) ? 'en' : 'ja';
+      }
+      window.location.replace(lang === 'en' ? ${serializedEnUrl} : ${serializedJaUrl});
+    })();
+  </script>
+</head>
+<body>
+  <p>Page not found. / ページが見つかりません。</p>
+  <ul>
+    <li><a href="${escapeHtml(jaUrl)}">日本語</a></li>
+    <li><a href="${escapeHtml(enUrl)}">English</a></li>
+  </ul>
+</body>
+</html>
+`;
+};
+
+hexo.extend.generator.register('not-found-pages', function () {
+  const config = this.config;
+  const theme = this.theme.config;
+  return [
+    {path: '404.html', data: notFoundRedirect(config, theme)},
+    ...languages.map(language => ({
+      path: `${language}/404.html`,
+      data: notFoundPage(config, theme, language),
+    })),
+  ];
+});
+
 // Replace the standard generators so they cannot emit unfiltered duplicate routes.
 hexo.extend.generator.register('archive', () => []);
 hexo.extend.generator.register('category', () => []);
