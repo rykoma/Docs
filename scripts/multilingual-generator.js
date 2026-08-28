@@ -473,6 +473,134 @@ hexo.extend.generator.register('multilingual-rss', function () {
   }));
 });
 
+// GitHub Pages serves a single site-wide `/404.html` for every unresolved
+// URL (there is no per-directory 404 support), so the actual localized
+// content lives at `/ja/404.html` and `/en/404.html`. The root `/404.html`
+// only inspects the *originally requested* path (still visible via
+// `location.pathname` even though the browser receives a 404 status) and
+// redirects to the matching localized page, falling back to the browser
+// language only when the requested path has no `ja`/`en` prefix.
+const siteHostname = (config) => {
+  const url = String(config.url || '');
+  return url.replace(/^https?:\/\//, '').replace(/\/.*$/, '') || url;
+};
+
+const notFoundContent = {
+  ja: {
+    title: (host) => `ページが見つかりません | ${host}`,
+    message: 'ページが見つかりません。',
+    linkText: 'トップページへ戻る',
+  },
+  en: {
+    title: (host) => `404 Not Found | ${host}`,
+    message: 'Page not found.',
+    linkText: 'Return to the top page',
+  },
+};
+
+const notFoundPage = (config, language) => {
+  const host = siteHostname(config);
+  const {title, message, linkText} = notFoundContent[language];
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const topUrl = `${root}${language}/`;
+
+  return `<!doctype html>
+<html lang="${language}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>${escapeHtml(title(host))}</title>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: #333;
+      background: #fff;
+    }
+    main {
+      text-align: center;
+      padding: 2rem;
+    }
+    p {
+      font-size: 1.1rem;
+    }
+    a {
+      color: #2a6496;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p>${escapeHtml(message)}</p>
+    <p><a href="${escapeHtml(topUrl)}">${escapeHtml(linkText)}</a></p>
+  </main>
+</body>
+</html>
+`;
+};
+
+const notFoundRedirect = (config) => {
+  const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
+  const jaUrl = `${root}ja/404.html`;
+  const enUrl = `${root}en/404.html`;
+  const serializedRoot = JSON.stringify(root);
+  const serializedJaUrl = JSON.stringify(jaUrl);
+  const serializedEnUrl = JSON.stringify(enUrl);
+
+  return `<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Not Found</title>
+  <script>
+    (() => {
+      const root = ${serializedRoot};
+      const path = window.location.pathname;
+      let relative = path.indexOf(root) === 0 ? path.slice(root.length) : path;
+      while (relative.charAt(0) === '/') relative = relative.slice(1);
+      let lang;
+      if (relative === 'ja' || relative.indexOf('ja/') === 0) {
+        lang = 'ja';
+      } else if (relative === 'en' || relative.indexOf('en/') === 0) {
+        lang = 'en';
+      } else {
+        const languages = navigator.languages || [navigator.language];
+        const match = languages.find((value) => /^(ja|en)(-|$)/i.test(value));
+        lang = match && /^en/i.test(match) ? 'en' : 'ja';
+      }
+      window.location.replace(lang === 'en' ? ${serializedEnUrl} : ${serializedJaUrl});
+    })();
+  </script>
+</head>
+<body>
+  <p>Page not found. / ページが見つかりません。</p>
+  <ul>
+    <li><a href="${escapeHtml(jaUrl)}">日本語</a></li>
+    <li><a href="${escapeHtml(enUrl)}">English</a></li>
+  </ul>
+</body>
+</html>
+`;
+};
+
+hexo.extend.generator.register('not-found-pages', function () {
+  const config = this.config;
+  return [
+    {path: '404.html', data: notFoundRedirect(config)},
+    ...languages.map(language => ({
+      path: `${language}/404.html`,
+      data: notFoundPage(config, language),
+    })),
+  ];
+});
+
 // Replace the standard generators so they cannot emit unfiltered duplicate routes.
 hexo.extend.generator.register('archive', () => []);
 hexo.extend.generator.register('category', () => []);
