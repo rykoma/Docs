@@ -498,11 +498,21 @@ const notFoundContent = {
   },
 };
 
+// Palette and font stack borrowed from the Landscape theme's own header
+// (see themes/landscape/source/css/_partial/header.styl and
+// _variables.styl) so this standalone page still feels visually
+// consistent with the rest of the site, without depending on the theme's
+// layouts, partials, or CSS build.
+const notFoundFontSans = '-apple-system, BlinkMacSystemFont, "Segoe UI", ' +
+  '"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", ' +
+  '"Helvetica Neue", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif';
+
 const notFoundPage = (config, language) => {
   const host = siteHostname(config);
   const {title, message, linkText} = notFoundContent[language];
   const root = config.root.endsWith('/') ? config.root : `${config.root}/`;
   const topUrl = `${root}${language}/`;
+  const siteTitle = resolveSiteTitle(config, language);
 
   return `<!doctype html>
 <html lang="${language}">
@@ -512,32 +522,83 @@ const notFoundPage = (config, language) => {
   <meta name="robots" content="noindex, nofollow">
   <title>${escapeHtml(title(host))}</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     body {
+      display: flex;
+      flex-direction: column;
+      font-family: ${notFoundFontSans};
+      color: #555;
+      background: #eee;
+    }
+    header {
+      flex: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-      color: #333;
-      background: #fff;
+      height: 140px;
+      background: linear-gradient(135deg, #21425a, #39718d);
+    }
+    .site-title {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-decoration: none;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+    .site-title:hover,
+    .site-title:focus-visible {
+      text-decoration: underline;
     }
     main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
       text-align: center;
-      padding: 2rem;
     }
-    p {
+    .not-found-code {
+      margin: 0;
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: #21425a;
+      letter-spacing: 2px;
+    }
+    .not-found-message {
+      margin: 0.5rem 0 1.5rem;
       font-size: 1.1rem;
     }
-    a {
-      color: #2a6496;
+    .not-found-link {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      background: #258fb8;
+      color: #fff;
+      font-size: 1rem;
+      text-decoration: none;
+    }
+    .not-found-link:hover,
+    .not-found-link:focus-visible {
+      background: #1d7194;
     }
   </style>
 </head>
 <body>
+  <header>
+    <a class="site-title" href="${escapeHtml(topUrl)}">${escapeHtml(siteTitle)}</a>
+  </header>
   <main>
-    <p>${escapeHtml(message)}</p>
-    <p><a href="${escapeHtml(topUrl)}">${escapeHtml(linkText)}</a></p>
+    <p class="not-found-code">404</p>
+    <p class="not-found-message">${escapeHtml(message)}</p>
+    <a class="not-found-link" href="${escapeHtml(topUrl)}">${escapeHtml(linkText)}</a>
   </main>
 </body>
 </html>
