@@ -139,10 +139,10 @@
         '<div id="' + id + '" class="article-share-box">',
           '<input class="article-share-input" value="' + url + '">',
           '<div class="article-share-links">',
-            '<a href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"><span class="fa fa-twitter"></span></a>',
-            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"><span class="fa fa-facebook"></span></a>',
-            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"><span class="fa fa-pinterest"></span></a>',
-            '<a href="https://www.linkedin.com/shareArticle?mini=true&url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn"><span class="fa fa-linkedin"></span></a>',
+            '<a href="https://x.com/intent/post?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-x" target="_blank" title="X" aria-label="Share on X"><span class="article-share-x-icon" aria-hidden="true">𝕏</span></a>',
+            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook" aria-label="Share on Facebook"><span class="fa fa-facebook"></span></a>',
+            '<a href="https://pinterest.com/pin/create/button/?url=' + encodedUrl + '&description=' + encodeURIComponent(title) + '" class="article-share-pinterest" target="_blank" title="Pinterest" aria-label="Share on Pinterest"><span class="fa fa-pinterest"></span></a>',
+            '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn" aria-label="Share on LinkedIn"><span class="fa fa-linkedin"></span></a>',
           '</div>',
         '</div>'
       ].join('');

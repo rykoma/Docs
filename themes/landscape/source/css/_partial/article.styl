@@ -196,8 +196,8 @@
   cursor: pointer
   float: right
   margin-left: 20px
-  &:before
-    padding-right: 6px
+  .fa-share:before
+    padding-right: 10px
 
 #article-nav
   clearfix()
@@ -300,11 +300,18 @@ $article-share-link
   &:hover
     color: #fff
 
-.article-share-twitter
+.article-share-x
   @extend $article-share-link
+  .article-share-x-icon
+    font-size: 20px
+    font-weight: 700
+    line-height: 20px
+    absolute-center(@font-size)
+    top: calc(50% - 1px)
+    text-align: center
   &:hover
-    background: color-twitter
-    text-shadow: 0 1px darken(color-twitter, 20%)
+    background: #000
+    text-shadow: 0 1px #000
 
 .article-share-facebook
   @extend $article-share-link
