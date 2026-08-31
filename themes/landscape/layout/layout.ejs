@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<%
+  const skipLinkPathParts = (page.path || '').split('/').filter(Boolean);
+  const skipLinkLanguage = page.language_switcher ? page.language : (skipLinkPathParts[0] || page.lang || page.language);
+  const htmlLang = skipLinkLanguage === 'en' ? 'en' : 'ja';
+%>
+<html lang="<%= htmlLang %>">
 <%- partial('_partial/head') %>
 <body>
   <%
-    const skipLinkPathParts = (page.path || '').split('/').filter(Boolean);
-    const skipLinkLanguage = page.language_switcher ? page.language : (skipLinkPathParts[0] || page.lang || page.language);
     const skipLinkLabel = skipLinkLanguage === 'en' ? 'Skip to main content' : '本文へ移動';
   %>
   <a class="skip-link" href="#main"><%= skipLinkLabel %></a>
