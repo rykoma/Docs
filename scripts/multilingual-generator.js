@@ -430,7 +430,7 @@ hexo.extend.generator.register('seo-files', function () {
       ));
     });
 
-    for (const [collectionName, directory, type] of [
+    for (const [collectionName, , type] of [
       ['categories', config.category_dir, 'category'],
       ['tags', config.tag_dir, 'tag'],
     ]) {
@@ -439,9 +439,12 @@ hexo.extend.generator.register('seo-files', function () {
         const values = type === 'category' ? post.categories : post.tags;
         values.forEach(value => names.add(value.name));
       });
-      names.forEach(name => addPage(
-        `${language}/${directory}/${encodeURIComponent(name)}/`,
-      ));
+      const collection = this.locals.get(collectionName);
+      names.forEach(name => {
+        const item = collection.toArray().find(entry => entry.name === name);
+        if (!item?.path) return;
+        addPage(`${language}/${item.path}`);
+      });
     }
   }
 
