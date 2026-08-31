@@ -77,6 +77,31 @@ hexo.extend.helper.register('absolute_url', function (path) {
   return absoluteUrl(this.config, path);
 });
 
+hexo.extend.helper.register('github_source_url', function (post) {
+  const rawSourcePath = post?.source || post?.full_source;
+  if (!rawSourcePath) return '';
+
+  const sourceDir = String(this.config.source_dir || 'source').replace(/^\/+|\/+$/g, '');
+  const sourceMarker = `/${sourceDir}/`;
+  let sourcePath = String(rawSourcePath).replace(/\\/g, '/');
+  const sourceMarkerIndex = sourcePath.lastIndexOf(sourceMarker);
+  if (sourceMarkerIndex !== -1) {
+    sourcePath = sourcePath.slice(sourceMarkerIndex + 1);
+  }
+
+  sourcePath = sourcePath.replace(/^\/+/, '');
+  const normalizedPath = sourcePath.startsWith(`${sourceDir}/`)
+    ? sourcePath
+    : `${sourceDir}/${sourcePath}`;
+
+  if (!/^source\/(?:(?:_posts\/)?(?:ja|en)\/.+\.md)$/i.test(normalizedPath)) {
+    return '';
+  }
+
+  const encodedPath = normalizedPath.split('/').map(encodeURIComponent).join('/');
+  return `https://github.com/rykoma/Docs/blob/main/${encodedPath}`;
+});
+
 const sortPosts = (posts, orderBy = '-date') =>
   posts.sort((a, b) => {
     const direction = orderBy.startsWith('-') ? -1 : 1;

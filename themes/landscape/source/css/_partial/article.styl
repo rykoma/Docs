@@ -192,10 +192,14 @@
   &:before
     padding-right: 8px
 
+.article-action-links
+  float: right
+  display: flex
+  gap: 20px
+  align-items: baseline
+
 .article-share-link
   cursor: pointer
-  float: right
-  margin-left: 20px
   &:focus-visible
     outline: 2px solid color-link
     outline-offset: 3px
@@ -203,6 +207,15 @@
     color: color-default
   .fa-share:before
     padding-right: 10px
+
+.article-source-link
+  font-size: 0.9em
+  &:focus-visible
+    outline: 2px solid color-link
+    outline-offset: 3px
+    border-radius: 2px
+    color: color-default
+    text-decoration: underline
 
 #article-nav
   clearfix()
