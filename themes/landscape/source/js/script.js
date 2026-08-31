@@ -294,7 +294,7 @@
       if (codeBlockLanguageLabels[className]) language = className;
     });
 
-    if (!language) return codeBlockLabels.language;
+    if (!language) return 'Plain text';
     if (language === 'js') language = 'javascript';
     if (language === 'ps') language = 'powershell';
     if (language === 'sh') language = 'shell';
