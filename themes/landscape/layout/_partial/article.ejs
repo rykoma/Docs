@@ -25,7 +25,13 @@
     <footer class="article-footer">
       <%- partial('post/tag') %>
       <% if (!index) { %>
-      <a href="#" data-url="<%- post.permalink %>" data-id="<%= post._id %>" data-title="<%= post.title %>" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share"><%= __('share') %></span></a>
+      <% const sourceUrl = github_source_url(post); %>
+      <span class="article-action-links">
+      <% if (sourceUrl) { %>
+      <a href="<%- sourceUrl %>" class="article-source-link" target="_blank" rel="noopener noreferrer"><%= (post.lang || post.language || config.language) === 'ja' ? 'ソース' : 'Source' %></a>
+      <% } %>
+      <a href="#" data-url="<%- post.permalink %>" data-id="<%= post._id %>" data-title="<%= post.title %>" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text"><%= __('share') %></span></a>
+      </span>
       <% } %>
       <% if (post.comments && theme.disqus_shortname){ %>
         <a href="<%- post.permalink %>#disqus_thread" class="article-comment-link"><span class="fa fa-comment"><%= __('comment') %></span></a>

@@ -260,6 +260,7 @@ npx hexo generate --config _config.yml --url https://blog.rykoma.net --root /
 - コードブロックのデザインと機能 (シンタックス ハイライト、折り返し、コピー操作など) の確認
 - 記事の共有リンクの動作とデザインの確認
 - favicon、robots、サイトマップ、canonical、hreflang の実装方針整理
+- 記事・固定ページから、対応する GitHub 上の Markdown ソース ファイルへの控えめなリンクを追加
 
 SEO の方針は次のとおりとします。言語選択ページ (`/`、`/<slug>/`) は `noindex` とし、canonical を付けず、sitemap から除外します。実コンテンツ、言語別トップ、記事が存在する分類・Archive は self-canonical とし、sitemap に含めます。ページネーションは `noindex,follow` とし、sitemap から除外します。翻訳対応するページだけ `ja` / `en` の hreflang を相互指定し、`x-default` は使用しません。canonical、hreflang、robots.txt、sitemap の URL は `site.url` と `site.root` から生成します。
 
@@ -280,6 +281,8 @@ Phase 5 の本格的な移行前に、代表例として少なくとも 1 件の
 また、移行前に Front Matter の必須項目と値の形式、slug の重複、alias の形式、内部リンク、画像参照を自動検証できるようにします。代表例での確認と自動検証を先に行うことで、記事移行後の表示崩れや一括修正を防ぎます。
 
 コードブロックのデザインと機能の確認では、`http-request` / `http-response` という 2 種類の独自シンタックス ハイライト言語 (`scripts/http-highlighter.js`) を実装しました。HTTP のリクエスト / レスポンスをコード ブロックで記述する記事を移行する際は、言語指定を `http` ではなく、内容に応じて `http-request` または `http-response` としてください。それ以外の言語 (JSON、PowerShell、C#、JavaScript など) は、highlight.js が標準対応する言語名をそのまま指定します。
+
+Markdown ソースへのリンクは、公開ページを見ていて修正が必要な箇所に気付いたときに、対応する `.md` ファイルへ迷わずたどり着けるようにする目的で追加しました。GitHub でコンテンツを管理している以上 `.md` ファイル自体が第三者の目に触れることは避けられませんが、通常の読者には不要なリンクのため、記事・固定ページ本文末尾に小さく控えめな文言 (日本語は「ソース」、英語は「Source」) で表示し、`main` ブランチ上の GitHub ファイル URL に直接リンクします。Markdown ソースの存在しない自動生成ページ (言語別トップ、Archives、categories、tags、RSS、404、言語選択ページなど) には表示しません。
 
 ### Phase 5: コンテンツ移行
 
@@ -362,7 +365,7 @@ Phase 6 で判断する検討事項は次のとおりです。
 
 - [x] Landscape の既定レイアウトを使用した言語別トップページを生成できる
 - [x] ページ内言語切り替え UI の基本動作を確認した
-- [ ] Landscape テーマのデザインを見直し、カスタマイズを確定した
+- [x] Landscape テーマのデザインを見直し、カスタマイズを確定した (通常ページの `<html>` への `lang` 属性出力、モバイル ナビゲーションの Archives リンクの言語別化、`sitemap.xml` の category/tag URL 不一致の修正、記事・固定ページからの GitHub Markdown ソースへの控えめなリンク追加を実施)
 - [x] Archives、categories、tags を言語別に表示できる
 - [x] 自動生成ページで ja/en 記事が重複表示されない
 - [x] Recent posts ウィジェットを表示中の言語に対応させた
