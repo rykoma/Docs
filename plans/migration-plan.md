@@ -299,6 +299,17 @@ Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`�
 
 コード ブロックの言語指定にも注意してください。特に HTTP のリクエスト / レスポンスを記述するコード ブロックは、`http` ではなく `http-request` (リクエスト) または `http-response` (レスポンス) を言語指定として使用します (詳細は Phase 4 の記載および `scripts/http-highlighter.js` を参照)。
 
+移行元記事に、廃止された API や仕様変更など読者への注意喣起が必要な内容が含まれる場合は、GitHub 準拠の Markdown 注記記法 (`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`) を使用します (WordPress ID 20 の移行で `scripts/markdown-alerts.js` として実装済み)。`scripts/markdown-alerts.js` が `after_post_render` フィルターで `<blockquote>` を色とアイコン付きの注記ボックスに変換するため、記事 Markdown 側でスタイル付き HTML を直接記述する必要はありません。表示例は `source/_posts/ja/hello-world.md` と `source/_posts/en/hello-world.md` を参照してください。
+
+Phase 5 は、親セッションで次に移行する記事を選定し、記事ごとの実際の移行作業 (Hexo コンテンツの作成、画像配置、Front Matter 整備など) は子セッションに切り出して進めます。進捗は `plans/wordpress-content-decisions.csv` の `Migration status` 列で一元管理し、次の値を使用します。
+
+- `included`: 移行対象として選定済みだが、未着手 (次に着手できる候補)
+- `in-progress`: 子セッションを作成し、移行作業を進めている
+- `migrated`: 子セッションの変更が `main` にマージされ、移行が完了した
+- `excluded`: 移行対象外
+
+子セッションを作成するタイミングで親セッションが対象行を `included` から `in-progress` に更新し、PR マージ後に `migrated` へ更新します。同じ記事について複数の子セッションを重複して作成しないよう、次に着手する記事は必ず `included` の行から選びます。子セッションのブランチは `main` を起点とし、対象記事に関するファイルだけを作成・変更します。共有ファイル (`plans/wordpress-content-decisions.csv` など) の更新は親セッション側で行います。
+
 ### Phase 6: 公開
 
 移行先を段階的に確認してから、独自ドメインの公開先を切り替えます。
