@@ -123,6 +123,54 @@
     &.left
       margin-left: 0.5em
       margin-right: 1em
+  .markdown-alert
+    margin: line-height 0
+    padding: 0.8em 1.2em
+    border: 1px solid
+    border-radius: 8px
+    line-height: line-height
+    p
+      margin: 0.5em 0
+      &:first-child
+        margin-top: 0
+      &:last-child
+        margin-bottom: 0
+  .markdown-alert-title
+    display: flex
+    align-items: center
+    gap: 0.5em
+    font-weight: bold
+    text-transform: uppercase
+    font-size: 0.85em
+    letter-spacing: 0.05em
+    svg
+      flex-shrink: 0
+      fill: currentColor
+  .markdown-alert-note
+    background: #ddf4ff
+    border-color: #b6e3ff
+    .markdown-alert-title
+      color: #0969da
+  .markdown-alert-tip
+    background: #e9f7ef
+    border-color: #bfe6cc
+    .markdown-alert-title
+      color: #1a7f37
+  .markdown-alert-important
+    background: #fbefff
+    border-color: #e2c9ff
+    .markdown-alert-title
+      color: #8250df
+  .markdown-alert-warning
+    background: #fff6e0
+    border-color: #f2dd9e
+    .markdown-alert-title
+      color: #9a6700
+  .markdown-alert-caution
+    background: #fdedee
+    border-color: #f2bfc4
+    .markdown-alert-title
+      color: #cf222e
     &.right
       margin-right: 0.5em
       margin-left: 1em
