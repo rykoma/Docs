@@ -149,3 +149,28 @@ Content-Type: application/json
     "error": "Post not found"
 }
 ```
+
+## Markdown alert (NOTE)
+
+> [!NOTE]
+> This is a callout box for sharing supplementary information. Use it for reference information that helps readers understand the main content.
+
+## Markdown alert (TIP)
+
+> [!TIP]
+> This is a callout box for sharing a helpful tip. Use it for advice that helps readers work more efficiently.
+
+## Markdown alert (IMPORTANT)
+
+> [!IMPORTANT]
+> This is a callout box for sharing important information. Use it for information that, if missed, would prevent readers from achieving their goal.
+
+## Markdown alert (WARNING)
+
+> [!WARNING]
+> This is a callout box for sharing information that requires caution. Use it for information that could cause a problem if overlooked.
+
+## Markdown alert (CAUTION)
+
+> [!CAUTION]
+> This is a callout box for sharing information about a risky action. Use it for information that could lead to serious consequences, such as data loss or a security risk.
