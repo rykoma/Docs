@@ -301,6 +301,24 @@ Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`�
 
 移行元記事に、廃止された API や仕様変更など読者への注意喣起が必要な内容が含まれる場合は、GitHub 準拠の Markdown 注記記法 (`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`) を使用します (WordPress ID 20 の移行で `scripts/markdown-alerts.js` として実装済み)。`scripts/markdown-alerts.js` が `after_post_render` フィルターで `<blockquote>` を色とアイコン付きの注記ボックスに変換するため、記事 Markdown 側でスタイル付き HTML を直接記述する必要はありません。表示例は `source/_posts/ja/hello-world.md` と `source/_posts/en/hello-world.md` を参照してください。
 
+#### 外部リンクの検証と対応
+
+移行対象記事内の外部リンクは、すべて現時点で有効かどうかを子セッションが確認します。確認の際は HTTP ステータス コードだけで判断せず、リダイレクト先の実際のページ内容を確認したうえで、次の 3 つのシナリオに分けて対応します。
+
+- **現存 (問題なし)**: リンク先が現在も正常に表示され、内容も当時と実質的に同じ場合は、そのまま維持します。
+- **移転 (URL のみ変更されている)**: リダイレクトされているものの、移転先のページで同等の内容が提供されている場合は、リンクを削除せずリンク先 URL を移転後の新しい URL に更新します。WordPress ID 20 の移行での msdn.microsoft.com から learn.microsoft.com への変更、および getpostman.com から postman.com への変更がこの対応の例です。
+- **消滅 (ページ自体がなくなっている)**: 404 になっている、トップページなど汎用的なページへリダイレクトされている、または内容が完全に別物に差し替わっている場合は、ハイパーリンクを外してテキストのみ残します。WordPress ID 12、20、27、30 で繰り返し行っている対応で、例えば Sunrise Calendar の Google Play ストアへのリンクが 404 になっている場合や、Microsoft Source の買収発表記事へのリンクがトップページにリダイレクトされる場合が該当します。
+
+判断に迷う場合は、"URL が変わっただけか、コンテンツが実質的に消滅したか" を判断基準にしてください。
+
+#### 製品/サービスのステータス変化への対応
+
+記事の執筆時点と現在とで、記事が言及している製品、機能、サービスの状況が異なる場合 (プレビュー期間の終了、サービス終了、サポート終了、後継 API への移行推奨など) は、上記の Markdown 注記記法を使って現在の状況を補足します。本文の内容自体 (執筆時点の記述) は書き換えず、注記で現在の状況を補足するのが基本方針です。注記は記事冒頭、または該当箇所の直前 / 直後など、文脈上自然な位置に挿入します。
+
+- WordPress ID 20: Outlook REST API が廃止済みであり、Microsoft Graph への移行が必要である旨を補足。
+- WordPress ID 27: Sunrise Calendar が 2016 年にサービス終了した旨を補足。
+- WordPress ID 30: Exchange Server 2016 のプレビュー期間がすでに終了し、正式版がリリース済みである旨を補足。
+
 Phase 5 は、親セッションで次に移行する記事を選定し、記事ごとの実際の移行作業 (Hexo コンテンツの作成、画像配置、Front Matter 整備など) は子セッションに切り出して進めます。進捗は `plans/wordpress-content-decisions.csv` の `Migration status` 列で一元管理し、次の値を使用します。
 
 - `included`: 移行対象として選定済みだが、未着手 (次に着手できる候補)
