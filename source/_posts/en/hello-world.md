@@ -174,3 +174,10 @@ Content-Type: application/json
 
 > [!CAUTION]
 > This is a callout box for sharing information about a risky action. Use it for information that could lead to serious consequences, such as data loss or a security risk.
+
+## Consecutive images with captions
+
+A sample to check the spacing balance of captions when images are placed consecutively.
+
+<img src="{% asset_path image.png %}" alt="Caption for the first image">
+<img src="{% asset_path image.png %}" alt="Caption for the second image">
