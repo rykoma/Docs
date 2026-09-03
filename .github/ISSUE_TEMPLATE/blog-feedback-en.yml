@@ -1,0 +1,34 @@
+name: "Blog article feedback"
+description: "Report an error or suggest an improvement for a blog article."
+title: "[Blog] "
+labels:
+  - blog-feedback
+body:
+  - type: input
+    id: article-url
+    attributes:
+      label: Article URL
+      description: The URL of the article this feedback is about.
+      placeholder: "https://blog.rykoma.net/en/<slug>/"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Select the category that best matches your feedback.
+      options:
+        - Typo
+        - Factual error
+        - Broken link
+        - Suggestion
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Please describe the issue or suggestion.
+    validations:
+      required: true

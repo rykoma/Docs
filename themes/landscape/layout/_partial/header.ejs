@@ -10,7 +10,7 @@
       <nav id="main-nav">
         <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="<%= currentLanguage === 'ja' ? 'メニュー' : 'Menu' %>" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
         <% for (var i in theme.menu){ %>
-          <a class="main-nav-link" href="<%- i === 'Home' ? currentLanguageHome : i === 'About' ? url_for(`${currentLanguage}/about/`) : i === 'Archives' ? url_for(`${currentLanguage}/${config.archive_dir}/`) : url_for(theme.menu[i]) %>"><%= i %></a>
+          <a class="main-nav-link" href="<%- i === 'Home' ? currentLanguageHome : i === 'About' ? url_for(`${currentLanguage}/about/`) : i === 'Contact' ? url_for(`${currentLanguage}/contact/`) : i === 'Archives' ? url_for(`${currentLanguage}/${config.archive_dir}/`) : url_for(theme.menu[i]) %>"><%= i %></a>
         <% } %>
       </nav>
       <nav id="sub-nav">
