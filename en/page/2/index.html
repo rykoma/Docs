@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Developer Messaging Lab</title>
+  
+    <meta name="robots" content="noindex,follow">
+  
+  
+    
+  
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Developer Messaging Lab">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/page/2/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="Ryutaro Koma">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1">
+  
+    <article id="post-en/send-email-with-smtpclient-powershell" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-08-14T19:41:34.000Z" itemprop="datePublished">2015-08-15</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">PowerShell</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/send-email-with-smtpclient-powershell/">Sending a quick test email from PowerShell with SmtpClient</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>The <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.net.mail.smtpclient">SmtpClient</a> class used in this article is no longer recommended for new development. See the remarks section of the SmtpClient class reference for details. For new development, consider a library such as <a target="_blank" rel="noopener" href="https://github.com/jstedfast/MailKit">MailKit</a> instead.</p>
+</div>
+<p>Sometimes you want to send a lot of emails at once, for example when testing email delivery. In that case, you can quickly send emails from PowerShell using <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/dotnet/api/system.net.mail.smtpclient">SmtpClient</a>.</p>
+<p>But you may also want to avoid sending emails with the same sender address or subject every time. So here is a PowerShell script for that, mostly as a note to myself.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Get-RandomString</span><span class="params">(<span class="variable">$Length</span>)</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$Characters</span> = <span class="string">&#x27;abcdefghkmnprstuvwxyzABCDEFGHKLMNPRSTUVWXYZ&#x27;</span></span><br><span class="line">    <span class="variable">$Random</span> = <span class="number">1</span>..<span class="variable">$Length</span> | <span class="built_in">ForEach-Object</span> &#123; <span class="built_in">Get-Random</span> <span class="literal">-Maximum</span> <span class="variable">$Characters</span>.length &#125;</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">String</span>] <span class="operator">-join</span> <span class="variable">$characters</span>[<span class="variable">$random</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Get-RandomMailAddress</span><span class="params">(<span class="variable">$LocalPartLength</span>, <span class="variable">$DomainPartLength</span>, <span class="variable">$TopLevelDomainName</span>)</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$Result</span> = <span class="built_in">Get-RandomString</span>(<span class="variable">$LocalPartLength</span>)</span><br><span class="line">    <span class="variable">$Result</span> += <span class="string">&quot;@&quot;</span></span><br><span class="line">    <span class="variable">$Result</span> += <span class="built_in">Get-RandomString</span>(<span class="variable">$DomainPartLength</span>)</span><br><span class="line">    <span class="variable">$Result</span> += <span class="string">&quot;.&quot;</span></span><br><span class="line">    <span class="variable">$Result</span> += <span class="variable">$TopLevelDomainName</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$Result</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$From</span> = <span class="built_in">Get-RandomMailAddress</span> <span class="literal">-LocalPartLength</span> <span class="number">10</span> <span class="literal">-DomainPartLength</span> <span class="number">5</span> <span class="literal">-TopLevelDomainName</span> <span class="string">&quot;com&quot;</span></span><br><span class="line"><span class="variable">$To</span> = <span class="string">&quot;user01@contoso.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$Subject</span> = <span class="string">&quot;Random Mail &quot;</span> + (<span class="built_in">Get-Date</span>).ToString(<span class="string">&quot;yyyyMMddHHmmss&quot;</span>)</span><br><span class="line"><span class="variable">$Body</span> = <span class="string">&quot;This is a randomly generated email.&quot;</span></span><br><span class="line"><span class="variable">$Body</span> += <span class="built_in">Get-RandomString</span>(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable">$SMTPServer</span>=<span class="string">&quot;192.168.1.1&quot;</span></span><br><span class="line"><span class="variable">$Port</span>=<span class="string">&quot;25&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$SMTPClient</span> = <span class="built_in">New-Object</span> Net.Mail.SmtpClient(<span class="variable">$SMTPServer</span>,<span class="variable">$Port</span>)</span><br><span class="line"><span class="variable">$SMTPClient</span>.EnableSsl=<span class="variable">$false</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$MailMassage</span>=<span class="built_in">New-Object</span> Net.Mail.MailMessage(<span class="variable">$From</span>,<span class="variable">$To</span>,<span class="variable">$Subject</span>,<span class="variable">$Body</span>)</span><br><span class="line"></span><br><span class="line"><span class="variable">$SMTPClient</span>.Send(<span class="variable">$MailMassage</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Save this as a .ps1 file and run it, and it sends a quick test email. This article does not explain the basics of SmtpClient, so you will need to change the recipient address and SMTP server to match your environment. The sender address uses a domain name that does not actually exist, so whether the email is actually delivered depends on the receiving SMTP server.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/SmtpClient/" rel="tag">SmtpClient</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-en/exchange-server-2016-preview" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-07-25T03:57:53.000Z" itemprop="datePublished">2015-07-25</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Server</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/exchange-server-2016-preview/">Exchange Server 2016 Preview</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>This article reflects the state of the Exchange Server 2016 preview release when it was published (July 2015). Exchange Server 2016 has since been officially released, and there is no longer a preview version. This article is kept as a historical record, so the content may differ from the current official release. In addition, extended support for Exchange Server 2016 ended on October 14, 2025, so it is no longer a supported product.</p>
+</div>
+<p>Exchange 2016 Preview was released a few days ago, so I installed it right away.</p>
+<p>The Download Center only offers an English option, but when I ran the installer on a Japanese-language Windows Server 2012 R2, the setup screens were correctly shown in Japanese. It also works fine in Japanese after installation.</p>
+<p>The major version of the build number is still 15. It shows as 15.01.0225.017.</p>
+<img src="/Docs/en/exchange-server-2016-preview/Exchange2016BuildNumber.png" alt="Build number of Exchange Server 2016 Preview">
+
+<p>The Exchange Team Blog and other sources have already covered this release (the blog that originally hosted this information has since been retired), and it does feel more like Exchange Online now. I’d encourage you to install it yourself to see the details, but here I’ll introduce one feature that caught my attention: the “Birthday calendar”.</p>
+<p>In the calendar options, there’s an item called “Birthday calendar”. Turning it on shows a “Birthday” calendar. You can then create “birthday events” on this calendar. Since you can also set a mail reminder, you’ll never forget a birthday again.</p>
+<img src="/Docs/en/exchange-server-2016-preview/BirthdayCalendarOption.png" alt="Birthday calendar setting in the calendar options">
+
+<img src="/Docs/en/exchange-server-2016-preview/BirthdayCalendar.png" alt="Example of the birthday calendar view">
+
+<p>I’m not sure how much this feature is actually needed, but I noticed that when you enter a name to create a birthday event, a contact item with that name is also created at the same time.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-en/outlook-com-sunrise-calendar" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-06-19T03:28:52.000Z" itemprop="datePublished">2015-06-19</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Outlook.com</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/outlook-com-sunrise-calendar/">Viewing your Outlook.com calendar in Sunrise Calendar</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>Sunrise Calendar, the app described in this article, shut down in 2016. This article is kept as a historical record of the information at the time it was written, and the steps described here can no longer be reproduced.</p>
+</div>
+<p>This is a story about my Android phone. I use the Outlook.com calendar to manage my schedule. I used the Outlook.com app to sync with my device, and viewed the calendar in <a target="_blank" rel="noopener" href="https://www.jorte.com/jp/">Jorte</a>.</p>
+<p>But recently I started getting frequent notifications telling me to switch to <a target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=com.microsoft.office.outlook">Outlook</a>. It seemed like a good idea to follow along, so I switched to Outlook. However, syncing with my device stopped working, and the calendar also stopped showing up in Jorte.</p>
+<p>While wondering what to do, I thought of trying Sunrise, which Microsoft had recently acquired. After experimenting with it a bit, I found the steps were simple, just three steps.</p>
+<ol>
+<li>On the Android device, add the Outlook.com account as an ActiveSync account.</li>
+<li>Install Sunrise Calendar.</li>
+<li>In Sunrise Calendar, add the Outlook.com account as an Exchange account.</li>
+</ol>
+<p>So, adding an account to Sunrise Calendar requires an ActiveSync account, and the Outlook.com account can be added to an Android device as an ActiveSync account. This is how I got Sunrise Calendar to show my Outlook.com calendar.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/ActiveSync/" rel="tag">ActiveSync</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Android/" rel="tag">Android</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Outlook-com/" rel="tag">Outlook.com</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Sunrise/" rel="tag">Sunrise</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-en/outlook-rest-api-basic-authentication" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-06-02T04:33:52.000Z" itemprop="datePublished">2015-06-02</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Outlook REST API</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/outlook-rest-api-basic-authentication/">Using basic authentication with the Outlook REST API</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>The Outlook REST API has already been retired, and you now need to use <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/overview">Microsoft Graph</a> instead. This article is kept as a historical record of the information at the time it was written. The endpoints and authentication method described here can no longer be used.</p>
+</div>
+<p>You can use the Outlook REST API to build programs that, for example, send mail from an Exchange Online mailbox or retrieve calendar items. A <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/previous-versions/office/office-365-api/">reference</a> and a <a target="_blank" rel="noopener" href="https://tsmatz.wordpress.com/2014/06/02/office-365-api/">guide on how to use OAuth</a> are both publicly available.</p>
+<p>OAuth is recommended over basic authentication as the authentication method. However, when you just want to try something quickly, setting up an Azure environment and obtaining an access token can feel like a hassle. In that case, you can easily check the behavior with basic authentication.</p>
+<p>Parsing the response by hand in a browser is one option, but it is easier to use a REST client. Here, we use <a target="_blank" rel="noopener" href="https://www.postman.com/">Postman</a>. After starting Postman, select [Basic Auth] from [Type] on the [Authorization] tab.</p>
+<p>Enter the credentials of the mailbox you want to connect to (the UPN and password) in [Username] and [Password], and click [Update Request]. This automatically generates the header information required for basic authentication. Then, referring to the reference documentation, enter the request you want to run in the [Enter request URL] field. For example, to retrieve items from the inbox, change the method from POST to GET and enter the following.</p>
+<figure class="highlight http-request"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="http-method-get">GET</span> https://outlook.office365.com/api/v1.0/me/messages</span><br></pre></td></tr></table></figure>
+
+<p>Click [Send] to run the request and display the result.</p>
+<p>Note that basic authentication for the Outlook REST API is only available on the v1.0 endpoint, and it was scheduled to be discontinued on November 1, 2018. The v1.0 endpoint itself was also scheduled to be discontinued on November 1, 2019.</p>
+<p>For this reason, you need to migrate to OAuth or the Outlook REST API v2.0 endpoint. Unless you have a specific reason not to, migrating to Microsoft Graph is recommended. For more details, see the deprecation announcement that Microsoft published at the time (the blog that hosted it has since been taken down).</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Outlook-REST-API/" rel="tag">Outlook REST API</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-en/programmatically-query-exchange-address-book" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-05-31T02:50:22.000Z" itemprop="datePublished">2015-05-31</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Server</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/programmatically-query-exchange-address-book/">How to Programmatically Query the Exchange Server Address Book</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>When developing a custom application that connects to an Exchange server, address book functionality often ends up being a requirement. Many applications connect to the Exchange server using EWS, but unfortunately EWS has no mechanism for querying the address book.</p>
+<p>So what should you do? Using OWA would solve the problem, but if you really have to build this yourself, the following two approaches come to mind.</p>
+<ul>
+<li>Use LDAP</li>
+<li>Use the Exchange Management Shell</li>
+</ul>
+<p>By using <a target="_blank" rel="noopener" href="https://learn.microsoft.com/dotnet/api/system.directoryservices">System.DirectoryServices</a>, you can retrieve directory information from C# and other languages. The Global Address List, other address book information, and user information are all stored in Active Directory, so with some effort you can implement an address book.</p>
+<p>The general flow is to search the addressBookContainer class to find the address book, get the filter condition from the purportedSearch attribute, and then search for users using that filter condition.</p>
+<p>If you use the Exchange Management Shell, you can first retrieve the users included in the address book with a command like the following.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Filter</span> = (<span class="built_in">Get-GlobalAddressList</span> <span class="string">&quot;Default Global Address List&quot;</span>).RecipientFilter</span><br><span class="line"><span class="built_in">Get-Recipient</span> <span class="literal">-RecipientPreviewFilter</span> <span class="variable">$Filter</span></span><br></pre></td></tr></table></figure>
+
+<p>You’ll need to make this callable from your program.</p>
+<p>However, these two approaches alone are incomplete. In practice, you also need to take address book policies into account, and you also need to include HiddenFromAddressListsEnabled in your filter.</p>
+<p>Personally, I still feel that using OWA is better in many ways than putting in the effort to implement an address book yourself, but if you’re ever forced to do it, it might be worth considering an approach like this.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/LDAP/" rel="tag">LDAP</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-en/ews-java-api" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-05-29T19:49:46.000Z" itemprop="datePublished">2015-05-30</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/en/ews-java-api/">Trying out the EWS Java API</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>The <a target="_blank" rel="noopener" href="https://github.com/OfficeDev/ews-java-api">EWS Java API</a> is published on GitHub. As the name suggests, it’s an API for calling Exchange Web Services from Java. When connecting to EWS from a Windows environment, it’s convenient to use the EWS Managed API from C# or VB, but when you want to use it from Java, you end up using the EWS Java API.</p>
+<p>However, there’s almost no explanation on how to get this API working. . .</p>
+<p>Since I only had experience with Visual Studio development, I had no idea what to do with Java. It might be common sense for Java developers, but I somehow managed to get it working in Eclipse, so I’d like to write about it as a memo.</p>
+<p>That said, since they’re all open source, even if I explain in detail using screenshots, it will soon become obsolete, so I’ll just write about what’s necessary.</p>
+<p>First, as written on the EWS Java API page, install maven. The source of the EWS Java API is also available as a zip file, so save it. Then, as written, execute <strong>mvn clean install</strong> to build the EWS Java API.</p>
+<p>After building, a jar file is created, so add it to your project’s build path. After that, I thought I could connect to EWS by referring to the published sample code, but when I actually try to run it, exceptions occur one way or another. It turns out that dependent modules are still missing. For example, something like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/http/conn/HttpClientConnectionManager</span><br><span class="line">	at mytest.hello.ews.main(ews.java:19)</span><br><span class="line"></span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.apache.http.conn.HttpClientConnectionManager</span><br><span class="line"></span><br><span class="line">	at java.net.URLClassLoader.findClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at java.lang.ClassLoader.loadClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at java.lang.ClassLoader.loadClass(Unknown Source)</span><br></pre></td></tr></table></figure>
+
+<p>After struggling with it for a while, I solved it by adding httpclient &#x2F; httpcore &#x2F; commons-logging &#x2F; commons-lang3 &#x2F; joda-time to the maven dependencies. This is the content described in <a target="_blank" rel="noopener" href="https://github.com/OfficeDev/ews-java-api/blob/master/pom.xml">the EWS Java API’s pom.xml</a>. You need to match the versions as well.</p>
+<p>Finally, I was able to use the EWS Java API. For someone who had only used Visual Studio, it was quite a high hurdle, but is it common sense for Java developers? Maybe there’s an easier way.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/Docs/en/">&laquo; Prev</a><a class="page-number" href="/Docs/en/">1</a><span class="page-number current">2</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-exchange-server-build-number/">A Script to Get Exchange Server Build Numbers</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/add-alias-to-get-mailboxstatistics-output/">Adding an alias to the output of Get-MailboxStatistics</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

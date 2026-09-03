@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Get-Mailbox コマンドの結果をパイプラインで受け取り、予定表フォルダーのアクセス権をまとめて設定する PowerShell 関数を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Get-Mailbox コマンドの結果をパイプラインで受け取り、予定表フォルダーのアクセス権をまとめて設定する PowerShell 関数を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2015-08-29T19:16:34.000Z">
+<meta property="article:modified_time" content="2026-09-02T23:48:44.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/set-calendar-permissions-from-get-mailbox/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/set-calendar-permissions-from-get-mailbox/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/set-calendar-permissions-from-get-mailbox" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-08-29T19:16:34.000Z" itemprop="datePublished">2015-08-30</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">PowerShell</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Get-Mailbox コマンドの結果をパイプラインで受け取り、予定表フォルダーのアクセス権を設定するスクリプトを書いてみました。なぜかというと、かねてから面倒だなと感じることがあったためです。</p>
+<ul>
+<li>Get-Mailbox コマンドの結果を Set-MailboxFolderPermission コマンドや Add-MailboxFolderPermission コマンドにパイプラインで渡せない</li>
+<li>そのため、一括でアクセス権を付与するようなことが難しい</li>
+<li>まだアクセス権を持たないユーザーに Set-MailboxFolderPermission コマンドで権限を与えようとするとエラーになる</li>
+</ul>
+<p>また、組織内の全員の予定表フォルダーの既定のアクセス権を設定したいということがあるかと思います。その場合は予定表フォルダーの名前がわからないので、工夫が必要になります。</p>
+<p>そんなもやもやを吹き飛ばすべく、以下のようなスクリプトを書いてみました。あくまで自分の勉強のために書いているということはご了承ください。Exchange Online で使えるようにと思って書いているので、オンプレミスの Exchange サーバー用に書くのであればもう少しすっきり書くこともできそうですね。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Update-CalendarFolderPermission</span><span class="params">()</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">[<span class="type">CmdletBinding</span>()]</span></span><br><span class="line">    <span class="keyword">param</span>(</span><br><span class="line">        <span class="comment"># 対象メールボックス</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">ValueFromPipeline</span>=<span class="variable">$true</span>, <span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># パイプラインからの引数渡しを許可し、引数の指定を必須とする</span></span><br><span class="line">        [<span class="type">ValidateNotNullorEmpty</span>()] <span class="comment"># Null を許可しない</span></span><br><span class="line">        <span class="variable">$Identity</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment"># アクセス権を付与するユーザー</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># 引数の指定を必須とする</span></span><br><span class="line">        [<span class="type">ValidateScript</span>(&#123;(<span class="selector-tag">@</span>(<span class="string">&quot;default&quot;</span>, <span class="string">&quot;anonymous&quot;</span>)<span class="type">.Contains</span>(<span class="variable">$_</span><span class="type">.ToLower</span>())) -<span class="type">or</span> (<span class="selector-tag">@</span>(<span class="string">&quot;UserMailbox&quot;</span>, <span class="string">&quot;MailUser&quot;</span>, <span class="string">&quot;MailContact&quot;</span>, <span class="string">&quot;MailUniversalSecurityGroup&quot;</span>)<span class="type">.Contains</span>((<span class="built_in">Get-Recipient</span> <span class="variable">$_</span>)<span class="type">.RecipientType</span>))&#125;)] <span class="comment"># Exchange の受信者であるか確認</span></span><br><span class="line">        [<span class="built_in">string</span>]</span><br><span class="line">        <span class="variable">$User</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment"># アクセス権</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># 引数の指定を必須とする</span></span><br><span class="line">        [<span class="type">ValidateSet</span>(<span class="string">&quot;ReadItems&quot;</span>, <span class="string">&quot;CreateItems&quot;</span>,<span class="string">&quot;EditOwnedItems&quot;</span> ,<span class="string">&quot;DeleteOwnedItems&quot;</span> ,<span class="string">&quot;EditAllItems&quot;</span>, <span class="string">&quot;DeleteAllItems&quot;</span>, <span class="string">&quot;CreateSubfolders&quot;</span>, <span class="string">&quot;FolderOwner&quot;</span>, <span class="string">&quot;FolderContact&quot;</span>, <span class="string">&quot;FolderVisible&quot;</span>, <span class="string">&quot;None&quot;</span>, <span class="string">&quot;Owner&quot;</span>, <span class="string">&quot;PublishingEditor&quot;</span>, <span class="string">&quot;Editor&quot;</span>, <span class="string">&quot;PublishingAuthor&quot;</span>,<span class="string">&quot;Author&quot;</span>, <span class="string">&quot;NonEditingAuthor&quot;</span>, <span class="string">&quot;Reviewer&quot;</span>, <span class="string">&quot;Contributor&quot;</span>, <span class="string">&quot;AvailabilityOnly&quot;</span>, <span class="string">&quot;LimitedDetails&quot;</span>)]</span><br><span class="line">        [<span class="built_in">string</span>]</span><br><span class="line">        <span class="variable">$AccessRights</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">process</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            [<span class="built_in">string</span>]<span class="variable">$TargetMailbox</span> = <span class="variable">$null</span> <span class="comment"># 対象メールボックス</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$Identity</span>.GetType().Name <span class="operator">-eq</span> <span class="string">&quot;string&quot;</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Identity に String 型のデータが指定されたため、そのまま TargetMailbox として使用します。&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">elseif</span>((<span class="variable">$Identity</span> | <span class="built_in">Get-Member</span> Alias <span class="literal">-MemberType</span> Property).Length <span class="operator">-eq</span> <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Identity に Alias プロパティを含むデータが指定されたため、Alias プロパティを TargetMailbox として使用します。&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span>.Alias</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Identity に指定されたデータを String 型に変換して TargetMailbox として使用します。&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span>.ToString()</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="variable">$Folders</span> = <span class="built_in">Get-MailboxFolderStatistics</span> <span class="literal">-Identity</span> <span class="variable">$TargetMailbox</span> <span class="literal">-FolderScope</span> Calendar | <span class="built_in">where</span> &#123; <span class="variable">$_</span>.FolderType <span class="operator">-eq</span> <span class="string">&quot;Calendar&quot;</span> &#125;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="variable">$Folder</span> <span class="keyword">in</span> <span class="variable">$Folders</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$Error</span>.Clear() <span class="comment"># エラーをクリア</span></span><br><span class="line"></span><br><span class="line">                <span class="variable">$CalendarPath</span> = <span class="variable">$TargetMailbox</span> + <span class="string">&quot;:&quot;</span> + <span class="variable">$Folder</span>.FolderId</span><br><span class="line">                <span class="built_in">Set-MailboxFolderPermission</span> <span class="literal">-Identity</span> <span class="variable">$CalendarPath</span> <span class="literal">-User</span> <span class="variable">$User</span> <span class="literal">-AccessRights</span> <span class="variable">$AccessRights</span> <span class="number">2</span>&gt; <span class="variable">$null</span>  <span class="comment"># エラーになっても継続</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># エラー処理</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$error</span>.Count <span class="operator">-ne</span> <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Write-Verbose</span> <span class="string">&quot;Set-MailboxFolderPermission コマンドの実行時にエラーが発生しました。&quot;</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span>(<span class="variable">$Error</span>[<span class="number">0</span>].CategoryInfo.Reason <span class="operator">-eq</span> <span class="string">&quot;UserNotFoundInPermissionEntryException&quot;</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="comment"># アクセス権を持たないユーザーに対して Ser-MailboxFolderPermission を実行してエラーになったので、</span></span><br><span class="line">                        <span class="comment"># Add-MailboxFolderPermission で対処する</span></span><br><span class="line"></span><br><span class="line">                        <span class="built_in">Write-Verbose</span> <span class="string">&quot;エラーは UserNotFoundInPermissionEntryException でした。&quot;</span></span><br><span class="line"></span><br><span class="line">                        <span class="variable">$Error</span>.Clear()</span><br><span class="line">                        <span class="built_in">Add-MailboxFolderPermission</span> <span class="literal">-Identity</span> <span class="variable">$CalendarPath</span> <span class="literal">-User</span> <span class="variable">$User</span> <span class="literal">-AccessRights</span> <span class="variable">$AccessRights</span> &gt; <span class="variable">$null</span></span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span>(<span class="variable">$Error</span>.Count <span class="operator">-ne</span> <span class="number">0</span>)</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="built_in">Write-Verbose</span> <span class="string">&quot;Add-MailboxFolderPermission コマンドの実行にも失敗しました。&quot;</span></span><br><span class="line">                            <span class="built_in">Write-Error</span> <span class="variable">$Error</span>[<span class="number">0</span>]</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="built_in">Write-Verbose</span> <span class="string">&quot;エラーなく Add-MailboxFolderPermission コマンドが実行されました。&quot;</span></span><br><span class="line">                            <span class="built_in">Write-Output</span> <span class="string">&quot;<span class="variable">$TargetMailbox</span> の予定表の <span class="variable">$User</span> のアクセス権を <span class="variable">$AccessRights</span> に設定しました。&quot;</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">Write-Verbose</span> <span class="string">&quot;エラーは予期せぬエラーでした。&quot;</span></span><br><span class="line">                        <span class="built_in">Write-Error</span> <span class="variable">$Error</span>[<span class="number">0</span>]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Write-Verbose</span> <span class="string">&quot;エラーなく Set-MailboxFolderPermission コマンドが実行されました。&quot;</span></span><br><span class="line">                    <span class="built_in">Write-Output</span> <span class="string">&quot;<span class="variable">$TargetMailbox</span> の予定表フォルダーの <span class="variable">$User</span> のアクセス権を <span class="variable">$AccessRights</span> に変更しました。&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">Write-Error</span> <span class="variable">$_</span>.Exception.Message</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>いくつか実行例をご紹介します。まずはスクリプトの内容を .ps1 ファイル (例えば Update-CalendarFolderPermission.ps1) として保存して、以下のように実行しておきます。これで Update-CalendarFolderPermission コマンドを使用できるようになります。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. C:\temp\<span class="built_in">Update-CalendarFolderPermission</span>.ps1</span><br></pre></td></tr></table></figure>
+
+<h3 id="例-1"><a href="#例-1" class="headerlink" title="例 1"></a>例 1</h3><p>この例では、User01 の予定表フォルダーの既定のアクセス権を、参照者権限に変更します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-Identity</span> User01 <span class="literal">-User</span> Default <span class="literal">-AccessRights</span> Reviewer</span><br></pre></td></tr></table></figure>
+
+<h3 id="例-2"><a href="#例-2" class="headerlink" title="例 2"></a>例 2</h3><p>この例では、User01 の予定表フォルダーに対して、User02 の編集者権限を設定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-Identity</span> User01 <span class="literal">-User</span> User02 <span class="literal">-AccessRights</span> Editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="例-3"><a href="#例-3" class="headerlink" title="例 3"></a>例 3</h3><p>この例は例 2 と同等の内容を、Get-Mailbox コマンドからのパイプライン入力で実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Mailbox</span> User01 | <span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-User</span> User02 <span class="literal">-AccessRights</span> Editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="例-4"><a href="#例-4" class="headerlink" title="例 4"></a>例 4</h3><p>この例では、すべてのユーザーの予定表フォルダーの既定のアクセス権を、なしに変更します。例として記載はしていますが、Exchange Online のコマンドで大量のオブジェクトの取得や設定を行おうとすると失敗する可能性が高いため注意が必要です。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Mailbox</span> <span class="literal">-ResultSize</span> Unlimited | <span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-User</span> Default <span class="literal">-AccessRights</span> None</span><br></pre></td></tr></table></figure>
+
+<p>なんとなく、やりたかったことが伝わったでしょうか。当然ですが、Exchange サーバーのコマンドを使っていますので、オンプレミスの Exchange サーバーであれば Exchange 管理シェル上で実行してください。Exchange Online であればあらかじめ <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps">PowerShell を Exchange Online へ接続</a> しておいてください。</p>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>この記事の執筆当時、Exchange Online PowerShell への接続にはリモート PowerShell セッションと基本認証 (ユーザー名とパスワード) の組み合わせが使用されていました。その後、Exchange Online では基本認証によるリモート PowerShell 接続が廃止されており、現在は <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps">ExchangeOnlineManagement モジュール</a> の Connect-ExchangeOnline コマンドレットを使って、最新の認証方式で接続する必要があります。本文で紹介している Update-CalendarFolderPermission 関数、および Set-MailboxFolderPermission、Add-MailboxFolderPermission、Get-MailboxFolderStatistics などのコマンドレット自体は、現在も変更なく使用できます。</p>
+</div>
+<p>ちなみに、引数で FolderScope を取って予定表フォルダー以外にも使えるようにしようかとも考えましたが、予定表フォルダー以外に役に立つ状況がなかなかなさそうだったのでやめました。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/set-calendar-permissions-from-get-mailbox.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/" data-id="cuidfUsqqJKhOMnWPJn0--m_6" data-title="Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/exchange-server-2016-release/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Exchange Server 2016 リリース
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/send-email-with-smtpclient-powershell/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          SmtpClient を使って PowerShell でてきとうなメールを送信する
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-exchange-server-build-number/">Exchange サーバーのビルド番号を取得するスクリプト</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/add-alias-to-get-mailboxstatistics-output/">Get-MailboxStatistics コマンドの出力にエイリアスを追加する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

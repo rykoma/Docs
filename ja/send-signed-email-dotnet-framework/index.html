@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>.NET Framework で電子署名付きのメールを送信する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/send-signed-email-dotnet-framework/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content=".NET Framework の SmtpClient には電子署名や暗号化の機能が用意されていないため、S&#x2F;MIME 形式の MIME データを自前で組み立てて電子署名付きメールを送信するサンプル コードを紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET Framework で電子署名付きのメールを送信する">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content=".NET Framework の SmtpClient には電子署名や暗号化の機能が用意されていないため、S&#x2F;MIME 形式の MIME データを自前で組み立てて電子署名付きメールを送信するサンプル コードを紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2015-10-10T23:24:12.000Z">
+<meta property="article:modified_time" content="2026-09-03T00:37:17.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content="SmtpClient">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/send-signed-email-dotnet-framework/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/send-signed-email-dotnet-framework/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/send-signed-email-dotnet-framework" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-10-10T23:24:12.000Z" itemprop="datePublished">2015-10-11</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">.NET</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      .NET Framework で電子署名付きのメールを送信する
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>この記事で紹介している <a target="_blank" rel="noopener" href="https://learn.microsoft.com/ja-jp/dotnet/api/system.net.mail.smtpclient">SmtpClient</a> クラスは、現在は新規開発での使用が推奨されていません。詳細は SmtpClient クラスのリファレンスの解説を参照してください。新規開発では <a target="_blank" rel="noopener" href="https://github.com/jstedfast/MailKit">MailKit</a> などのライブラリの使用を検討してください。</p>
+</div>
+<p>.NET Framework でメールを送信するときは SmtpClient を使うことになると思いますが、プロパティなどで簡単にメールに電子署名をつけたり暗号化したりすることはできません。そのため、フォーラムやブログで議論されたり、3rd パーティ製品も販売されたりもしているようです。</p>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>執筆当時は、この話題を扱うフォーラムの投稿や関連ブログ記事へのリンクを掲載していましたが、いずれも公開が終了しているため、本記事ではリンクを外しています。</p>
+</div>
+<p>先のフォーラムもブログも日本語を考慮していないようでしたので、日本語を扱えるように書いてみました。最後に全文を紹介しますが、実行は自己責任でお願いします。なるべく既存の SmtpClient を使用するため完ぺきではないですし、つぎはぎで書いており、例外処理もしていません。</p>
+<p>まず初めに、日本語を扱うには文字コードの指定とエンコードが必要となるので、指定した文字コードの文字列を Base64 でエンコードするクラスを作成しておきます。MIME ヘッダーに使用するときは文字コードを示す必要があるので、単純にエンコードをする Encode と、EncodeWithCharecterCode の 2 つの関数を用意します。文字コードには iso-2022-jp や UTF-8 が使用できます。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyBase64str</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> Encoding enc;</span><br><span class="line">	<span class="keyword">private</span> <span class="built_in">string</span> characterCode;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">MyBase64str</span>(<span class="params"><span class="built_in">string</span> CharacterCode</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		enc = Encoding.GetEncoding(CharacterCode);</span><br><span class="line">		characterCode = CharacterCode;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Encode</span>(<span class="params"><span class="built_in">string</span> str</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> Convert.ToBase64String(enc.GetBytes(str));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">EncodeWithCharecterCode</span>(<span class="params"><span class="built_in">string</span> str</span>)</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;?&quot;</span> + characterCode + <span class="string">&quot;?B?&quot;</span> + Convert.ToBase64String(enc.GetBytes(str)) + <span class="string">&quot;?=&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>それでは、さっそくメールを作っていきます。標準機能では実現できないので、MIME データを作る必要があります。まずは添付ファイルがない場合のパターンです。以下のような形で、MIME データを作ります。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">StringBuilder buffer = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"><span class="built_in">string</span> MimePart;</span><br><span class="line"></span><br><span class="line">buffer.Append(<span class="string">&quot;MIME-Version: 1.0\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (IsBodyHtml)</span><br><span class="line">&#123;</span><br><span class="line">	buffer.Append(<span class="string">&quot;Content-Type: text/html; charset=\&quot;UTF-8\&quot;\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	buffer.Append(<span class="string">&quot;Content-Type: text/plain; charset=\&quot;UTF-8\&quot;\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">buffer.Append(<span class="string">&quot;Content-Transfer-Encoding: base64\r\n\r\n&quot;</span>);</span><br><span class="line">buffer.Append(Base64.Encode(Body));</span><br><span class="line"></span><br><span class="line">MimePart = buffer.ToString();</span><br></pre></td></tr></table></figure>
+
+<p>もうすでに面倒ですが、今度は添付ファイルがある場合です。マルチ パートの MIME データになります。本文部分は大体同じなので紹介しません。変数の宣言部分を省略していますが、添付ファイルのデータを以下のように作ります。これを添付ファイルの回数だけ繰り返します。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">FileInfo FileInfo = <span class="keyword">new</span> FileInfo(FileName);</span><br><span class="line">buffer.Append(<span class="string">&quot;--unique-boundary-1\r\n&quot;</span>);</span><br><span class="line">buffer.Append(<span class="string">&quot;Content-Type: application/octet-stream; file=&quot;</span>=<span class="string">&quot; + Base64.EncodeWithCharecterCode(FileInfo.Name) + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">buffer.Append(<span class="string">&quot;Content-Transfer-Encoding: base64\r\n&quot;</span>);</span><br><span class="line">buffer.Append(<span class="string">&quot;Content-Disposition: attachment; filename=&quot;</span>=<span class="string">&quot; + Base64.EncodeWithCharecterCode(FileInfo.Name) + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line"><span class="built_in">byte</span>[] BinaryData = File.ReadAllBytes(FileInfo.FullName);</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> Base64Value = Convert.ToBase64String(BinaryData, <span class="number">0</span>, BinaryData.Length);</span><br><span class="line"><span class="built_in">int</span> Position = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (Position &lt; Base64Value.Length)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">int</span> ChunkSize = <span class="number">100</span>;</span><br><span class="line">	<span class="keyword">if</span> (Base64Value.Length - (Position + ChunkSize) &lt; <span class="number">0</span>)</span><br><span class="line">		ChunkSize = Base64Value.Length - Position;</span><br><span class="line">		buffer.Append(Base64Value.Substring(Position, ChunkSize));</span><br><span class="line">		buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">		Position += ChunkSize;</span><br><span class="line">	&#125;</span><br><span class="line">buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>MIME データが生成できたら署名します。使用する証明書の選択方法はのちほど紹介します。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">byte</span>[] Data = Encoding.ASCII.GetBytes(MimePart);</span><br><span class="line">ContentInfo Content = <span class="keyword">new</span> ContentInfo(Data);</span><br><span class="line">SignedCms SignedCms = <span class="keyword">new</span> SignedCms(Content, <span class="literal">false</span>);</span><br><span class="line">CmsSigner Signer = <span class="keyword">new</span> CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, Certificate);</span><br><span class="line">SignedCms.ComputeSignature(Signer);</span><br><span class="line"><span class="built_in">byte</span>[] SignedBytes = SignedCms.Encode();</span><br></pre></td></tr></table></figure>
+
+<p>署名したら、MailMessage の AlternateViews に設定します。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">MemoryStream Stream = <span class="keyword">new</span> MemoryStream(SignedBytes);</span><br><span class="line">AlternateView View = <span class="keyword">new</span> AlternateView(Stream, <span class="string">&quot;application/pkcs7-mime; smime-type=signed-data;name=smime.p7m&quot;</span>);</span><br><span class="line">Message.AlternateViews.Add(View);</span><br></pre></td></tr></table></figure>
+
+<p>最後に、SmtpClient で送信して完了です。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SmtpClient Client = <span class="keyword">new</span> SmtpClient(<span class="string">&quot;192.168.1.1&quot;</span>, <span class="number">25</span>);</span><br><span class="line">Client.UseDefaultCredentials = <span class="literal">true</span>;</span><br><span class="line">Client.Send(Message);</span><br></pre></td></tr></table></figure>
+
+<p>署名に使用する証明書は、証明書ストアから選択するか、ファイルから読み込みます。証明書ストアから選択するのであれば、例えば以下のようになります。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">X509Store Store = <span class="keyword">new</span> X509Store(StoreLocation.CurrentUser);</span><br><span class="line">Store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);</span><br><span class="line">X509Certificate2Collection Certs = Store.Certificates;</span><br><span class="line">                </span><br><span class="line"><span class="keyword">foreach</span> (X509Certificate2 Cert <span class="keyword">in</span> Certs)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> (Cert.Subject.IndexOf(<span class="string">&quot;user01&quot;</span>) &gt;= <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		Certificate = Cert;</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>秘密鍵を含む証明書ファイルから読み込む場合は以下のようになります。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Certificate = <span class="keyword">new</span> X509Certificate2(<span class="string">&quot;C:\cert.pfx&quot;</span>, <span class="string">&quot;password&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>個別の説明は以上です。最後にサンプル コード全文を紹介します。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.Generic;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Net.Mail;</span><br><span class="line"><span class="keyword">using</span> System.Security.Cryptography.Pkcs;</span><br><span class="line"><span class="keyword">using</span> System.Security.Cryptography.X509Certificates;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">MyProgram</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">bool</span> LoadCertificateFromStore = <span class="literal">true</span>;</span><br><span class="line">            X509Certificate2 Certificate = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (LoadCertificateFromStore)</span><br><span class="line">            &#123;</span><br><span class="line">                X509Store Store = <span class="keyword">new</span> X509Store(StoreLocation.CurrentUser);</span><br><span class="line">                Store.Open(OpenFlags.OpenExistingOnly | OpenFlags.ReadOnly);</span><br><span class="line">                X509Certificate2Collection Certs = Store.Certificates;</span><br><span class="line">                </span><br><span class="line">                <span class="keyword">foreach</span> (X509Certificate2 Cert <span class="keyword">in</span> Certs)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (Cert.Subject.IndexOf(<span class="string">&quot;user01&quot;</span>) &gt;= <span class="number">0</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        Certificate = Cert;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                Certificate = <span class="keyword">new</span> X509Certificate2(<span class="string">&quot;C:\cert.pfx&quot;</span>, <span class="string">&quot;password&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            MailAddress[] To = &#123; <span class="keyword">new</span> MailAddress(<span class="string">&quot;user02@contoso.com&quot;</span>) &#125;;</span><br><span class="line">            MailAddress From = <span class="keyword">new</span> MailAddress(<span class="string">&quot;user01@contoso.com&quot;</span>);</span><br><span class="line">            <span class="built_in">string</span> Subject = <span class="string">&quot;電子署名付きメール&quot;</span>;</span><br><span class="line">            <span class="built_in">string</span> Body = <span class="string">@&quot;&lt;html&gt;&lt;body&gt;&lt;p&gt;このメールは&lt;b&gt;電子署名つき&lt;/b&gt;です。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span>;</span><br><span class="line">            <span class="built_in">string</span>[] Attachments = &#123; <span class="string">@&quot;C:テスト1.txt&quot;</span>, <span class="string">@&quot;C:テスト2.txt&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">            SendEncryptedEmail(To, From, Subject, Body, Certificate, Attachments, <span class="literal">true</span>, <span class="string">&quot;UTF-8&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">SendEncryptedEmail</span>(<span class="params">MailAddress[] To, MailAddress From, <span class="built_in">string</span> Subject, <span class="built_in">string</span> Body, X509Certificate2 Certificate, <span class="built_in">string</span>[] Attachments, <span class="built_in">bool</span> IsBodyHtml, <span class="built_in">string</span> CharacterCode</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            MyBase64str Base64 = <span class="keyword">new</span> MyBase64str(CharacterCode);</span><br><span class="line"></span><br><span class="line">            MailMessage Message = <span class="keyword">new</span> MailMessage();</span><br><span class="line">            <span class="keyword">foreach</span> (MailAddress Address <span class="keyword">in</span> To)</span><br><span class="line">            &#123;</span><br><span class="line">                Message.To.Add(Address);</span><br><span class="line">            &#125;</span><br><span class="line">            Message.From = From;</span><br><span class="line">            Message.Subject = Subject;</span><br><span class="line"></span><br><span class="line">            StringBuilder buffer = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">            <span class="built_in">string</span> MimePart;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (Attachments != <span class="literal">null</span> &amp;&amp; Attachments.Length &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                buffer.Append(<span class="string">&quot;MIME-Version: 1.0\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(<span class="string">&quot;Content-Type: multipart/mixed; boundary=unique-boundary-1\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(<span class="string">&quot;This is a multi-part message in MIME format.\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(<span class="string">&quot;--unique-boundary-1\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (IsBodyHtml)</span><br><span class="line">                &#123;</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Type: text/html; charset=&quot;</span><span class="string">&quot; + CharacterCode + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Type: text/plain; charset=&quot;</span><span class="string">&quot; + CharacterCode + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                buffer.Append(<span class="string">&quot;Content-Transfer-Encoding: base64\r\n\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(Base64.Encode(Body));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!Body.EndsWith(<span class="string">&quot;\r\n&quot;</span>))</span><br><span class="line">                    buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(<span class="string">&quot;\r\n\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">foreach</span> (<span class="built_in">string</span> FileName <span class="keyword">in</span> Attachments)</span><br><span class="line">                &#123;</span><br><span class="line">                    FileInfo FileInfo = <span class="keyword">new</span> FileInfo(FileName);</span><br><span class="line">                    buffer.Append(<span class="string">&quot;--unique-boundary-1\r\n&quot;</span>);</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Type: application/octet-stream; file=&quot;</span>=<span class="string">&quot; + Base64.EncodeWithCharecterCode(FileInfo.Name) + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Transfer-Encoding: base64\r\n&quot;</span>);</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Disposition: attachment; filename=&quot;</span>=<span class="string">&quot; + Base64.EncodeWithCharecterCode(FileInfo.Name) + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                    buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                    <span class="built_in">byte</span>[] BinaryData = File.ReadAllBytes(FileInfo.FullName);</span><br><span class="line"></span><br><span class="line">                    <span class="built_in">string</span> Base64Value = Convert.ToBase64String(BinaryData, <span class="number">0</span>, BinaryData.Length);</span><br><span class="line">                    <span class="built_in">int</span> Position = <span class="number">0</span>;</span><br><span class="line">                    <span class="keyword">while</span> (Position &lt; Base64Value.Length)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">int</span> ChunkSize = <span class="number">100</span>;</span><br><span class="line">                        <span class="keyword">if</span> (Base64Value.Length - (Position + ChunkSize) &lt; <span class="number">0</span>)</span><br><span class="line">                            ChunkSize = Base64Value.Length - Position;</span><br><span class="line">                        buffer.Append(Base64Value.Substring(Position, ChunkSize));</span><br><span class="line">                        buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                        Position += ChunkSize;</span><br><span class="line">                    &#125;</span><br><span class="line">                    buffer.Append(<span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                MimePart = buffer.ToString();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                buffer.Append(<span class="string">&quot;MIME-Version: 1.0\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (IsBodyHtml)</span><br><span class="line">                &#123;</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Type: text/html; charset=&quot;</span><span class="string">&quot; + CharacterCode + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    buffer.Append(<span class="string">&quot;Content-Type: text/plain; charset=&quot;</span><span class="string">&quot; + CharacterCode + &quot;</span><span class="string">&quot;\r\n&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                buffer.Append(<span class="string">&quot;Content-Transfer-Encoding: base64\r\n\r\n&quot;</span>);</span><br><span class="line">                buffer.Append(Base64.Encode(Body));</span><br><span class="line"></span><br><span class="line">                MimePart = buffer.ToString();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">byte</span>[] Data = Encoding.ASCII.GetBytes(MimePart);</span><br><span class="line">            ContentInfo Content = <span class="keyword">new</span> ContentInfo(Data);</span><br><span class="line">            SignedCms SignedCms = <span class="keyword">new</span> SignedCms(Content, <span class="literal">false</span>);</span><br><span class="line">            CmsSigner Signer = <span class="keyword">new</span> CmsSigner(SubjectIdentifierType.IssuerAndSerialNumber, Certificate);</span><br><span class="line">            SignedCms.ComputeSignature(Signer);</span><br><span class="line">            <span class="built_in">byte</span>[] SignedBytes = SignedCms.Encode();</span><br><span class="line"></span><br><span class="line">            MemoryStream Stream = <span class="keyword">new</span> MemoryStream(SignedBytes);</span><br><span class="line">            AlternateView View = <span class="keyword">new</span> AlternateView(Stream, <span class="string">&quot;application/pkcs7-mime; smime-type=signed-data;name=smime.p7m&quot;</span>);</span><br><span class="line">            Message.AlternateViews.Add(View);</span><br><span class="line"></span><br><span class="line">            SmtpClient Client = <span class="keyword">new</span> SmtpClient(<span class="string">&quot;192.168.1.244&quot;</span>, <span class="number">25</span>);</span><br><span class="line">            Client.UseDefaultCredentials = <span class="literal">true</span>;</span><br><span class="line">            Client.Send(Message);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">MyBase64str</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> Encoding enc;</span><br><span class="line">        <span class="keyword">private</span> <span class="built_in">string</span> characterCode;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">MyBase64str</span>(<span class="params"><span class="built_in">string</span> CharacterCode</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            enc = Encoding.GetEncoding(CharacterCode);</span><br><span class="line">            characterCode = CharacterCode;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Encode</span>(<span class="params"><span class="built_in">string</span> str</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> Convert.ToBase64String(enc.GetBytes(str));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">EncodeWithCharecterCode</span>(<span class="params"><span class="built_in">string</span> str</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;?&quot;</span> + characterCode + <span class="string">&quot;?B?&quot;</span> + Convert.ToBase64String(enc.GetBytes(str)) + <span class="string">&quot;?=&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>なお、色々とテストしていただくと分かりますが、このコードは完ぺきではありません。1 行のサイズをチェックしていなかったり、受信したメールを Outlook で表示すると添付ファイルがなくても添付ファイルのアイコンが表示されたりします。完ぺきを目指すのであれば、SmtpClient や MailMessage などのクラスをベースに、SMTP の機能を自前で実装する必要がありそうです。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/SmtpClient/" rel="tag">SmtpClient</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/NET/" rel="tag">.NET</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/send-signed-email-dotnet-framework.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/" data-id="cuidO3rc3Iis7AVwt0iZWU3KN" data-title=".NET Framework で電子署名付きのメールを送信する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/export-hashtable-to-csv-powershell/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          PowerShell でハッシュ テーブルを CSV にエクスポートする
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/exchange-server-2016-release/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Exchange Server 2016 リリース
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-exchange-server-build-number/">Exchange サーバーのビルド番号を取得するスクリプト</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/add-alias-to-get-mailboxstatistics-output/">Get-MailboxStatistics コマンドの出力にエイリアスを追加する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Microsoft Graph で下書き状態の会議を作成する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/create-draft-meeting-with-microsoft-graph/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft Graph で下書き状態の会議を作成する">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/image.png">
+<meta property="article:published_time" content="2024-03-15T00:23:21.000Z">
+<meta property="article:modified_time" content="2024-03-15T00:23:25.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Microsoft Graph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/image.png">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/create-draft-meeting-with-microsoft-graph/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/create-draft-meeting-with-microsoft-graph/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/create-draft-meeting-with-microsoft-graph" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2024-03-15T00:23:21.000Z" itemprop="datePublished">2024-03-15</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Microsoft Graph で下書き状態の会議を作成する
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Microsoft Graph を使用して下書き状態の会議を作成できます。基本的なリクエスト内容は通常の<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/api/user-post-events?view=graph-rest-1.0&tabs=http">会議を作成するリクエスト</a>と同じで、追加で <code>isDraft</code> プロパティに <code>true</code> を指定します。例えば、次のようになります。</p>
+<table>
+<thead>
+<tr>
+<th>プロパティ</th>
+<th>値</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>isDraft</code></td>
+<td><code>true</code></td>
+<td>会議を下書きとして保存する</td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td>会議の件名</td>
+<td>予定表に表示する件名</td>
+</tr>
+</tbody></table>
+<figure class="highlight http-request"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="http-method-post">POST</span> https://graph.microsoft.com/v1.0/me/events</span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;subject&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Let&#x27;s go for lunch&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;body&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;contentType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HTML&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Does noon work for you?&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;start&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;dateTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-03-15T12:00:00&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;timeZone&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Tokyo Standard Time&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;end&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;dateTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-03-15T14:00:00&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;timeZone&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Tokyo Standard Time&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;location&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;displayName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Harry&#x27;s Bar&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;attendees&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;emailAddress&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ExoUser02@contoso.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ExoUser02&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;required&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;isDraft&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>これで予定表に下書き状態の会議が作成されます。下書きフォルダーには会議出席依頼の下書きは作られません。</p>
+<img src="/Docs/ja/create-draft-meeting-with-microsoft-graph/image.png" alt="Microsoft Graph で下書き状態の会議を作成した結果">
+
+<p>下書き状態の会議を送信するには、作成した会議の <code>isDraft</code> プロパティを PATCH リクエストで <code>false</code> に変更します。例えば、次のようになります。</p>
+<figure class="highlight http-request"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="http-method-patch">PATCH</span> https://graph.microsoft.com/v1.0/me/events/AAMkAGQ4MzIxNjhmLWYwMDAtNGI5Ni04MDNmLWM2MGRhYTUwYTc1YgBGAAAAAADq6mx0Pru-RrZDSJCvqSogBwCl3zuFppFfS45yc92LhnXOAAAAAAENAACl3zuFppFfS45yc92LhnXOAAeZQUnsAAA=</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/create-draft-meeting-with-microsoft-graph.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/" data-id="cuidcliGmlR8q9GB59WuzJsEe" data-title="Microsoft Graph で下書き状態の会議を作成する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/microsoft-graph-email-attachments/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph とメールのいろいろな添付
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/get-exchange-server-build-number/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Exchange サーバーのビルド番号を取得するスクリプト
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-exchange-server-build-number/">Exchange サーバーのビルド番号を取得するスクリプト</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/add-alias-to-get-mailboxstatistics-output/">Get-MailboxStatistics コマンドの出力にエイリアスを追加する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

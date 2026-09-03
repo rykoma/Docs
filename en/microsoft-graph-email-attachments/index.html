@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Microsoft Graph email attachments | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Understand the file, item, inline, and cloud attachment types in Exchange Online when using Microsoft Graph.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft Graph email attachments">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Understand the file, item, inline, and cloud attachment types in Exchange Online when using Microsoft Graph.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-29T05:28:02.000Z">
+<meta property="article:modified_time" content="2024-08-29T05:28:04.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Attachments">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Microsoft Graph">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/microsoft-graph-email-attachments/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/microsoft-graph-email-attachments/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/microsoft-graph-email-attachments" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2024-08-29T05:28:02.000Z" itemprop="datePublished">2024-08-29</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Microsoft Graph email attachments
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Microsoft Graph documents how to retrieve message attachments in <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/api/message-list-attachments?view=graph-rest-1.0&tabs=http">List attachments</a> and <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/api/attachment-get?view=graph-rest-1.0&tabs=http">Get attachments</a>. You can also retrieve attachments together with messages by using a request such as <code>/messages?$expand=attachments</code> with <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/api/user-list-messages?view=graph-rest-1.0&tabs=http">List messages</a>.</p>
+<p>Before doing this, it is important to understand the different types of attachments in Exchange Online messages.</p>
+<h2 id="File-attachments"><a href="#File-attachments" class="headerlink" title="File attachments"></a>File attachments</h2><p>These are ordinary attachments, such as an Excel file. Microsoft Graph represents them as <code>fileAttachment</code> resources.</p>
+<p>When you retrieve a message with <code>/messages</code>, <code>hasAttachments</code> is <code>true</code> when the message has a file attachment.</p>
+<h2 id="Outlook-item-attachments"><a href="#Outlook-item-attachments" class="headerlink" title="Outlook item attachments"></a>Outlook item attachments</h2><p>An attached Outlook item, such as a message or an event, is handled differently from an ordinary file. Microsoft Graph represents it as an <code>itemAttachment</code> resource.</p>
+<p><code>hasAttachments</code> is also <code>true</code> when a message has an attached Outlook item.</p>
+<p>An attached eml file is a <code>fileAttachment</code>, while an attached msg file is an <code>itemAttachment</code>.</p>
+<h2 id="Inline-attachments"><a href="#Inline-attachments" class="headerlink" title="Inline attachments"></a>Inline attachments</h2><p>These are images embedded in the message body. Images in a signature are also inline attachments. Microsoft Graph represents them as <code>fileAttachment</code> resources.</p>
+<p><code>hasAttachments</code> is <code>false</code> even when a message has an inline attachment. Because the image is embedded in the body, the body contains an <code>img</code> element whose <code>src</code> attribute has a value such as <code>cid:f81e14a3-1bfe-491e-a2bb-e53481d97473</code>.</p>
+<p>The attachment can be retrieved through <code>/attachments</code> because it is a <code>fileAttachment</code> resource. Its <code>isInline</code> property is <code>true</code>, and its <code>contentId</code> contains the cid value from the <code>img</code> element’s <code>src</code> attribute, which allows the attachment to be matched to its position in the body.</p>
+<h2 id="Cloud-attachments"><a href="#Cloud-attachments" class="headerlink" title="Cloud attachments"></a>Cloud attachments</h2><p>These are attachments that contain link information, such as a link to OneDrive. <a target="_blank" rel="noopener" href="https://support.microsoft.com/en-us/office/inserting-a-link-as-an-attachment-has-changed-in-outlook-desktop-0ac06bae-e78d-48a8-b43d-15f63d6b8626">Outlook no longer provides an operation to create this type of link</a>. Microsoft Graph represents them as <code>referenceAttachment</code> resources.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Attachments/" rel="tag">Attachments</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/microsoft-graph-email-attachments.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/" data-id="cuidbgAnkCrsfupaoJGlxT7CQ" data-title="Microsoft Graph email attachments" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Create a draft meeting with Microsoft Graph
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-exchange-server-build-number/">A Script to Get Exchange Server Build Numbers</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/add-alias-to-get-mailboxstatistics-output/">Adding an alias to the output of Get-MailboxStatistics</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

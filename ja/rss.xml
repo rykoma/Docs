@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging 研究所</title>
+    <link>https://rykoma.github.io/Docs/ja/</link>
+    <description>Developer Messaging 研究所の最新記事</description>
+    <language>ja</language>
+    <atom:link href="https://rykoma.github.io/Docs/ja/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Hello World</title>
+      <link>https://rykoma.github.io/Docs/ja/hello-world/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/hello-world/</guid>
+      <pubDate>Wed, 19 Aug 2026 04:45:36 GMT</pubDate>
+      <description>Hexo で構築したブログの最初のサンプル記事です。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph とメールのいろいろな添付</title>
+      <link>https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 05:28:02 GMT</pubDate>
+      <description>Microsoft Graph で扱う Exchange Online のファイル、アイテム、インライン、クラウド添付の違いを整理します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で下書き状態の会議を作成する</title>
+      <link>https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 00:23:21 GMT</pubDate>
+      <description>Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange サーバーのビルド番号を取得するスクリプト</title>
+      <link>https://rykoma.github.io/Docs/ja/get-exchange-server-build-number/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-exchange-server-build-number/</guid>
+      <pubDate>Wed, 27 Jan 2016 05:08:11 GMT</pubDate>
+      <description>Exchange サーバーのビルド番号を製品バージョンから検索する PowerShell スクリプトを GitHub で公開した記録です。現在は PowerShell Module 化され、PowerShell Gallery からも入手できます。</description>
+    </item>
+    <item>
+      <title>Get-MailboxStatistics コマンドの出力にエイリアスを追加する</title>
+      <link>https://rykoma.github.io/Docs/ja/add-alias-to-get-mailboxstatistics-output/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/add-alias-to-get-mailboxstatistics-output/</guid>
+      <pubDate>Fri, 22 Jan 2016 05:30:17 GMT</pubDate>
+      <description>Get-MailboxStatistics コマンドの出力結果にメールボックスのエイリアスを追加する PowerShell の方法と、GitHub で公開している Get-MailboxStatisticsAndAlias コマンドを紹介します。</description>
+    </item>
+    <item>
+      <title>EwsAllowList / EwsBlockList の挙動</title>
+      <link>https://rykoma.github.io/Docs/ja/ews-allowlist-and-blocklist-behavior/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/ews-allowlist-and-blocklist-behavior/</guid>
+      <pubDate>Tue, 29 Dec 2015 03:55:02 GMT</pubDate>
+      <description>Set-CasMailbox で設定する EwsAllowList / EwsBlockList は、登録時は大文字小文字を区別しない一方、実際の接続許可 / 制限では区別されるという挙動を紹介します。</description>
+    </item>
+    <item>
+      <title>PowerShell でハッシュ テーブルを CSV にエクスポートする</title>
+      <link>https://rykoma.github.io/Docs/ja/export-hashtable-to-csv-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/export-hashtable-to-csv-powershell/</guid>
+      <pubDate>Sat, 14 Nov 2015 05:11:10 GMT</pubDate>
+      <description>PowerShell のハッシュ テーブルを CSV ファイルに正しくエクスポートする方法と、Get-MessageTrackingLog の Recipients が出力されない問題への応用を紹介します。</description>
+    </item>
+    <item>
+      <title>.NET Framework で電子署名付きのメールを送信する</title>
+      <link>https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/send-signed-email-dotnet-framework/</guid>
+      <pubDate>Sat, 10 Oct 2015 23:24:12 GMT</pubDate>
+      <description>.NET Framework の SmtpClient には電子署名や暗号化の機能が用意されていないため、S/MIME 形式の MIME データを自前で組み立てて電子署名付きメールを送信するサンプル コードを紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange Server 2016 リリース</title>
+      <link>https://rykoma.github.io/Docs/ja/exchange-server-2016-release/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/exchange-server-2016-release/</guid>
+      <pubDate>Fri, 02 Oct 2015 19:19:52 GMT</pubDate>
+      <description>Exchange Server 2016 の正式リリースを受けて、Exchange 2013 との共存やアーキテクチャの共通点、OWA での Office ファイル プレビューの制限などを確認した記録です。</description>
+    </item>
+    <item>
+      <title>Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する</title>
+      <link>https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/</guid>
+      <pubDate>Sat, 29 Aug 2015 19:16:34 GMT</pubDate>
+      <description>Get-Mailbox コマンドの結果をパイプラインで受け取り、予定表フォルダーのアクセス権をまとめて設定する PowerShell 関数を紹介します。</description>
+    </item>
+    <item>
+      <title>SmtpClient を使って PowerShell でてきとうなメールを送信する</title>
+      <link>https://rykoma.github.io/Docs/ja/send-email-with-smtpclient-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/send-email-with-smtpclient-powershell/</guid>
+      <pubDate>Fri, 14 Aug 2015 19:41:34 GMT</pubDate>
+      <description>PowerShell から SmtpClient クラスを使って、差出人や件名が重複しないランダムなテスト メールを手軽に送信するスクリプトを紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange Server 2016 Preview</title>
+      <link>https://rykoma.github.io/Docs/ja/exchange-server-2016-preview/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/exchange-server-2016-preview/</guid>
+      <pubDate>Sat, 25 Jul 2015 03:57:53 GMT</pubDate>
+      <description>公開された Exchange Server 2016 Preview をインストールし、ビルド番号や &quot;誕生日の予定表&quot; 機能を確認した記録です。</description>
+    </item>
+    <item>
+      <title>Outlook.com のカレンダーを Sunrise Calendar で表示する</title>
+      <link>https://rykoma.github.io/Docs/ja/outlook-com-sunrise-calendar/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/outlook-com-sunrise-calendar/</guid>
+      <pubDate>Fri, 19 Jun 2015 03:28:52 GMT</pubDate>
+      <description>Outlook.com のカレンダーを Sunrise Calendar で表示するために、Android 端末に ActiveSync アカウントとして Outlook.com を追加する手順を紹介します。</description>
+    </item>
+    <item>
+      <title>Outlook REST API を基本認証で利用する</title>
+      <link>https://rykoma.github.io/Docs/ja/outlook-rest-api-basic-authentication/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/outlook-rest-api-basic-authentication/</guid>
+      <pubDate>Tue, 02 Jun 2015 04:33:52 GMT</pubDate>
+      <description>Outlook REST API を基本認証で簡単に試す方法を、Postman を使った例で紹介します。</description>
+    </item>
+    <item>
+      <title>プログラムから Exchange サーバーのアドレス帳を参照するには</title>
+      <link>https://rykoma.github.io/Docs/ja/programmatically-query-exchange-address-book/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/programmatically-query-exchange-address-book/</guid>
+      <pubDate>Sun, 31 May 2015 02:50:22 GMT</pubDate>
+      <description>EWS にはアドレス帳を参照する仕組みがないため、LDAP (System.DirectoryServices) や Exchange 管理シェルを使ってプログラムからアドレス帳の情報を取得する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>EWS Java API を使ってみる</title>
+      <link>https://rykoma.github.io/Docs/ja/ews-java-api/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/ews-java-api/</guid>
+      <pubDate>Fri, 29 May 2015 19:49:46 GMT</pubDate>
+      <description>EWS Java API を Eclipse で使えるようにするまでに必要だった手順と、依存関係で発生した例外の解決方法を紹介します。</description>
+    </item>
+  </channel>
+</rss>

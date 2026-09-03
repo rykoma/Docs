@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Setting calendar folder permissions by piping the output of Get-Mailbox | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/set-calendar-permissions-from-get-mailbox/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="A PowerShell function that takes the output of Get-Mailbox through the pipeline and sets calendar folder permissions for many mailboxes at once.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Setting calendar folder permissions by piping the output of Get-Mailbox">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="A PowerShell function that takes the output of Get-Mailbox through the pipeline and sets calendar folder permissions for many mailboxes at once.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-08-29T19:16:34.000Z">
+<meta property="article:modified_time" content="2026-09-02T23:48:44.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/set-calendar-permissions-from-get-mailbox/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/set-calendar-permissions-from-get-mailbox/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/set-calendar-permissions-from-get-mailbox" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-08-29T19:16:34.000Z" itemprop="datePublished">2015-08-30</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">PowerShell</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Setting calendar folder permissions by piping the output of Get-Mailbox
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>I wrote a script that takes the output of the Get-Mailbox command through the pipeline and sets calendar folder permissions. The reason is that I had long found the following things annoying.</p>
+<ul>
+<li>You cannot pipe the output of Get-Mailbox directly into Set-MailboxFolderPermission or Add-MailboxFolderPermission</li>
+<li>Because of that, it is hard to grant permissions to many mailboxes at once</li>
+<li>Running Set-MailboxFolderPermission for a user who does not already have permission on the folder results in an error</li>
+</ul>
+<p>You may also want to set the default permission on the calendar folder for every user in your organization. In that case, you do not know the calendar folder name in advance, so you need a bit of extra work.</p>
+<p>To get rid of this frustration, I wrote the script below. Please keep in mind that I wrote it mainly for my own learning. I wrote it with Exchange Online in mind, so if you are writing something for an on-premises Exchange server, you could probably write it a bit more simply.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Update-CalendarFolderPermission</span><span class="params">()</span></span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function">[<span class="type">CmdletBinding</span>()]</span></span><br><span class="line">    <span class="keyword">param</span>(</span><br><span class="line">        <span class="comment"># Target mailbox</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">ValueFromPipeline</span>=<span class="variable">$true</span>, <span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># Allow passing the argument from the pipeline, and require it</span></span><br><span class="line">        [<span class="type">ValidateNotNullorEmpty</span>()] <span class="comment"># Do not allow Null</span></span><br><span class="line">        <span class="variable">$Identity</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment"># User to grant the permission to</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># Require this argument</span></span><br><span class="line">        [<span class="type">ValidateScript</span>(&#123;(<span class="selector-tag">@</span>(<span class="string">&quot;default&quot;</span>, <span class="string">&quot;anonymous&quot;</span>)<span class="type">.Contains</span>(<span class="variable">$_</span><span class="type">.ToLower</span>())) -<span class="type">or</span> (<span class="selector-tag">@</span>(<span class="string">&quot;UserMailbox&quot;</span>, <span class="string">&quot;MailUser&quot;</span>, <span class="string">&quot;MailContact&quot;</span>, <span class="string">&quot;MailUniversalSecurityGroup&quot;</span>)<span class="type">.Contains</span>((<span class="built_in">Get-Recipient</span> <span class="variable">$_</span>)<span class="type">.RecipientType</span>))&#125;)] <span class="comment"># Check that it is an Exchange recipient</span></span><br><span class="line">        [<span class="built_in">string</span>]</span><br><span class="line">        <span class="variable">$User</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Access rights</span></span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">Mandatory</span>=<span class="variable">$true</span>)] <span class="comment"># Require this argument</span></span><br><span class="line">        [<span class="type">ValidateSet</span>(<span class="string">&quot;ReadItems&quot;</span>, <span class="string">&quot;CreateItems&quot;</span>,<span class="string">&quot;EditOwnedItems&quot;</span> ,<span class="string">&quot;DeleteOwnedItems&quot;</span> ,<span class="string">&quot;EditAllItems&quot;</span>, <span class="string">&quot;DeleteAllItems&quot;</span>, <span class="string">&quot;CreateSubfolders&quot;</span>, <span class="string">&quot;FolderOwner&quot;</span>, <span class="string">&quot;FolderContact&quot;</span>, <span class="string">&quot;FolderVisible&quot;</span>, <span class="string">&quot;None&quot;</span>, <span class="string">&quot;Owner&quot;</span>, <span class="string">&quot;PublishingEditor&quot;</span>, <span class="string">&quot;Editor&quot;</span>, <span class="string">&quot;PublishingAuthor&quot;</span>,<span class="string">&quot;Author&quot;</span>, <span class="string">&quot;NonEditingAuthor&quot;</span>, <span class="string">&quot;Reviewer&quot;</span>, <span class="string">&quot;Contributor&quot;</span>, <span class="string">&quot;AvailabilityOnly&quot;</span>, <span class="string">&quot;LimitedDetails&quot;</span>)]</span><br><span class="line">        [<span class="built_in">string</span>]</span><br><span class="line">        <span class="variable">$AccessRights</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">process</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            [<span class="built_in">string</span>]<span class="variable">$TargetMailbox</span> = <span class="variable">$null</span> <span class="comment"># Target mailbox</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$Identity</span>.GetType().Name <span class="operator">-eq</span> <span class="string">&quot;string&quot;</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Identity is a String, so it is used as TargetMailbox as-is.&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">elseif</span>((<span class="variable">$Identity</span> | <span class="built_in">Get-Member</span> Alias <span class="literal">-MemberType</span> Property).Length <span class="operator">-eq</span> <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Identity contains an Alias property, so the Alias property is used as TargetMailbox.&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span>.Alias</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="built_in">Write-Verbose</span> <span class="string">&quot;Converting the value passed to Identity to a String and using it as TargetMailbox.&quot;</span></span><br><span class="line">                <span class="variable">$TargetMailbox</span> = <span class="variable">$Identity</span>.ToString()</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="variable">$Folders</span> = <span class="built_in">Get-MailboxFolderStatistics</span> <span class="literal">-Identity</span> <span class="variable">$TargetMailbox</span> <span class="literal">-FolderScope</span> Calendar | <span class="built_in">where</span> &#123; <span class="variable">$_</span>.FolderType <span class="operator">-eq</span> <span class="string">&quot;Calendar&quot;</span> &#125;</span><br><span class="line">            <span class="keyword">foreach</span> (<span class="variable">$Folder</span> <span class="keyword">in</span> <span class="variable">$Folders</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="variable">$Error</span>.Clear() <span class="comment"># Clear errors</span></span><br><span class="line"></span><br><span class="line">                <span class="variable">$CalendarPath</span> = <span class="variable">$TargetMailbox</span> + <span class="string">&quot;:&quot;</span> + <span class="variable">$Folder</span>.FolderId</span><br><span class="line">                <span class="built_in">Set-MailboxFolderPermission</span> <span class="literal">-Identity</span> <span class="variable">$CalendarPath</span> <span class="literal">-User</span> <span class="variable">$User</span> <span class="literal">-AccessRights</span> <span class="variable">$AccessRights</span> <span class="number">2</span>&gt; <span class="variable">$null</span>  <span class="comment"># Continue even if this fails</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># Error handling</span></span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$error</span>.Count <span class="operator">-ne</span> <span class="number">0</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Write-Verbose</span> <span class="string">&quot;An error occurred while running Set-MailboxFolderPermission.&quot;</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span>(<span class="variable">$Error</span>[<span class="number">0</span>].CategoryInfo.Reason <span class="operator">-eq</span> <span class="string">&quot;UserNotFoundInPermissionEntryException&quot;</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="comment"># Set-MailboxFolderPermission failed because the user does not have any permission yet,</span></span><br><span class="line">                        <span class="comment"># so use Add-MailboxFolderPermission instead</span></span><br><span class="line"></span><br><span class="line">                        <span class="built_in">Write-Verbose</span> <span class="string">&quot;The error was UserNotFoundInPermissionEntryException.&quot;</span></span><br><span class="line"></span><br><span class="line">                        <span class="variable">$Error</span>.Clear()</span><br><span class="line">                        <span class="built_in">Add-MailboxFolderPermission</span> <span class="literal">-Identity</span> <span class="variable">$CalendarPath</span> <span class="literal">-User</span> <span class="variable">$User</span> <span class="literal">-AccessRights</span> <span class="variable">$AccessRights</span> &gt; <span class="variable">$null</span></span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span>(<span class="variable">$Error</span>.Count <span class="operator">-ne</span> <span class="number">0</span>)</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="built_in">Write-Verbose</span> <span class="string">&quot;Add-MailboxFolderPermission also failed.&quot;</span></span><br><span class="line">                            <span class="built_in">Write-Error</span> <span class="variable">$Error</span>[<span class="number">0</span>]</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">else</span></span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="built_in">Write-Verbose</span> <span class="string">&quot;Add-MailboxFolderPermission ran without an error.&quot;</span></span><br><span class="line">                            <span class="built_in">Write-Output</span> <span class="string">&quot;Set the permission of <span class="variable">$User</span> on the calendar of <span class="variable">$TargetMailbox</span> to <span class="variable">$AccessRights</span>.&quot;</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="built_in">Write-Verbose</span> <span class="string">&quot;The error was unexpected.&quot;</span></span><br><span class="line">                        <span class="built_in">Write-Error</span> <span class="variable">$Error</span>[<span class="number">0</span>]</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="built_in">Write-Verbose</span> <span class="string">&quot;Set-MailboxFolderPermission ran without an error.&quot;</span></span><br><span class="line">                    <span class="built_in">Write-Output</span> <span class="string">&quot;Changed the permission of <span class="variable">$User</span> on the calendar folder of <span class="variable">$TargetMailbox</span> to <span class="variable">$AccessRights</span>.&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="built_in">Write-Error</span> <span class="variable">$_</span>.Exception.Message</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here are a few usage examples. First, save the script as a .ps1 file (for example, Update-CalendarFolderPermission.ps1) and dot-source it as follows. This makes the Update-CalendarFolderPermission command available.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">. C:\temp\<span class="built_in">Update-CalendarFolderPermission</span>.ps1</span><br></pre></td></tr></table></figure>
+
+<h3 id="Example-1"><a href="#Example-1" class="headerlink" title="Example 1"></a>Example 1</h3><p>This example changes the default permission on User01’s calendar folder to the Reviewer role.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-Identity</span> User01 <span class="literal">-User</span> Default <span class="literal">-AccessRights</span> Reviewer</span><br></pre></td></tr></table></figure>
+
+<h3 id="Example-2"><a href="#Example-2" class="headerlink" title="Example 2"></a>Example 2</h3><p>This example grants User02 the Editor role on User01’s calendar folder.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-Identity</span> User01 <span class="literal">-User</span> User02 <span class="literal">-AccessRights</span> Editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="Example-3"><a href="#Example-3" class="headerlink" title="Example 3"></a>Example 3</h3><p>This example does the same thing as Example 2, but passes the mailbox in through the pipeline from Get-Mailbox.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Mailbox</span> User01 | <span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-User</span> User02 <span class="literal">-AccessRights</span> Editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="Example-4"><a href="#Example-4" class="headerlink" title="Example 4"></a>Example 4</h3><p>This example changes the default permission on every user’s calendar folder to None. This is shown as an example only. Be careful, since retrieving or updating a large number of objects with Exchange Online commands is likely to fail.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-Mailbox</span> <span class="literal">-ResultSize</span> Unlimited | <span class="built_in">Update-CalendarFolderPermission</span> <span class="literal">-User</span> Default <span class="literal">-AccessRights</span> None</span><br></pre></td></tr></table></figure>
+
+<p>I hope this gets across what I was trying to do. Of course, since this uses Exchange server commands, run it from the Exchange Management Shell if you are working with an on-premises Exchange server. For Exchange Online, make sure you have <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps">connected PowerShell to Exchange Online</a> beforehand.</p>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>When this article was written, connecting to Exchange Online PowerShell relied on a remote PowerShell session combined with Basic authentication (a user name and password). Exchange Online has since retired Basic authentication for remote PowerShell connections. You now need to connect with modern authentication using the Connect-ExchangeOnline cmdlet from the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps">ExchangeOnlineManagement module</a>. The Update-CalendarFolderPermission function shown here, and cmdlets such as Set-MailboxFolderPermission, Add-MailboxFolderPermission, and Get-MailboxFolderStatistics, still work without any changes today.</p>
+</div>
+<p>By the way, I also considered adding a FolderScope parameter so this could be used for folders other than the calendar, but I could not think of many situations where that would actually be useful, so I decided not to.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/set-calendar-permissions-from-get-mailbox.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/" data-id="cuidfu06zw73TkjGrelOkskVh" data-title="Setting calendar folder permissions by piping the output of Get-Mailbox" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/exchange-server-2016-release/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Exchange Server 2016 Released
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/send-email-with-smtpclient-powershell/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Sending a quick test email from PowerShell with SmtpClient
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-exchange-server-build-number/">A Script to Get Exchange Server Build Numbers</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/add-alias-to-get-mailboxstatistics-output/">Adding an alias to the output of Get-MailboxStatistics</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

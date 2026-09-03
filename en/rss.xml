@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging Lab</title>
+    <link>https://rykoma.github.io/Docs/en/</link>
+    <description>The latest posts from Developer Messaging Lab</description>
+    <language>en</language>
+    <atom:link href="https://rykoma.github.io/Docs/en/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Hello World</title>
+      <link>https://rykoma.github.io/Docs/en/hello-world/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/hello-world/</guid>
+      <pubDate>Wed, 19 Aug 2026 04:45:36 GMT</pubDate>
+      <description>The first sample post for this blog built with Hexo.</description>
+    </item>
+    <item>
+      <title>Microsoft Graph email attachments</title>
+      <link>https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 05:28:02 GMT</pubDate>
+      <description>Understand the file, item, inline, and cloud attachment types in Exchange Online when using Microsoft Graph.</description>
+    </item>
+    <item>
+      <title>Create a draft meeting with Microsoft Graph</title>
+      <link>https://rykoma.github.io/Docs/en/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 00:23:21 GMT</pubDate>
+      <description>Learn how to create a draft meeting with Microsoft Graph and send it when it is ready.</description>
+    </item>
+    <item>
+      <title>A Script to Get Exchange Server Build Numbers</title>
+      <link>https://rykoma.github.io/Docs/en/get-exchange-server-build-number/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/get-exchange-server-build-number/</guid>
+      <pubDate>Wed, 27 Jan 2016 05:08:11 GMT</pubDate>
+      <description>A record of publishing a PowerShell script on GitHub that looks up an Exchange server build number by product version. It has since become a PowerShell Module also available on the PowerShell Gallery.</description>
+    </item>
+    <item>
+      <title>Adding an alias to the output of Get-MailboxStatistics</title>
+      <link>https://rykoma.github.io/Docs/en/add-alias-to-get-mailboxstatistics-output/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/add-alias-to-get-mailboxstatistics-output/</guid>
+      <pubDate>Fri, 22 Jan 2016 05:30:17 GMT</pubDate>
+      <description>How to add a mailbox alias to the output of Get-MailboxStatistics in PowerShell, and the Get-MailboxStatisticsAndAlias command published on GitHub.</description>
+    </item>
+    <item>
+      <title>How EwsAllowList / EwsBlockList behaves</title>
+      <link>https://rykoma.github.io/Docs/en/ews-allowlist-and-blocklist-behavior/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/ews-allowlist-and-blocklist-behavior/</guid>
+      <pubDate>Tue, 29 Dec 2015 03:55:02 GMT</pubDate>
+      <description>EwsAllowList / EwsBlockList set with Set-CasMailbox ignore case when you register a value, but the actual match against the connecting application&apos;s user agent is case sensitive.</description>
+    </item>
+    <item>
+      <title>Exporting a hashtable to CSV in PowerShell</title>
+      <link>https://rykoma.github.io/Docs/en/export-hashtable-to-csv-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/export-hashtable-to-csv-powershell/</guid>
+      <pubDate>Sat, 14 Nov 2015 05:11:10 GMT</pubDate>
+      <description>How to correctly export a PowerShell hashtable to a CSV file, and how the same technique fixes the missing Recipients column from Get-MessageTrackingLog.</description>
+    </item>
+    <item>
+      <title>Sending a digitally signed email from .NET Framework</title>
+      <link>https://rykoma.github.io/Docs/en/send-signed-email-dotnet-framework/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/send-signed-email-dotnet-framework/</guid>
+      <pubDate>Sat, 10 Oct 2015 23:24:12 GMT</pubDate>
+      <description>SmtpClient in .NET Framework has no built-in way to digitally sign or encrypt a message, so this post builds the S/MIME MIME data by hand to send a digitally signed email.</description>
+    </item>
+    <item>
+      <title>Exchange Server 2016 Released</title>
+      <link>https://rykoma.github.io/Docs/en/exchange-server-2016-release/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/exchange-server-2016-release/</guid>
+      <pubDate>Fri, 02 Oct 2015 19:19:52 GMT</pubDate>
+      <description>A record of checking Exchange Server 2016 after its official release, including coexistence with Exchange 2013, shared architecture, and the Office file preview limitation in OWA.</description>
+    </item>
+    <item>
+      <title>Setting calendar folder permissions by piping the output of Get-Mailbox</title>
+      <link>https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/set-calendar-permissions-from-get-mailbox/</guid>
+      <pubDate>Sat, 29 Aug 2015 19:16:34 GMT</pubDate>
+      <description>A PowerShell function that takes the output of Get-Mailbox through the pipeline and sets calendar folder permissions for many mailboxes at once.</description>
+    </item>
+    <item>
+      <title>Sending a quick test email from PowerShell with SmtpClient</title>
+      <link>https://rykoma.github.io/Docs/en/send-email-with-smtpclient-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/send-email-with-smtpclient-powershell/</guid>
+      <pubDate>Fri, 14 Aug 2015 19:41:34 GMT</pubDate>
+      <description>A PowerShell script that uses the SmtpClient class to send quick test emails with a random sender address and subject so nothing collides.</description>
+    </item>
+    <item>
+      <title>Exchange Server 2016 Preview</title>
+      <link>https://rykoma.github.io/Docs/en/exchange-server-2016-preview/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/exchange-server-2016-preview/</guid>
+      <pubDate>Sat, 25 Jul 2015 03:57:53 GMT</pubDate>
+      <description>A record of installing the Exchange Server 2016 Preview and checking its build number and the &quot;Birthday calendar&quot; feature.</description>
+    </item>
+    <item>
+      <title>Viewing your Outlook.com calendar in Sunrise Calendar</title>
+      <link>https://rykoma.github.io/Docs/en/outlook-com-sunrise-calendar/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/outlook-com-sunrise-calendar/</guid>
+      <pubDate>Fri, 19 Jun 2015 03:28:52 GMT</pubDate>
+      <description>How to view your Outlook.com calendar in Sunrise Calendar, by adding your Outlook.com account to an Android device as an ActiveSync account.</description>
+    </item>
+    <item>
+      <title>Using basic authentication with the Outlook REST API</title>
+      <link>https://rykoma.github.io/Docs/en/outlook-rest-api-basic-authentication/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/outlook-rest-api-basic-authentication/</guid>
+      <pubDate>Tue, 02 Jun 2015 04:33:52 GMT</pubDate>
+      <description>Learn how to quickly try the Outlook REST API with basic authentication, using Postman as an example.</description>
+    </item>
+    <item>
+      <title>How to Programmatically Query the Exchange Server Address Book</title>
+      <link>https://rykoma.github.io/Docs/en/programmatically-query-exchange-address-book/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/programmatically-query-exchange-address-book/</guid>
+      <pubDate>Sun, 31 May 2015 02:50:22 GMT</pubDate>
+      <description>Since EWS has no way to query the address book, this article introduces how to get address book information programmatically using LDAP (System.DirectoryServices) or the Exchange Management Shell.</description>
+    </item>
+    <item>
+      <title>Trying out the EWS Java API</title>
+      <link>https://rykoma.github.io/Docs/en/ews-java-api/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/en/ews-java-api/</guid>
+      <pubDate>Fri, 29 May 2015 19:49:46 GMT</pubDate>
+      <description>I&apos;ll introduce the steps necessary to use the EWS Java API in Eclipse and how to resolve exceptions that arose from dependencies.</description>
+    </item>
+  </channel>
+</rss>

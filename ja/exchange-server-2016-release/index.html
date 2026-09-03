@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Exchange Server 2016 リリース | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/exchange-server-2016-release/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/exchange-server-2016-release/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/exchange-server-2016-release/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Exchange Server 2016 の正式リリースを受けて、Exchange 2013 との共存やアーキテクチャの共通点、OWA での Office ファイル プレビューの制限などを確認した記録です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Exchange Server 2016 リリース">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/exchange-server-2016-release/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Exchange Server 2016 の正式リリースを受けて、Exchange 2013 との共存やアーキテクチャの共通点、OWA での Office ファイル プレビューの制限などを確認した記録です。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2015-10-02T19:19:52.000Z">
+<meta property="article:modified_time" content="2015-10-02T19:19:52.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Server">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/exchange-server-2016-release/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/exchange-server-2016-release/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/exchange-server-2016-release" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-10-02T19:19:52.000Z" itemprop="datePublished">2015-10-03</time>
+  </span>
+
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Server</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Exchange Server 2016 リリース
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>この記事は Exchange Server 2016 が正式リリースされた当時 (2015 年 10 月) の情報です。歴史的な記録としてそのまま掲載しているため、記載内容は現在の状況とは異なる場合があります。また、Exchange Server 2016 は 2025 年 10 月 14 日をもって延長サポートも終了しており、現在はサポート対象外です。なお、記事内で言及している Office Online Server はその後 2016 年 5 月に正式リリースされましたが、2025 年 10 月に Microsoft から 2026 年 12 月 31 日をもって製品を終了する旨がアナウンスされています。</p>
+</div>
+<p>Exchange 2016 がリリースされましたね。Exchange Team Blog でも <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/exchange-server-2016-forged-in-the-cloud-now-available-on-premises-/604085">Exchange Server 2016: Forged in the cloud. Now available on-premises.</a> で紹介されています。</p>
+<p>いろいろと見た目でわかる機能強化が目立つような気がしますが、基本的なアーキテクチャは Exchange 2013 と変わっていませんね。Exchange 2013 との共存も驚くほど簡単です。製品のビルド番号も 15.1 なので Exchange 2013 とメジャー番号は同じですし、そのためにインストール パスまで一緒です。CAS のサーバー役割がなくなりましたが、コンポーネントとしては残っているので Exchange 2013 の 1 台構成と変わらないですね。</p>
+<p>機能面では Exchange Online に実装されているものをオンプレミス用にも実装したという印象ですが、Clutter や Groups はまだ入っていないので、今後の CU で追加されるのか期待したいところ。</p>
+<p>今のところ懸念しないといけないのが、Exchange 2016 で WebReady がなくなったので、OWA (Exchange 2016 では Outlook on the web と言うようですが。。。) で Office ファイルのプレビューができません。ダウンロードしかできないので、プレビューをするには Office Online Server をインストールする必要があります。でもまだ Exchange 2016 のリリース時では Office Online Server (OOS) はプレビューなんですよね。</p>
+<p>Exchange 2013 と同様の CU モデルになることは先のブログに記載がありますが、SP がどうなるのかが不明のようです。Exchange 2013 も中途半端に SP1 (という名の CU4) だけ出して不思議な状況が続いているので、SP モデルがどうなるのかは様子見ですね。</p>
+<p>なお、日本語版の TechNet は更新が遅れているようなので、最新の情報を見るには英語版で見たほうがよさそうです。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/exchange-server-2016-release.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/exchange-server-2016-release/" data-id="cuidCDYBX3t5DzpgQYmZASdVv" data-title="Exchange Server 2016 リリース" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/send-signed-email-dotnet-framework/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          .NET Framework で電子署名付きのメールを送信する
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/set-calendar-permissions-from-get-mailbox/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Get-Mailbox コマンドの結果をパイプラインで受け取って予定表フォルダーのアクセス権を設定する
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 113%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 113%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 113%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 113%;">Attachments</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 175%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 125%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 113%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 113%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 113%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 163%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 125%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 113%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-exchange-server-build-number/">Exchange サーバーのビルド番号を取得するスクリプト</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/add-alias-to-get-mailboxstatistics-output/">Get-MailboxStatistics コマンドの出力にエイリアスを追加する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
