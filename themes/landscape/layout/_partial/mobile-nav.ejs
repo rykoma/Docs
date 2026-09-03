@@ -6,6 +6,6 @@
     const mobileHome = url_for(`${mobileLanguageSegment}/`);
   %>
   <% for (var i in theme.menu){ %>
-    <a href="<%- i === 'Home' ? mobileHome : i === 'About' ? url_for(`${mobileLanguageSegment}/about/`) : i === 'Archives' ? url_for(`${mobileLanguageSegment}/${config.archive_dir}/`) : url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
+    <a href="<%- i === 'Home' ? mobileHome : i === 'About' ? url_for(`${mobileLanguageSegment}/about/`) : i === 'Contact' ? url_for(`${mobileLanguageSegment}/contact/`) : i === 'Archives' ? url_for(`${mobileLanguageSegment}/${config.archive_dir}/`) : url_for(theme.menu[i]) %>" class="mobile-nav-link"><%= i %></a>
   <% } %>
 </nav>

@@ -1,0 +1,34 @@
+name: "ブログ記事に関するフィードバック"
+description: "ブログ記事の誤り指摘や改善提案を報告します。"
+title: "[ブログ] "
+labels:
+  - blog-feedback
+body:
+  - type: input
+    id: article-url
+    attributes:
+      label: 対象記事の URL
+      description: フィードバックの対象となる記事の URL を入力してください。
+      placeholder: "https://blog.rykoma.net/ja/<slug>/"
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: 種別
+      description: 該当する種別を選択してください。
+      options:
+        - 誤字脱字
+        - 事実誤認
+        - リンク切れ
+        - 改善提案
+        - その他
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: 内容
+      description: 具体的な内容を記載してください。
+    validations:
+      required: true
