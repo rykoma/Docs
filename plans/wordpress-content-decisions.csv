@@ -12,7 +12,7 @@
 "73","post","/2015/12/29/73/","ja","ews-allowlist-and-blocklist-behavior","Exchange Web Services","Exchange Web Services | Exchange Server | Exchange Online","included","metadata-reviewed"
 "111","post","/2015/10/03/111/","ja","exchange-server-2016-release","Exchange Server","Exchange Server","included","metadata-reviewed"
 "121","post","/2016/01/22/121/","ja","add-alias-to-get-mailboxstatistics-output","PowerShell","PowerShell | Exchange Server | Exchange Online","included","metadata-reviewed"
-"211","post","/2016/01/27/211/","ja","get-exchange-server-build-number","Exchange Server","Exchange Server | PowerShell","included","metadata-reviewed"
+"211","post","/2016/01/27/211/","ja","get-exchange-server-build-number","Exchange Server","Exchange Server | PowerShell","migrated","verified"
 "291","post","/2016/02/04/291/","ja","get-mailboxes-on-specific-dag-server","Exchange Server","Exchange Server | PowerShell","included","metadata-reviewed"
 "331","post","/2016/02/27/331/","ja","connect-to-exchange-online-ews-with-oauth","Exchange Web Services","Exchange Web Services | Exchange Online | OAuth","included","metadata-reviewed"
 "1289","page","/contact/","ja","","","","excluded","metadata-reviewed"
