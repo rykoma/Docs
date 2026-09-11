@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Developer Messaging 研究所</title>
+  
+    <meta name="robots" content="noindex,follow">
+  
+  
+    
+  
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Developer Messaging 研究所">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/page/3/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:author" content="Ryutaro Koma">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1">
+  
+    <article id="post-ja/programmatically-query-exchange-address-book" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-05-31T02:50:22.000Z" itemprop="datePublished">2015-05-31</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Server</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/ja/programmatically-query-exchange-address-book/">プログラムから Exchange サーバーのアドレス帳を参照するには</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Exchange サーバーに接続する独自アプリケーションを開発する際に、アドレス帳の機能が要件に入ってくることが多々あるようです。EWS を使って Exchange サーバーに接続することが多いと思いますが、EWS には残念ながらアドレス帳を参照するような仕組みがありません。</p>
+<p>ではどうしたらよいのか。OWA を使う運用にすれば済む話だとは思いますが、どうしても開発しないといけないということであれば、ぱっと思いつくのは次の 2 つの方法でしょうか。</p>
+<ul>
+<li>LDAP を使用する</li>
+<li>Exchange 管理シェルを使用する</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/dotnet/api/system.directoryservices">System.DirectoryServices</a> を使うことで C# などでディレクトリ情報を取得することができます。グローバル アドレス一覧やその他のアドレス帳の情報も、そしてユーザーの情報も、Active Directory 上に保存されていますから、頑張ればアドレス帳を実装できます。</p>
+<p>流れとしては、addressBookContainer クラスで検索してアドレス帳を探し、purportedSearch 属性でフィルター条件を取得して、そのフィルター条件でユーザーを検索するという流れでしょうか。</p>
+<p>Exchange 管理シェルを使う場合は、まずは以下のようなコマンドでアドレス帳に含まれるユーザーなどを取得できます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Filter</span> = (<span class="built_in">Get-GlobalAddressList</span> <span class="string">&quot;既定のグローバル アドレス一覧&quot;</span>).RecipientFilter</span><br><span class="line"><span class="built_in">Get-Recipient</span> <span class="literal">-RecipientPreviewFilter</span> <span class="variable">$Filter</span></span><br></pre></td></tr></table></figure>
+
+<p>これをプログラムから呼び出しをできるようにしないといけません。</p>
+<p>ただこの 2 つの方法、これだけでは不完全で、実際にはアドレス帳ポリシーを考慮しなければなりません。さらに HiddenFromAddressListsEnabled もフィルターに入れないといけません。</p>
+<p>どうも個人的には頑張ってアドレス帳を実装するより OWA を使ったほうが何かとよいのではないかと思ってしまいますが、必要に迫られたらこのような方法を検討してみてはいかがでしょうか。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/LDAP/" rel="tag">LDAP</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-ja/ews-java-api" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2015-05-29T19:49:46.000Z" itemprop="datePublished">2015-05-30</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/Docs/ja/ews-java-api/">EWS Java API を使ってみる</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>GitHub で公開されている <a target="_blank" rel="noopener" href="https://github.com/OfficeDev/ews-java-api">EWS Java API</a>、名前の通り Java から Exchange Web サービスを呼び出すための API です。Windows 環境から EWS 接続をする場合は EWS Managed API を C# や VB から利用するのが便利ですが、Java で利用したい場合は EWS Java API を使用することになります。</p>
+<p>ただこの API、使えるようにするまでの説明が全然ない。。。</p>
+<p>筆者は Visual Studio での開発経験しかないので Java だとどうしたらよいのか全く分かりませんでした。Java 開発者にとってはなんてことないのかもしれませんが。なんとか Eclipse で使えるようにまで行ったので、その時のことを備忘録的に書いておきたいと思います。</p>
+<p>とはいえ、どれもオープン ソースのものなので画面ショットとかを使って詳しく説明しても、すぐに時代遅れになりそうなので、どんなことが必要なのかだけを書いておきます。</p>
+<p>まず初めに、EWS Java API のページに書いてある通り、maven をインストールします。EWS Java API のソースも zip ファイルでダウンロードできるようになっているので保存しておきます。そして書いてある通り、<strong>mvn clean install</strong> と実行して EWS Java API をビルドします。</p>
+<p>ビルドをしたら jar ファイルができるので、プロジェクトのビルド パスに追加しておきます。これであとは公開されているサンプル コードを参考に EWS に接続できると思っていましたが、いざ実行するとなんだかんだで例外が発生します。これだけでは依存関係のあるモジュールがまだ足りないんですね。例えばこんな感じです。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.NoClassDefFoundError: org/apache/http/conn/HttpClientConnectionManager</span><br><span class="line">	at mytest.hello.ews.main(ews.java:19)</span><br><span class="line"></span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.apache.http.conn.HttpClientConnectionManager</span><br><span class="line"></span><br><span class="line">	at java.net.URLClassLoader.findClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at java.lang.ClassLoader.loadClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)</span><br><span class="line"></span><br><span class="line">	at java.lang.ClassLoader.loadClass(Unknown Source)</span><br></pre></td></tr></table></figure>
+
+<p>色々悩んだ結果、maven の依存関係に、httpclient &#x2F; httpcore &#x2F; commons-logging &#x2F; commons-lang3 &#x2F; joda-time を追加することで解決しました。これは <a target="_blank" rel="noopener" href="https://github.com/OfficeDev/ews-java-api/blob/master/pom.xml">EWS Java API の pom.xml</a> に記載されている内容ですね。バージョンも合わせる必要があります。</p>
+<p>これで晴れて EWS Java API を使えるようになりました。Visual Studio しか使ったことのない私にとってはなかなか敷居が高かったですが、Java 開発者の方にはあたりまえのことなのでしょうか。もしかしたらもっと楽な方法もあるのかもしれません。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/Docs/ja/page/2/">&laquo; 戻る</a><a class="page-number" href="/Docs/ja/">1</a><a class="page-number" href="/Docs/ja/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 110%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 110%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 110%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 110%;">Attachments</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 140%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 110%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 110%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 110%;">Microsoft 365</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 130%;">Microsoft Graph</a> <a href="/Docs/ja/tags/OAuth/" class="tagcloud-link" style="font-size: 110%;">OAuth</a> <a href="/Docs/ja/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 110%;">Office365APIEditor</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 130%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 120%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 160%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 120%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 110%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-exchange-online-mailbox-with-microsoft-graph/">Microsoft Graph で Exchange Online のメールボックスを作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/change-message-class-with-ews/">EWS でメッセージ クラスを変更する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

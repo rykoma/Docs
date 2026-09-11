@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Change the message class with EWS | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/change-message-class-with-ews/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/change-message-class-with-ews/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/change-message-class-with-ews/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn why changing a message class with EWS can cause ObjectTypeChangedException and how to work around it by copying MimeContent.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Change the message class with EWS">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/change-message-class-with-ews/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn why changing a message class with EWS can cause ObjectTypeChangedException and how to work around it by copying MimeContent.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-05-24T06:05:46.000Z">
+<meta property="article:modified_time" content="2016-05-24T06:05:46.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Server">
+<meta property="article:tag" content="Exchange Web Services">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/change-message-class-with-ews/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/change-message-class-with-ews/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/change-message-class-with-ews" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2016-05-24T06:05:46.000Z" itemprop="datePublished">2016-05-24</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Change the message class with EWS
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>This article applies to on-premises Exchange Server deployments that use Exchange Web Services (EWS).</p>
+<p>When you change a message class (the <code>ItemClass</code> property) and call <code>Update</code> with EWS, the operation usually fails with <code>ObjectTypeChangedException</code>, except in some cases. For example, the following Exchange Server EWS log was produced when attempting to change <code>IPM.Note</code> to <code>IPM.Post.MySubClass</code>.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2016-05-24T09:44:41.693Z,...,UpdateItem,200,1176,,ErrorObjectTypeChanged,...,ObjectTypeChanged=Message:Post IPM.Note:IPM.Post.MySubClass;ExceptionHandler_Execute=Microsoft.Exchange.Services.Core.Types.ObjectTypeChangedException: The operation might change the object type, but object types cannot be changed.</span><br></pre></td></tr></table></figure>
+
+<p>As the log indicates, Exchange Server does not allow this operation. Several workarounds are possible, but the simplest one currently seems to be creating a new item and copying all of its <code>MimeContent</code>, as follows.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">EmailMessage item = EmailMessage.Bind(service, <span class="string">&quot;AQIARgAAA9ZVE4FZhSBIuzkFaoLYl/EHAIq2pcEIG7VNm0wFZ43yza0AAAMUAAAAiralwQgbtU2bTAVnjfLNrQAAANGaNJgAAAAuAAAD1lUTgVmFIEi7OQVqgtiX8QEAiralwQgbtU2bTAVnjfLNrQAAAxQAAAA=&quot;</span>);</span><br><span class="line"></span><br><span class="line">item.Load(<span class="keyword">new</span> PropertySet(ItemSchema.MimeContent));</span><br><span class="line"></span><br><span class="line">PostItem newPostItem = <span class="keyword">new</span> PostItem(service);</span><br><span class="line">newPostItem.MimeContent = item.MimeContent;</span><br><span class="line">newPostItem.ItemClass = <span class="string">&quot;IPM.Post.MySubClass&quot;</span>;</span><br><span class="line"></span><br><span class="line">newPostItem.Save(<span class="keyword">new</span> FolderId(<span class="string">&quot;AQEuAAAD1lUTgVmFIEi7OQVqgtiX8QEAiralwQgbtU2bTAVnjfLNrQAAAxQAAAA=&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>The item itself is different, but this creates an item with the same contents, including attachments, under a different message class.</p>
+<p>Strictly speaking, it is not exactly the same item: for example, the displayed sizes of the item and its attachments can change. However, this appears to be an adequate workaround.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Server/" rel="tag">Exchange Server</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/change-message-class-with-ews.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/change-message-class-with-ews/" data-id="cuidQl92cHdROWJq-og_tzZY5" data-title="Change the message class with EWS" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/create-exchange-online-mailbox-with-microsoft-graph/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Create an Exchange Online mailbox with Microsoft Graph
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/outlook-com-exchange-online-integration/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Outlook.com and Exchange Online integration
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 110%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 110%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 110%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 110%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 140%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 110%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 110%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 110%;">Microsoft 365</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 130%;">Microsoft Graph</a> <a href="/Docs/en/tags/OAuth/" class="tagcloud-link" style="font-size: 110%;">OAuth</a> <a href="/Docs/en/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 110%;">Office365APIEditor</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 130%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 120%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 160%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 120%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 110%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-exchange-online-mailbox-with-microsoft-graph/">Create an Exchange Online mailbox with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/change-message-class-with-ews/">Change the message class with EWS</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

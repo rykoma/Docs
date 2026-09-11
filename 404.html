@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Not Found</title>
+  <link rel="shortcut icon" href="/Docs/favicon.png">
+  <script>
+    (() => {
+      const root = "/Docs/";
+      const path = window.location.pathname;
+      let relative = path.indexOf(root) === 0 ? path.slice(root.length) : path;
+      while (relative.charAt(0) === '/') relative = relative.slice(1);
+      let lang;
+      if (relative === 'ja' || relative.indexOf('ja/') === 0) {
+        lang = 'ja';
+      } else if (relative === 'en' || relative.indexOf('en/') === 0) {
+        lang = 'en';
+      } else {
+        const languages = navigator.languages || [navigator.language];
+        const match = languages.find((value) => /^(ja|en)(-|$)/i.test(value));
+        lang = match && /^en/i.test(match) ? 'en' : 'ja';
+      }
+      window.location.replace(lang === 'en' ? "/Docs/en/404.html" : "/Docs/ja/404.html");
+    })();
+  </script>
+</head>
+<body>
+  <p>Page not found. / ページが見つかりません。</p>
+  <ul>
+    <li><a href="/Docs/ja/404.html">日本語</a></li>
+    <li><a href="/Docs/en/404.html">English</a></li>
+  </ul>
+</body>
+</html>
