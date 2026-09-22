@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Get Outlook calendar shortcuts with EWS | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/get-outlook-calendar-shortcuts-with-ews/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to retrieve shared calendar shortcuts from Outlook or OWA with EWS and which MAPI properties store the information.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Get Outlook calendar shortcuts with EWS">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to retrieve shared calendar shortcuts from Outlook or OWA with EWS and which MAPI properties store the information.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/2016080501.png">
+<meta property="og:image" content="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/2016080502.png">
+<meta property="article:published_time" content="2016-08-05T03:22:56.000Z">
+<meta property="article:modified_time" content="2026-09-21T17:24:08.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Web Services">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/2016080501.png">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/get-outlook-calendar-shortcuts-with-ews/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/get-outlook-calendar-shortcuts-with-ews/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/get-outlook-calendar-shortcuts-with-ews" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2016-08-05T03:22:56.000Z" itemprop="datePublished">2016-08-05</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Get Outlook calendar shortcuts with EWS
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>This article assumes Exchange Server and describes EWS behavior and an implementation example from 2016. This method does not apply to Exchange Online. EWS disablement is planned for Exchange Online, but Microsoft Graph cannot implement the functionality described in this article.</p>
+</div>
+<p>When you open another person’s calendar in Outlook or OWA, it is shown in a list on the left side of the screen. People often ask how to retrieve this information with EWS.</p>
+<p>I do not know the correct name for this feature, so I will call it a “calendar shortcut” for convenience. Unfortunately, EWS does not provide a supported API for retrieving this information.</p>
+<img src="/Docs/en/get-outlook-calendar-shortcuts-with-ews/2016080501.png" alt="Calendar shortcuts in Outlook">
+
+<p>The information is still stored in the mailbox, so it is possible to retrieve it.</p>
+<p>Because there is no supported API, the implementation may change in the future. First, we need to confirm how the information is stored.</p>
+<p>Calendar shortcuts exist as hidden items in the Common Views folder under the mailbox root.</p>
+<p>Each calendar shortcut belongs to a group. Groups are also hidden items in the Common Views folder, and they have the same item class as the shortcuts.</p>
+<p>You can identify a group by inspecting its properties. For details, see the following Microsoft Learn documentation:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/1e1e3d0d-00a9-4544-9949-937501d7e235">[MS-OXOCFG]: PidTagWlinkType Property</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/9708e1e9-254a-400d-8f49-83c8f6a73ded">[MS-OXOCFG]: PidTagWlinkFolderType Property</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/1112b43e-a87a-4bc7-ac17-1f0560433b31">[MS-OXOCFG]: PidTagWlinkGroupName Property</a></li>
+</ul>
+<p>You can determine whose calendar the shortcut refers to from the PidTagWlinkAddressBookEID property.</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/5528b77c-5159-49a8-bbce-de8401f6c590">[MS-OXOCFG]: PidTagWlinkAddressBookEID Property</a></li>
+</ul>
+<p>We can write the code based on this information.</p>
+<p>First, define a class that represents the EntryID stored in PidTagWlinkAddressBookEID.</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">struct</span> AddressEntryID</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Flags &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> Guid ProviderUID &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Version &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> Type &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">string</span> X500DN &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get values from binary data.</span></span><br><span class="line">    <span class="comment">// See the following page for the size of each value:</span></span><br><span class="line">    <span class="comment">// https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxcdata/b00b2824-8434-4294-a0e7-b4e336489ccc</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AddressEntryID</span>(<span class="params"><span class="built_in">byte</span>[] bytes</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">using</span> (<span class="keyword">var</span> reader = <span class="keyword">new</span> BinaryReader(<span class="keyword">new</span> MemoryStream(bytes)))</span><br><span class="line">        &#123;</span><br><span class="line">            Flags = reader.ReadInt32();</span><br><span class="line"></span><br><span class="line">            <span class="built_in">byte</span>[] buff = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">16</span>];</span><br><span class="line">            reader.Read(buff, <span class="number">0</span>, buff.Length);</span><br><span class="line">            ProviderUID = <span class="keyword">new</span> Guid(buff);</span><br><span class="line"></span><br><span class="line">            Version = reader.ReadInt32();</span><br><span class="line">            Type = reader.ReadInt32();</span><br><span class="line"></span><br><span class="line">            X500DN = Encoding.UTF8.GetString(reader.ReadBytes(bytes.Length - <span class="number">29</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Next, implement the main processing:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">GetSharedCalendars</span>(<span class="params">ExchangeService service</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Define properties.</span></span><br><span class="line">    ExtendedPropertyDefinition PidTagWlinkType = <span class="keyword">new</span> ExtendedPropertyDefinition(<span class="number">0x6849</span>, MapiPropertyType.Long);</span><br><span class="line">    ExtendedPropertyDefinition PidTagWlinkFolderType = <span class="keyword">new</span> ExtendedPropertyDefinition(<span class="number">0x684f</span>, MapiPropertyType.Binary);</span><br><span class="line">    ExtendedPropertyDefinition PidTagWlinkGroupName = <span class="keyword">new</span> ExtendedPropertyDefinition(<span class="number">0x6851</span>, MapiPropertyType.String);</span><br><span class="line">    ExtendedPropertyDefinition PidTagWlinkAddressBookEID = <span class="keyword">new</span> ExtendedPropertyDefinition(<span class="number">0x6854</span>, MapiPropertyType.Binary);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get the &quot;Common Views&quot; folder.</span></span><br><span class="line">    FolderId rootFolder = <span class="keyword">new</span> FolderId(WellKnownFolderName.Root);</span><br><span class="line">    SearchFilter commonViewsfilter = <span class="keyword">new</span> SearchFilter.IsEqualTo(FolderSchema.DisplayName, <span class="string">&quot;Common Views&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> commonViewsFolder = service.FindFolders(rootFolder, commonViewsfilter, <span class="keyword">new</span> FolderView(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get calendar groups.</span></span><br><span class="line">    <span class="comment">// PidTagWlinkType = 4 means a group.</span></span><br><span class="line">    <span class="comment">// https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/1e1e3d0d-00a9-4544-9949-937501d7e235</span></span><br><span class="line">    <span class="comment">// PidTagWlinkFolderType = &quot;AngGAAAAAADAAAAAAAAARg==&quot; means a calendar folder.</span></span><br><span class="line">    <span class="comment">// (This is the value after converting the binary data with Convert.ToBase64String.)</span></span><br><span class="line">    <span class="comment">// https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxocfg/9708e1e9-254a-400d-8f49-83c8f6a73ded</span></span><br><span class="line">    PropertySet groupPropertySet = <span class="keyword">new</span> PropertySet(BasePropertySet.FirstClassProperties, PidTagWlinkType, PidTagWlinkAddressBookEID, PidTagWlinkFolderType);</span><br><span class="line">    SearchFilter groupsFilter = <span class="keyword">new</span> SearchFilter.SearchFilterCollection(LogicalOperator.And,</span><br><span class="line">        <span class="keyword">new</span> SearchFilter.IsEqualTo(PidTagWlinkType, <span class="number">4</span>),</span><br><span class="line">        <span class="keyword">new</span> SearchFilter.IsEqualTo(PidTagWlinkFolderType, <span class="string">&quot;AngGAAAAAADAAAAAAAAARg==&quot;</span>));</span><br><span class="line">    ItemView groupsView = <span class="keyword">new</span> ItemView(<span class="number">100</span>) &#123; PropertySet = groupPropertySet, Traversal = ItemTraversal.Associated &#125;;</span><br><span class="line">    <span class="keyword">var</span> groups = commonViewsFolder.Folders[<span class="number">0</span>].FindItems(groupsFilter, groupsView);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> <span class="keyword">group</span> <span class="keyword">in</span> groups)</span><br><span class="line">    &#123;</span><br><span class="line">        textBox1.Text += <span class="string">&quot;Group : &quot;</span> + <span class="keyword">group</span>.Subject + <span class="string">&quot;\r\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get calendars in the group.</span></span><br><span class="line">        <span class="comment">// PidTagWlinkType = 2 means another user&#x27;s shared folder.</span></span><br><span class="line">        PropertySet calendarPropertySet = <span class="keyword">new</span> PropertySet(BasePropertySet.FirstClassProperties, PidTagWlinkAddressBookEID);</span><br><span class="line">        SearchFilter calendarSearchFilter = <span class="keyword">new</span> SearchFilter.SearchFilterCollection(LogicalOperator.And,</span><br><span class="line">            <span class="keyword">new</span> SearchFilter.IsEqualTo(PidTagWlinkType, <span class="number">2</span>),</span><br><span class="line">            <span class="keyword">new</span> SearchFilter.IsEqualTo(PidTagWlinkGroupName, <span class="keyword">group</span>.Subject));</span><br><span class="line">        ItemView calendarView = <span class="keyword">new</span> ItemView(<span class="number">100</span>) &#123; PropertySet = calendarPropertySet, Traversal = ItemTraversal.Associated &#125;;</span><br><span class="line">        <span class="keyword">var</span> calendars = commonViewsFolder.Folders[<span class="number">0</span>].FindItems(calendarSearchFilter, calendarView);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> calendar <span class="keyword">in</span> calendars)</span><br><span class="line">        &#123;</span><br><span class="line">            textBox1.Text += <span class="string">&quot;  Calendar : &quot;</span> + calendar.Subject + <span class="string">&quot;\r\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Get the LegacyExchangeDN used to open the calendar and output the address.</span></span><br><span class="line">            <span class="built_in">byte</span>[] wlinkAddressBookEID;</span><br><span class="line">            <span class="keyword">if</span> (calendar.TryGetProperty(PidTagWlinkAddressBookEID, <span class="keyword">out</span> wlinkAddressBookEID))</span><br><span class="line">            &#123;</span><br><span class="line">                AddressEntryID entryID = <span class="keyword">new</span> AddressEntryID(wlinkAddressBookEID);</span><br><span class="line">                NameResolutionCollection resolveResult = service.ResolveName(entryID.X500DN, ResolveNameSearchLocation.DirectoryOnly, <span class="literal">false</span>);</span><br><span class="line">                textBox1.Text += <span class="string">&quot;    Address = &quot;</span> + resolveResult[<span class="number">0</span>].Mailbox.Address + <span class="string">&quot;\r\n\r\n&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This retrieves the groups and the calendar shortcuts that belong to each group.</p>
+<img src="/Docs/en/get-outlook-calendar-shortcuts-with-ews/2016080502.png" alt="Calendar shortcuts retrieved with EWS">
+
+<p>This method cannot retrieve the default calendars that should appear under “My Calendars” or the calendars of users for whom you have full access.</p>
+<p>This is because the code filters for PidTagWlinkType &#x3D; 2.</p>
+<p>If you also need to retrieve these items, you must use additional conditions. However, this requires parsing PidTagStoreEntryId.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/get-outlook-calendar-shortcuts-with-ews.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/get-outlook-calendar-shortcuts-with-ews/" data-id="cuidIOTyzuBzJ__hR0HFixXoK" data-title="Get Outlook calendar shortcuts with EWS" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Create a draft meeting with Microsoft Graph
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/in-place-hold-application-time/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          How long does In-Place Hold take to apply?
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 109%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 109%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 109%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 109%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 145%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 109%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 109%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 109%;">Microsoft 365</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 127%;">Microsoft Graph</a> <a href="/Docs/en/tags/OAuth/" class="tagcloud-link" style="font-size: 109%;">OAuth</a> <a href="/Docs/en/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 109%;">Office365APIEditor</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 127%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 118%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 155%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 118%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 109%;">Sunrise</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-outlook-calendar-shortcuts-with-ews/">Get Outlook calendar shortcuts with EWS</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/in-place-hold-application-time/">How long does In-Place Hold take to apply?</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

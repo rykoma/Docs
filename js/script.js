@@ -1,0 +1,490 @@
+(function($){
+  // Search
+  var $searchWrap = $('#search-form-wrap'),
+    $searchForm = $('.search-form'),
+    $searchInput = $('.search-form-input'),
+    $searchQuery = $('.search-form-query'),
+    $searchSubmit = $('.search-form-submit'),
+    isSearchAnim = false,
+    searchAnimDuration = 200;
+
+  // Restrict Bing search results to this site by prefixing the query
+  // with a site: operator. The visible input keeps showing only what the
+  // user typed; the site: operator is set on a hidden field that is the
+  // one actually submitted.
+  $searchForm.on('submit', function(){
+    var siteDomain = $searchForm.data('site-domain');
+    var query = $searchInput.val().trim();
+    $searchQuery.val(siteDomain ? 'site:' + siteDomain + (query ? ' ' + query : '') : query);
+  });
+
+  var startSearchAnim = function(){
+    isSearchAnim = true;
+  };
+
+  var stopSearchAnim = function(callback){
+    setTimeout(function(){
+      isSearchAnim = false;
+      callback && callback();
+    }, searchAnimDuration);
+  };
+
+  var setSearchFocusable = function(isFocusable){
+    var tabIndex = isFocusable ? '0' : '-1';
+    $searchInput.attr('tabindex', tabIndex);
+    $searchSubmit.attr('tabindex', tabIndex);
+  };
+
+  $('.nav-search-btn').on('click', function(){
+    if (isSearchAnim) return;
+
+    startSearchAnim();
+    $searchWrap.addClass('on');
+    setSearchFocusable(true);
+    stopSearchAnim(function(){
+      $searchInput.focus();
+    });
+
+  });
+
+  var handleSearchBlur = function(e){
+    if (e.relatedTarget && $(e.relatedTarget).closest('.search-form-input, .search-form-submit').length) return;
+    startSearchAnim();
+    $searchWrap.removeClass('on');
+    stopSearchAnim(function(){
+      setSearchFocusable(false);
+    });
+  };
+
+  $searchInput.on('blur', handleSearchBlur);
+  $searchSubmit.on('blur', handleSearchBlur);
+
+  $searchInput.on('keydown', function(e){
+    if (e.key !== 'Escape') return;
+
+    e.preventDefault();
+    startSearchAnim();
+    $searchWrap.removeClass('on');
+    stopSearchAnim(function(){
+      setSearchFocusable(false);
+      $('.nav-search-btn').focus();
+    });
+  });
+
+  setSearchFocusable(false);
+
+  // Language menu
+  var $languageSwitcher = $('.language-switcher'),
+    $languageButton = $('.language-switcher-button'),
+    $languageMenu = $('.language-switcher-menu');
+
+  var closeLanguageMenu = function(){
+    $languageButton.attr('aria-expanded', 'false');
+    $languageMenu.prop('hidden', true);
+    $languageMenu.find('[role="menuitem"]').attr('tabindex', '-1');
+  };
+
+  var enableLanguageMenuItems = function(){
+    $languageMenu.find('[role="menuitem"]').each(function(){
+      var $item = $(this);
+      $item.attr('tabindex', $item.attr('aria-disabled') === 'true' ? '-1' : '0');
+    });
+  };
+
+  $languageButton.on('click', function(){
+    var isOpen = $(this).attr('aria-expanded') === 'true';
+    $(this).attr('aria-expanded', String(!isOpen));
+    $languageMenu.prop('hidden', isOpen);
+    if (!isOpen) {
+      enableLanguageMenuItems();
+      $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])').first().focus();
+    } else {
+      closeLanguageMenu();
+    }
+  });
+
+  $languageButton.on('keydown', function(e){
+    if (e.key === 'Escape' && $(this).attr('aria-expanded') === 'true') {
+      e.preventDefault();
+      closeLanguageMenu();
+    }
+  });
+
+  $languageMenu.on('keydown', '[role="menuitem"]', function(e){
+    var $items = $languageMenu.find('[role="menuitem"]:not([aria-disabled="true"])'),
+      index = $items.index(this);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      $items.eq((index + (e.key === 'ArrowDown' ? 1 : -1) + $items.length) % $items.length).focus();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLanguageMenu();
+      $languageButton.focus();
+    }
+  });
+
+  $(document).on('click', function(e){
+    if ($languageSwitcher.length && !$(e.target).closest('.language-switcher').length) closeLanguageMenu();
+  });
+
+  closeLanguageMenu();
+
+  // Share
+  var setShareMenuItemsFocusable = function($box, isFocusable){
+    $box.find('.article-share-links a').attr('tabindex', isFocusable ? '0' : '-1');
+  };
+
+  var closeShareMenu = function($box){
+    if (!$box || !$box.length) return;
+    $box.removeClass('on').prop('hidden', true);
+    setShareMenuItemsFocusable($box, false);
+    if ($box.data('shareButton')) $box.data('shareButton').attr('aria-expanded', 'false');
+  };
+
+  $('body').on('click', function(){
+    $('.article-share-box.on').each(function(){
+      closeShareMenu($(this));
+    });
+  }).on('click', '.article-share-link', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    var $this = $(this),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      id = 'article-share-box-' + $this.attr('data-id'),
+      title = $this.attr('data-title'),
+      offset = $this.offset();
+
+    if ($('#' + id).length){
+      var box = $('#' + id);
+
+      if (box.hasClass('on')){
+        closeShareMenu(box);
+        return;
+      }
+    } else {
+      var html = [
+        '<div id="' + id + '" class="article-share-box" hidden>',
+          '<div class="article-share-links">',
+            '<a href="https://x.com/intent/post?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-x" target="_blank" title="X" aria-label="Share on X" tabindex="-1"><span class="article-share-x-icon" aria-hidden="true">𝕏</span></a>',
+            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook" aria-label="Share on Facebook" tabindex="-1"><span class="fa fa-facebook"></span></a>',
+            '<a href="https://pinterest.com/pin/create/button/?url=' + encodedUrl + '&description=' + encodeURIComponent(title) + '" class="article-share-pinterest" target="_blank" title="Pinterest" aria-label="Share on Pinterest" tabindex="-1"><span class="fa fa-pinterest"></span></a>',
+            '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn" aria-label="Share on LinkedIn" tabindex="-1"><span class="fa fa-linkedin"></span></a>',
+          '</div>',
+        '</div>'
+      ].join('');
+
+      var box = $(html);
+
+      $('body').append(box);
+    }
+
+    $('.article-share-box.on').not(box).each(function(){
+      closeShareMenu($(this));
+    });
+
+    box.css({
+      top: offset.top + 25,
+      left: offset.left
+    }).prop('hidden', false).addClass('on');
+    box.data('shareButton', $this);
+    $this.attr('aria-expanded', 'true').attr('aria-controls', id);
+    setShareMenuItemsFocusable(box, true);
+    box.find('.article-share-links a').first().focus();
+  }).on('click', '.article-share-box', function(e){
+    e.stopPropagation();
+  }).on('keydown', '.article-share-box', function(e){
+    var $box = $(this);
+    var $items = $box.find('.article-share-links a');
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (!e.shiftKey && e.target === $items.last()[0]) {
+        closeShareMenu($box);
+        $('#article-nav-newer, #article-nav-older').first().focus();
+      } else if (e.shiftKey && e.target === $items.first()[0]) {
+        closeShareMenu($box);
+        $box.data('shareButton').focus();
+      } else {
+        e.preventDefault();
+        $items.eq($items.index(e.target) + (e.shiftKey ? -1 : 1)).focus();
+      }
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeShareMenu($box);
+      $box.data('shareButton').focus();
+    }
+  }).on('click', '.article-share-links a', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+  });
+
+  // Caption
+  $('.article-entry').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+
+      var alt = this.alt;
+
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+
+      $(this).wrap('<a href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+    });
+
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+
+  if ($.fancybox){
+    $('.fancybox').fancybox();
+  }
+
+  // Remove heading anchors from tab order
+  $('.article-entry .headerlink').attr('tabindex', '-1');
+
+  // Code block actions
+  var codeBlockLanguageLabels = {
+      'bash': 'Bash',
+      'csharp': 'C#',
+      'css': 'CSS',
+      'html': 'HTML',
+      'http-request': 'HTTP Request',
+      'http-response': 'HTTP Response',
+      'java': 'Java',
+      'javascript': 'JavaScript',
+      'json': 'JSON',
+      'markdown': 'Markdown',
+      'powershell': 'PowerShell',
+      'python': 'Python',
+      'shell': 'Shell',
+      'sql': 'SQL',
+      'typescript': 'TypeScript',
+      'xml': 'XML',
+      'yaml': 'YAML'
+    },
+    isJapanesePage = /(?:^|\/)ja\//.test(window.location.pathname),
+    codeBlockLabels = isJapanesePage ? {
+      copy: 'コピー',
+      copied: 'コピーしました',
+      copyFailed: 'コピーに失敗しました',
+      selectAll: 'すべて選択',
+      toolbar: 'コード ブロックの操作',
+      language: '言語'
+    } : {
+      copy: 'Copy',
+      copied: 'Copied!',
+      copyFailed: 'Copy failed',
+      selectAll: 'Select all',
+      toolbar: 'Code block actions',
+      language: 'Language'
+    };
+
+  var getCodeLanguage = function($block, $code){
+    var classes = (($block.attr('class') || '') + ' ' + ($code.attr('class') || '')).split(/\s+/),
+      language;
+
+    $.each(classes, function(i, className){
+      var match = className.match(/^(?:lang|language)-(.+)$/);
+      if (match) language = match[1].toLowerCase();
+      if (codeBlockLanguageLabels[className]) language = className;
+    });
+
+    if (!language) return 'Plain text';
+    if (language === 'js') language = 'javascript';
+    if (language === 'ps') language = 'powershell';
+    if (language === 'sh') language = 'shell';
+    if (codeBlockLanguageLabels[language]) return codeBlockLanguageLabels[language];
+
+    return language.split(/[-_]/).map(function(part){
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    }).join(' ');
+  };
+
+  var getCodeText = function(codeTarget){
+    var text = typeof codeTarget.innerText === 'string'
+      ? codeTarget.innerText
+      : codeTarget.textContent;
+    return text.replace(/\r\n?/g, '\n').replace(/\n$/, '');
+  };
+
+  var copyCodeWithFallback = function(text){
+    return new Promise(function(resolve, reject){
+      var $textarea = $('<textarea>')
+        .val(text)
+        .attr({
+          'aria-hidden': 'true',
+          tabindex: '-1'
+        })
+        .css({
+          position: 'fixed',
+          left: '-9999px',
+          top: '0'
+        })
+        .appendTo('body');
+      $textarea[0].select();
+      var copied;
+      try {
+        copied = document.execCommand('copy');
+      } finally {
+        $textarea.remove();
+      }
+      if (copied) {
+        resolve();
+      } else {
+        reject(new Error('The browser could not copy the code block.'));
+      }
+    });
+  };
+
+  var copyCode = function(text){
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(function(){
+        return copyCodeWithFallback(text);
+      });
+    }
+
+    return copyCodeWithFallback(text);
+  };
+
+  var selectCode = function(codeTarget){
+    var selection = window.getSelection(),
+      range = document.createRange();
+    range.selectNodeContents(codeTarget);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  var enableCodeScrolling = function($codeTarget){
+    if ($codeTarget.parent().hasClass('code-block-scroll')) return;
+    $codeTarget.wrap($('<div>', {class: 'code-block-scroll'}));
+    $codeTarget.parent()
+      .on('focusin', function(){
+        $(this).addClass('is-focused');
+      })
+      .on('focusout', function(){
+        $(this).removeClass('is-focused');
+      });
+  };
+
+  var createCodeBlockHeader = function($block, $code, codeTarget){
+    if ($block.is('pre') && $block.prev('.code-block-header').length) return;
+    if (!$block.is('pre') && $block.children('.code-block-header').length) return;
+
+    var $header = $('<div>', {
+        class: 'code-block-header',
+        role: 'toolbar',
+        'aria-label': codeBlockLabels.toolbar
+      }),
+      $language = $('<span>', {
+        class: 'code-block-language',
+        text: getCodeLanguage($block, $code)
+      }),
+      $actions = $('<span>', {class: 'code-block-actions'}),
+      $copyButton = $('<button>', {
+        type: 'button',
+        class: 'code-block-action',
+        'aria-label': codeBlockLabels.copy
+      }),
+      $selectButton = $('<button>', {
+        type: 'button',
+        class: 'code-block-action',
+        'aria-label': codeBlockLabels.selectAll
+      });
+
+    $copyButton.append($('<span>', {
+      class: 'fa fa-copy',
+      'aria-hidden': 'true'
+    })).append($('<span>', {
+      class: 'code-block-action-label',
+      text: codeBlockLabels.copy
+    }));
+    $selectButton.append($('<span>', {
+      class: 'code-block-action-icon',
+      'aria-hidden': 'true',
+      text: 'I'
+    })).append($('<span>', {
+      class: 'code-block-action-label',
+      text: codeBlockLabels.selectAll
+    }));
+
+    $copyButton.on('click', function(){
+      var $label = $(this).find('.code-block-action-label');
+      copyCode(getCodeText(codeTarget)).then(function(){
+        $label.text(codeBlockLabels.copied);
+        $copyButton.attr('aria-label', codeBlockLabels.copied);
+        setTimeout(function(){
+          $label.text(codeBlockLabels.copy);
+          $copyButton.attr('aria-label', codeBlockLabels.copy);
+        }, 2000);
+      }, function(){
+        $label.text(codeBlockLabels.copyFailed);
+        $copyButton.attr('aria-label', codeBlockLabels.copyFailed);
+      });
+    });
+    $selectButton.on('click', function(){
+      selectCode(codeTarget);
+    });
+
+    $actions.append($copyButton, $selectButton);
+    $header.append($language, $actions);
+    if ($block.is('pre')) {
+      $header.insertBefore($block);
+    } else {
+      $block.prepend($header);
+    }
+  };
+
+  $('.article-entry figure.highlight').each(function(){
+    var $figure = $(this),
+      $codeTarget = $figure.find('td.code > pre').first(),
+      $code = $codeTarget.find('code').first();
+    if ($codeTarget.length) {
+      enableCodeScrolling($codeTarget);
+      createCodeBlockHeader($figure, $code, $codeTarget[0]);
+    }
+  });
+
+  $('.article-entry pre > code').each(function(){
+    var $code = $(this),
+      $pre = $code.parent();
+    if (!$pre.closest('figure.highlight, .gist').length) {
+      createCodeBlockHeader($pre, $code, $pre[0]);
+    }
+  });
+
+  // Mobile nav
+  var $container = $('#container'),
+    isMobileNavAnim = false,
+    mobileNavAnimDuration = 200;
+
+  var startMobileNavAnim = function(){
+    isMobileNavAnim = true;
+  };
+
+  var stopMobileNavAnim = function(){
+    setTimeout(function(){
+      isMobileNavAnim = false;
+    }, mobileNavAnimDuration);
+  }
+
+  $('#main-nav-toggle').on('click', function(){
+    if (isMobileNavAnim) return;
+
+    startMobileNavAnim();
+    $container.toggleClass('mobile-nav-on');
+    $(this).attr('aria-expanded', String($container.hasClass('mobile-nav-on')));
+    stopMobileNavAnim();
+  });
+
+  $('#wrap').on('click', function(){
+    if (isMobileNavAnim || !$container.hasClass('mobile-nav-on')) return;
+
+    $container.removeClass('mobile-nav-on');
+    $('#main-nav-toggle').attr('aria-expanded', 'false');
+  });
+})(jQuery);
