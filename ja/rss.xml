@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging 研究所</title>
+    <link>https://rykoma.github.io/Docs/ja/</link>
+    <description>Developer Messaging 研究所の最新記事</description>
+    <language>ja</language>
+    <atom:link href="https://rykoma.github.io/Docs/ja/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Hello World</title>
+      <link>https://rykoma.github.io/Docs/ja/hello-world/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/hello-world/</guid>
+      <pubDate>Wed, 19 Aug 2026 04:45:36 GMT</pubDate>
+      <description>Hexo で構築したブログの最初のサンプル記事です。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph とメールのいろいろな添付</title>
+      <link>https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 05:28:02 GMT</pubDate>
+      <description>Microsoft Graph で扱う Exchange Online のファイル、アイテム、インライン、クラウド添付の違いを整理します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で下書き状態の会議を作成する</title>
+      <link>https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 00:23:21 GMT</pubDate>
+      <description>Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Export-TransportRuleCollection コマンドの中身を見る</title>
+      <link>https://rykoma.github.io/Docs/ja/inspect-export-transportrulecollection/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/inspect-export-transportrulecollection/</guid>
+      <pubDate>Thu, 10 May 2018 05:34:35 GMT</pubDate>
+      <description>Exchange Server のトランスポート ルールを XML にエクスポートし、Export-TransportRuleCollection コマンドの出力内容を確認する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>代理人と非公開の予定を表示する権限を PowerShell で確認する</title>
+      <link>https://rykoma.github.io/Docs/ja/check-delegate-private-calendar-permissions-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/check-delegate-private-calendar-permissions-powershell/</guid>
+      <pubDate>Fri, 04 May 2018 22:02:22 GMT</pubDate>
+      <description>Exchange Online PowerShell で予定表の代理人設定と非公開の予定を表示する権限を確認する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Remote PowerShell コマンドの既定の出力内容</title>
+      <link>https://rykoma.github.io/Docs/ja/remote-powershell-default-command-output/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/remote-powershell-default-command-output/</guid>
+      <pubDate>Sun, 29 Apr 2018 08:35:44 GMT</pubDate>
+      <description>Exchange Online Remote PowerShell の Get-Mailbox コマンドで既定の出力内容を確認し、Export-PSSession で出力形式を変更する手順を紹介します。</description>
+    </item>
+    <item>
+      <title>多要素認証を使用した Exchange Online PowerShell の裏側</title>
+      <link>https://rykoma.github.io/Docs/ja/exchange-online-powershell-mfa-under-the-hood/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/exchange-online-powershell-mfa-under-the-hood/</guid>
+      <pubDate>Thu, 15 Jun 2017 02:59:14 GMT</pubDate>
+      <description>2017 年当時の Exchange Online PowerShell の MFA 接続を調べ、OAuth トークンと Remote PowerShell の内部動作を解説します。</description>
+    </item>
+    <item>
+      <title>Exchange 管理シェルとリモート PowerShell のデータ型の違い</title>
+      <link>https://rykoma.github.io/Docs/ja/exchange-management-shell-remote-powershell-data-types/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/exchange-management-shell-remote-powershell-data-types/</guid>
+      <pubDate>Fri, 31 Mar 2017 23:44:15 GMT</pubDate>
+      <description>Exchange Server の管理シェルとリモート PowerShell で、トランスポート ルールの承認者を示す ModerateMessageByUser のデータ型と要素数の扱いが異なる例を紹介します。</description>
+    </item>
+    <item>
+      <title>GetRoomLists / GetRooms の制限</title>
+      <link>https://rykoma.github.io/Docs/ja/getroomlists-getrooms-limitations/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getroomlists-getrooms-limitations/</guid>
+      <pubDate>Fri, 20 Jan 2017 00:42:14 GMT</pubDate>
+      <description>EWS の GetRoomLists と GetRooms が返す会議室一覧の件数を、110 件の会議室を使った検証結果と C# のコード例で紹介します。</description>
+    </item>
+    <item>
+      <title>PowerShell のプロンプトを変更する</title>
+      <link>https://rykoma.github.io/Docs/ja/customize-powershell-prompt/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/customize-powershell-prompt/</guid>
+      <pubDate>Sat, 26 Nov 2016 17:53:37 GMT</pubDate>
+      <description>PowerShell のプロンプトに現在時刻を表示したり、色を付けたり、パスを改行して表示したりする方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange サーバーのバージョン番号と製品名を相互変換する</title>
+      <link>https://rykoma.github.io/Docs/ja/convert-exchange-server-version-and-product-name/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/convert-exchange-server-version-and-product-name/</guid>
+      <pubDate>Sat, 03 Sep 2016 06:24:24 GMT</pubDate>
+      <description>Get-ExchangeBuildNumber と Get-ExchangeProductName を使用して、Exchange Server の製品名とバージョン番号を相互変換する方法と、定義ファイルの更新確認の仕組みを紹介します。</description>
+    </item>
+    <item>
+      <title>Outlook や OWA の予定表ショートカットを EWS で取得する</title>
+      <link>https://rykoma.github.io/Docs/ja/get-outlook-calendar-shortcuts-with-ews/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-outlook-calendar-shortcuts-with-ews/</guid>
+      <pubDate>Fri, 05 Aug 2016 03:22:56 GMT</pubDate>
+      <description>EWS を使って Outlook や OWA に登録された他人の予定表ショートカットを取得する方法と、保存されている MAPI プロパティを紹介します。</description>
+    </item>
+    <item>
+      <title>インプレース保持の反映時間</title>
+      <link>https://rykoma.github.io/Docs/ja/in-place-hold-application-time/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/in-place-hold-application-time/</guid>
+      <pubDate>Sat, 16 Jul 2016 03:22:32 GMT</pubDate>
+      <description>Exchange Server でインプレース保持や訴訟ホールドの設定を変更したとき、メールボックスへ反映されるまでに最大 60 分かかる理由を説明します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で Exchange Online のメールボックスを作成する</title>
+      <link>https://rykoma.github.io/Docs/ja/create-exchange-online-mailbox-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/create-exchange-online-mailbox-with-microsoft-graph/</guid>
+      <pubDate>Thu, 02 Jun 2016 21:58:25 GMT</pubDate>
+      <description>Microsoft Graph でユーザーを作成し、Microsoft 365 のライセンスを割り当てて Exchange Online のメールボックスをプロビジョニングする方法を紹介します。</description>
+    </item>
+    <item>
+      <title>EWS でメッセージ クラスを変更する</title>
+      <link>https://rykoma.github.io/Docs/ja/change-message-class-with-ews/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/change-message-class-with-ews/</guid>
+      <pubDate>Tue, 24 May 2016 06:05:46 GMT</pubDate>
+      <description>EWS でメッセージ クラスを変更するときに発生する ObjectTypeChangedException と、MimeContent を使用した回避策を紹介します。</description>
+    </item>
+    <item>
+      <title>Outlook.com と Exchange Online の統合</title>
+      <link>https://rykoma.github.io/Docs/ja/outlook-com-exchange-online-integration/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/outlook-com-exchange-online-integration/</guid>
+      <pubDate>Sat, 30 Apr 2016 11:06:17 GMT</pubDate>
+      <description>Outlook.com と Exchange Online の統合、および Outlook REST API の対応状況を当時の検証結果とともに紹介します。</description>
+    </item>
+    <item>
+      <title>Office 365 API 入門 - Web アプリケーション編</title>
+      <link>https://rykoma.github.io/Docs/ja/office-365-api-web-app-introduction/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/office-365-api-web-app-introduction/</guid>
+      <pubDate>Sun, 03 Apr 2016 02:08:10 GMT</pubDate>
+      <description>Office 365 API (Outlook REST API) を Office365APIEditor で試す方法を紹介した、Web アプリケーション入門記事です。</description>
+    </item>
+    <item>
+      <title>Exchange Online の EWS に OAuth を使用して接続する</title>
+      <link>https://rykoma.github.io/Docs/ja/connect-to-exchange-online-ews-with-oauth/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/connect-to-exchange-online-ews-with-oauth/</guid>
+      <pubDate>Sat, 27 Feb 2016 02:20:59 GMT</pubDate>
+      <description>Exchange Online の EWS に OAuth で接続する方法を紹介していた記事ですが、現在は Microsoft Learn の公式手順を案内しています。</description>
+    </item>
+    <item>
+      <title>DAG 構成の特定のメールボックス サーバーでホストされているメールボックスを正確に取得する</title>
+      <link>https://rykoma.github.io/Docs/ja/get-mailboxes-on-specific-dag-server/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-mailboxes-on-specific-dag-server/</guid>
+      <pubDate>Wed, 03 Feb 2016 06:41:18 GMT</pubDate>
+      <description>DAG 構成で特定のメールボックス サーバーにホストされているメールボックスを、Get-MailboxDatabaseCopyStatus と Get-Mailbox で正確に取得する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange サーバーのビルド番号を取得するスクリプト</title>
+      <link>https://rykoma.github.io/Docs/ja/get-exchange-server-build-number/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-exchange-server-build-number/</guid>
+      <pubDate>Wed, 27 Jan 2016 05:08:11 GMT</pubDate>
+      <description>Exchange サーバーのビルド番号を製品バージョンから検索する PowerShell スクリプトを GitHub で公開した記録です。現在は PowerShell Module 化され、PowerShell Gallery からも入手できます。</description>
+    </item>
+  </channel>
+</rss>
