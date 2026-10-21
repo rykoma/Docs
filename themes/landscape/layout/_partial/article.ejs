@@ -10,6 +10,9 @@
     <% if (post.link || post.title){ %>
       <header class="article-header">
         <%- partial('post/title', {class_name: 'p-name article-title', index: index}, {cache: false}) %>
+        <% if (!index && post.layout !== 'page' && post.updated.valueOf() !== post.date.valueOf()) { %>
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span><%= __('updated') %>: <time class="dt-updated" datetime="<%= date_xml(post.updated) %>" itemprop="dateModified"><%= date(post.updated) %></time></span></p>
+        <% } %>
       </header>
     <% } %>
     <div class="e-content article-entry" itemprop="articleBody">
