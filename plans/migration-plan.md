@@ -297,6 +297,14 @@ Markdown ソースへのリンクは、公開ページを見ていて修正が�
 
 Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`、`tags`、`description` などを統一します。機械翻訳を使用した場合は、人間が内容、固有名詞、リンク、表記を確認します。
 
+記事の日時は、次の方針で設定します。
+
+- `date` は移行元記事の公開日時と同じにします。
+- `updated` は移行元記事の最終更新日時と同じにします。最終更新日時が分からない場合は、`date` と同じ値にします。
+- 移行元にはない注釈の追加や、技術的な内容の追加・修正を行った場合は、その変更を行った日時 (日本時間) を `updated` に設定します。移行コミット日時ではなく、実際に内容を変更した日時を使用します。
+- 翻訳、Markdown 化、表記の調整、内容が同等の移転先へのリンク更新だけでは、`updated` を移行時の日時に変更しません。
+- `date` と `updated` は、タイムゾーンを含む ISO 8601 形式 (`YYYY-MM-DDTHH:mm:ss+09:00`) で記載します。例: `2026-10-21T23:15:00+09:00`。
+
 コード ブロックの言語指定にも注意してください。特に HTTP のリクエスト / レスポンスを記述するコード ブロックは、`http` ではなく `http-request` (リクエスト) または `http-response` (レスポンス) を言語指定として使用します (詳細は Phase 4 の記載および `scripts/http-highlighter.js` を参照)。
 
 移行元記事に、廃止された API や仕様変更など読者への注意喣起が必要な内容が含まれる場合は、GitHub 準拠の Markdown 注記記法 (`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`) を使用します (WordPress ID 20 の移行で `scripts/markdown-alerts.js` として実装済み)。`scripts/markdown-alerts.js` が `after_post_render` フィルターで `<blockquote>` を色とアイコン付きの注記ボックスに変換するため、記事 Markdown 側でスタイル付き HTML を直接記述する必要はありません。表示例は `source/_posts/ja/hello-world.md` と `source/_posts/en/hello-world.md` を参照してください。

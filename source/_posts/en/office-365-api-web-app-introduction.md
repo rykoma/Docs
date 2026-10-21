@@ -1,7 +1,7 @@
 ---
 title: Introduction to the Office 365 API - Web Applications
 date: 2016-04-03T20:08:10+09:00
-updated: 2019-07-16T00:00:00+09:00
+updated: 2026-09-11T00:33:05+09:00
 lang: en
 slug: office-365-api-web-app-introduction
 categories:
