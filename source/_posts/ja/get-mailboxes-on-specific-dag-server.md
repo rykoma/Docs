@@ -1,7 +1,7 @@
 ---
 title: DAG 構成の特定のメールボックス サーバーでホストされているメールボックスを正確に取得する
 date: 2016-02-04T00:41:18+09:00
-updated: 2026-09-09T15:38:15+09:00
+updated: 2016-02-04T00:41:18+09:00
 lang: ja
 slug: get-mailboxes-on-specific-dag-server
 categories:

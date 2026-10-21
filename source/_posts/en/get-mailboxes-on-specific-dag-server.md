@@ -1,7 +1,7 @@
 ---
 title: Accurately Get Mailboxes Hosted on a Specific DAG Server
 date: 2016-02-04T00:41:18+09:00
-updated: 2026-09-09T15:38:15+09:00
+updated: 2016-02-04T00:41:18+09:00
 lang: en
 slug: get-mailboxes-on-specific-dag-server
 categories:
