@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Messaging APIs Available with Office 365 | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/office-365-messaging-apis/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/office-365-messaging-apis/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/office-365-messaging-apis/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="A 2018 overview of EWS, the Office 365 API (Outlook REST API), and Microsoft Graph for accessing Exchange Online mailboxes.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Messaging APIs Available with Office 365">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/office-365-messaging-apis/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="A 2018 overview of EWS, the Office 365 API (Outlook REST API), and Microsoft Graph for accessing Exchange Online mailboxes.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-06-23T22:23:32.000Z">
+<meta property="article:modified_time" content="2026-10-21T04:37:50.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Web Services">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="Outlook REST API">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/office-365-messaging-apis/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/office-365-messaging-apis/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/office-365-messaging-apis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2018-06-23T22:23:32.000Z" itemprop="datePublished">2018-06-24</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Online</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Messaging APIs Available with Office 365
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-10-21T04:37:50.000Z" itemprop="dateModified">2026-10-21</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>This article describes the state of these APIs in June 2018 and is preserved as a historical record. The Outlook REST API beta and v2.0 endpoints were retired on November 30, 2022. Microsoft announced that the OAuth Sandbox for trying the Outlook REST API was scheduled to retire by December 31, 2020, so it should not be treated as currently available. EWS is being disabled in Exchange Online starting in October 2026, with full disablement planned for April 2027. This schedule applies to Exchange Online and does not describe the support status of EWS in on-premises Exchange Server. Microsoft Graph and EWS do not have complete feature parity, so check the official documentation for each scenario before migrating.</p>
+<p>See Microsoft’s <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/outlook-rest-api-beta-and-outlook-rest-api-v2-0-deprecation-notice/1898162">Outlook REST API deprecation notice</a> and <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online">Deprecation of EWS in Exchange Online</a> for details.</p>
+</div>
+<p>Exchange Online, part of Office 365, provides various features such as email and calendars. Several APIs are available for programmatic access to information in users’ mailboxes. There are many APIs and approaches, but this article focuses on EWS, the Office 365 API (Outlook REST API), and Microsoft Graph.</p>
+<h2 id="EWS"><a href="#EWS" class="headerlink" title="EWS"></a>EWS</h2><p>EWS (Exchange Web Services) is a web service originally introduced with on-premises Exchange 2007. Many developers use it, and there is extensive knowledge about it on the internet. Some features in other Microsoft products, such as Outlook and Skype for Business, also use EWS.</p>
+<p>It is not an overstatement to say that EWS can do almost anything with a mailbox, including operations on hidden folders and items, setting folder permissions and delegates, and working with extended properties. (Some operations might not be supported even if they are technically possible.) Further feature development is not expected, and new features will be implemented in REST APIs such as Microsoft Graph.</p>
+<p>EWS sends and receives SOAP data. It uses Basic authentication or OAuth.</p>
+<p>Exchange Online provides a permission called impersonation for connections from daemons (service accounts). With this permission, a daemon can impersonate other users within the scope allowed by an administrator and access their mailboxes as if it were the user.</p>
+<p>Implementing all SOAP communication yourself would be difficult, so libraries are available. The EWS Managed API for .NET Framework is commonly used. There is also an EWS Java API. Both are open source and developed on GitHub.</p>
+<h2 id="Office-365-API-Outlook-REST-API"><a href="#Office-365-API-Outlook-REST-API" class="headerlink" title="Office 365 API (Outlook REST API)"></a>Office 365 API (Outlook REST API)</h2><p>The Office 365 API has become a conceptual term for the various APIs provided by Office 365. However, most of these APIs connect to Exchange Online, and they are often called the Outlook REST API.</p>
+<p>This REST API was introduced with Office 365. Compared with EWS, it has a shorter history and a smaller developer community. Like EWS, it is also used by other Microsoft products. Its capabilities continue to expand, and it is sufficient for basic mailbox access, but it is not as feature-rich as EWS.</p>
+<p>It communicates through URLs and sends and receives JSON data. The Outlook REST API uses Basic authentication or OAuth, but Basic authentication will no longer be available after November 1, 2018. There are v1.0 and v2.0 (and beta) endpoints with different capabilities, but the v1.0 endpoint will be retired after November 1, 2019.</p>
+<p>With OAuth, access to mailbox data requires both the permissions in the access token and the permissions configured on the mailbox (such as mailbox-level or folder-level permissions).</p>
+<p>For connections from daemons (service accounts), an app-only access token can be obtained through OAuth. With this permission, a daemon can impersonate all other users in the organization and access their mailboxes as if it were the user.</p>
+<p>Libraries are available, but they do not seem to be widely used. Microsoft.Office365.OutlookServices-V2.0 is available on NuGet for .NET Framework, but it has not been updated to keep up with additions to the API itself. Since this is a REST API, it is not tied to a runtime or programming language, so developers use JSON libraries that suit their needs.</p>
+<p>At the time, an OAuth Sandbox was available for those who wanted to try the Outlook REST API.</p>
+<h2 id="Microsoft-Graph"><a href="#Microsoft-Graph" class="headerlink" title="Microsoft Graph"></a>Microsoft Graph</h2><p>Microsoft Graph provides a unified API endpoint for services across Microsoft. It is a REST API introduced after the Outlook REST API and is used by applications that access multiple services.</p>
+<p>Its capabilities continue to expand, and it is sufficient for basic mailbox access, but it is not as feature-rich as EWS. Its backend is also the Outlook REST API, so new features are generally implemented in the Outlook REST API first and then become available in Microsoft Graph. Unless there is a specific reason otherwise, Microsoft Graph is recommended over the Outlook REST API.</p>
+<p>It communicates through URLs and sends and receives JSON data. It uses OAuth for authentication. Access to mailbox data requires both the permissions in the access token and the permissions configured on the mailbox (such as mailbox-level or folder-level permissions).</p>
+<p>For connections from daemons (service accounts), an app-only access token can be obtained through OAuth. With this permission, a daemon can impersonate all other users in the organization and access their mailboxes as if it were the user.</p>
+<p>Libraries are available, and Microsoft.Graph is available on NuGet for .NET Framework. It is updated more often than Microsoft.Office365.OutlookServices-V2.0, although it does not seem to be widely used. Visual Studio 2017 also made it easier to register and develop applications that use Microsoft Graph as a Connected Service. Since this is a REST API, it is not tied to a runtime or programming language, so developers use JSON libraries that suit their needs.</p>
+<p>The <a target="_blank" rel="noopener" href="https://developer.microsoft.com/en-us/graph/graph-explorer">Graph Explorer</a> is available for trying Microsoft Graph.</p>
+<h2 id="Which-API-should-you-use"><a href="#Which-API-should-you-use" class="headerlink" title="Which API should you use?"></a>Which API should you use?</h2><p>At the time, if you were unsure, using EWS with the EWS Managed API was a safe choice. However, migration to Microsoft Graph was expected to become necessary in the future. Developers with knowledge of OAuth and JSON should have no problem, but Microsoft Graph may feel difficult to those without that knowledge. If Microsoft Graph seems too difficult, it may be better not to proceed with development. This may sound harsh, but OAuth and JSON knowledge is essential for using Microsoft Graph. If you do not understand them, asking someone who does will be faster and will also benefit the users of the application you are developing.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Outlook-REST-API/" rel="tag">Outlook REST API</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/office-365-messaging-apis.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/office-365-messaging-apis/" data-id="cuidJVJ8_Bjs5ADlX5_Jqm0b-" data-title="Messaging APIs Available with Office 365" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/get-warning-output-in-exchange-online-powershell/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Capture Warning Output in Exchange Online PowerShell
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/sort-format-list-output-by-property-name/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Sort Format-List Output by Property Name
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Visual-Studio/">Visual Studio</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 106%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 106%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 106%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 106%;">Attachments</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 200%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 144%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 106%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 106%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 106%;">Microsoft 365</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 125%;">Microsoft Graph</a> <a href="/Docs/en/tags/OAuth/" class="tagcloud-link" style="font-size: 106%;">OAuth</a> <a href="/Docs/en/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 106%;">Office365APIEditor</a> <a href="/Docs/en/tags/Outlook-Add-ins/" class="tagcloud-link" style="font-size: 106%;">Outlook Add-ins</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 125%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 113%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 194%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 113%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 106%;">Sunrise</a> <a href="/Docs/en/tags/Visual-Studio/" class="tagcloud-link" style="font-size: 106%;">Visual Studio</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/debug-outlook-web-add-in-with-visual-studio/">Debug Outlook Web Add-ins with Visual Studio</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-warning-output-in-exchange-online-powershell/">Capture Warning Output in Exchange Online PowerShell</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
