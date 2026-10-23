@@ -18,12 +18,13 @@
     <div class="e-content article-entry" itemprop="articleBody">
       <% if (index){ %>
         <%
-          const paragraphs = post.content.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
+          const content = post.content || '';
+          const paragraphs = content.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
           const preview = post.excerpt || paragraphs.slice(0, 2).join('');
           const hasMore = post.excerpt
-            ? post.excerpt.trim() !== post.content.trim()
+            ? post.excerpt.trim() !== content.trim()
             : !paragraphs.length || paragraphs.length > 2 ||
-              post.content.trim().replace(/\s+/g, '') !== preview.trim().replace(/\s+/g, '');
+              content.trim().replace(/\s+/g, '') !== preview.trim().replace(/\s+/g, '');
         %>
         <% if (preview) { %>
           <%- preview %>
