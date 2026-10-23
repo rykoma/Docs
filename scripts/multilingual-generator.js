@@ -269,7 +269,7 @@ hexo.extend.generator.register('multilingual-pages', function () {
       perPage: indexConfig.per_page || config.per_page,
       format: paginationFormat,
       layout: ['index', 'archive'],
-      data: pageData(language, {ja: `${root}ja/`, en: `${root}en/`}),
+      data: pageData(language, {ja: `${root}ja/`, en: `${root}en/`}, {home: true}),
     }));
   }
 
