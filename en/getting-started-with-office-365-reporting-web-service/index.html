@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Getting Started with the Office 365 Reporting Web Service | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/en/getting-started-with-office-365-reporting-web-service/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/getting-started-with-office-365-reporting-web-service/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/getting-started-with-office-365-reporting-web-service/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Historical steps from 2019 to 2022 for retrieving message trace data with the Office 365 Reporting Web Service.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Getting Started with the Office 365 Reporting Web Service">
+<meta property="og:url" content="https://rykoma.github.io/Docs/en/getting-started-with-office-365-reporting-web-service/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Historical steps from 2019 to 2022 for retrieving message trace data with the Office 365 Reporting Web Service.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-19T01:18:36.000Z">
+<meta property="article:modified_time" content="2026-10-27T20:06:35.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Office 365 Reporting Web Services">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/en/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/getting-started-with-office-365-reporting-web-service/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/getting-started-with-office-365-reporting-web-service/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/getting-started-with-office-365-reporting-web-service" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-07-19T01:18:36.000Z" itemprop="datePublished">2019-07-19</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Office 365 Reporting Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Getting Started with the Office 365 Reporting Web Service
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-10-27T20:06:35.000Z" itemprop="dateModified">2026-10-28</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The Message Trace reports in the Office 365 Reporting Web Service described in this article were retired on April 8, 2026. Do not use this API for new implementations. For current message tracing, use <code>Get-MessageTraceV2</code> and <code>Get-MessageTraceDetailV2</code> in Exchange Online PowerShell, or the Microsoft Graph Message Trace API. For details, see the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/exchange/monitoring/trace-an-email-message/graph-api-message-trace">Graph-based message trace API onboarding guide</a>.</p>
+<p>See Microsoft’s <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/announcing-general-availability-ga-of-the-new-message-trace-in-exchange-online/4420243">announcement about the new Message Trace in Exchange Online</a>, <a target="_blank" rel="noopener" href="https://learn.microsoft.com/powershell/module/exchangepowershell/get-messagetracev2?view=exchange-ps">Get-MessageTraceV2</a>, <a target="_blank" rel="noopener" href="https://learn.microsoft.com/powershell/module/exchangepowershell/get-messagetracedetailv2?view=exchange-ps">Get-MessageTraceDetailV2</a>, and <a target="_blank" rel="noopener" href="https://learn.microsoft.com/exchange/clients-and-mobile-in-exchange-online/deprecation-of-basic-authentication-exchange-online">Deprecation of Basic authentication in Exchange Online</a>.</p>
+<p>The following is historical content published in 2019 and updated in 2022. These steps do not describe a procedure for the current service.</p>
+</div>
+<p>There is no simple way to try the Office 365 Reporting Web Service, but PowerShell makes it relatively easy to check how it works. This article shows how to retrieve message trace data.</p>
+<p>The official documentation available at the time was not maintained very well. Use it with care:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/previous-versions/office/developer/o365-enterprise-developers/jj984325(v=office.15)">Office 365 Reporting web service</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/previous-versions/office/developer/o365-enterprise-developers/jj984335(v=office.15)">MessageTrace report</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/previous-versions/office/developer/o365-enterprise-developers/jj984328(v=office.15)">MessageTraceDetail report</a></li>
+</ul>
+<p>Use the <a href="#delegated-permissions">delegated permissions</a> or <a href="#application-permissions">application permissions</a> procedure, depending on how you obtain an access token. After you have a token, continue to <a href="#send-a-request-to-the-office-365-reporting-web-service-with-powershell">Send a request to the Office 365 Reporting Web Service with PowerShell</a>. The Basic authentication procedure is included as historical reference under <a href="#try-basic-authentication">Try Basic authentication</a>.</p>
+<p><a id="delegated-permissions"></a></p>
+<h2 id="Try-delegated-permissions-with-PowerShell"><a href="#Try-delegated-permissions-with-PowerShell" class="headerlink" title="Try delegated permissions with PowerShell"></a>Try delegated permissions with PowerShell</h2><ol>
+<li><p>Sign in to the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a>.</p>
+</li>
+<li><p>Select [Active Directory] - [App registrations] - [New registration].</p>
+</li>
+<li><p>Enter an app name, such as <code>App01</code>.</p>
+</li>
+<li><p>Under [Supported account types], select [Accounts in this organizational directory only].</p>
+</li>
+<li><p>Under [Redirect URI], select [Web] and enter a URI, such as <code>https://localhost/App01</code>.</p>
+</li>
+<li><p>Select [Register], then record the displayed [Application (client) ID].</p>
+</li>
+<li><p>Select [Manage] - [Certificates &amp; secrets] - [Client secrets], then select [New client secret].</p>
+</li>
+<li><p>Enter a description and expiration, add the secret, and record its value. Store the secret securely; you cannot view its value again later.</p>
+</li>
+<li><p>Select [Manage] - [API permissions] - [Add a permission].</p>
+</li>
+<li><p>Select [APIs my organization uses] - [Office 365 Exchange Online]. Under [Delegated permissions], select <code>ReportingWebService.Read</code>, then add the permission.</p>
+</li>
+<li><p>Create a URL in the following format and open it in a browser. Replace each placeholder with the actual value. The redirect URI and scope must be URL-encoded.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://login.microsoftonline.com/&lt;tenant-name&gt;/oauth2/v2.0/authorize?response_type=code&amp;client_id=&lt;client-id&gt;&amp;redirect_uri=&lt;url-encoded-redirect-uri&gt;&amp;scope=&lt;url-encoded-https://outlook.office.com/.default&gt;&amp;response_mode=query&amp;prompt=login</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Sign in as an Exchange Online administrator. You are redirected to a URL that starts with the registered redirect URI. The page itself does not have to load. Record the value of the <code>code</code> parameter in the URL.</p>
+</li>
+<li><p>In PowerShell, use the authorization code to get an access token.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Params</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">  <span class="string">&quot;grant_type&quot;</span> = <span class="string">&quot;authorization_code&quot;</span></span><br><span class="line">  <span class="string">&quot;redirect_uri&quot;</span> = <span class="string">&quot;&lt;registered-redirect-uri&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;client_id&quot;</span> = <span class="string">&quot;&lt;registered-client-id&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;client_secret&quot;</span> = <span class="string">&quot;&lt;client-secret&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;code&quot;</span> = <span class="string">&quot;&lt;authorization-code&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;scope&quot;</span> = <span class="string">&quot;https://outlook.office.com/.default&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://login.microsoftonline.com/&lt;tenant-name&gt;/oauth2/v2.0/token&quot;</span> <span class="literal">-Method</span> <span class="string">&quot;POST&quot;</span> <span class="literal">-Body</span> <span class="variable">$Params</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>This completes the access-token procedure for delegated permissions. Steps 11 and later use the Authorization Code Flow. You do not have to use a browser and PowerShell exactly as shown; if you are familiar with the process, you can obtain the token another way, such as with MSAL.</p>
+<p>The procedure above registers a confidential client app, but a public client app can also be used when operating an API from PowerShell. In general, a public client app is appropriate for this scenario. This example follows the confidential-client approach described in the documentation at the time.</p>
+<p><a id="application-permissions"></a></p>
+<h2 id="Try-application-permissions-with-PowerShell"><a href="#Try-application-permissions-with-PowerShell" class="headerlink" title="Try application permissions with PowerShell"></a>Try application permissions with PowerShell</h2><ol>
+<li><p>Sign in to the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a>.</p>
+</li>
+<li><p>Select [Active Directory] - [App registrations] - [New registration].</p>
+</li>
+<li><p>Enter an app name, such as <code>App02</code>.</p>
+</li>
+<li><p>Under [Supported account types], select [Accounts in this organizational directory only].</p>
+</li>
+<li><p>Under [Redirect URI], select [Web] and enter a URI, such as <code>https://localhost/App02</code>.</p>
+</li>
+<li><p>Select [Register], then record the displayed [Application (client) ID].</p>
+</li>
+<li><p>Select [Manage] - [Certificates &amp; secrets] - [Client secrets], then select [New client secret].</p>
+</li>
+<li><p>Enter a description and expiration, add the secret, and record its value. Store the secret securely; you cannot view its value again later.</p>
+</li>
+<li><p>Select [Manage] - [API permissions] - [Add a permission].</p>
+</li>
+<li><p>Select [APIs my organization uses] - [Office 365 Exchange Online]. Under [Application permissions], select <code>ReportingWebService.Read.All</code>, then add the permission.</p>
+</li>
+<li><p>Select [Grant admin consent for your tenant], then select [Yes].</p>
+</li>
+<li><p>In the Azure portal, select [Active Directory] - [Manage] - [Roles and administrators] - [Exchange administrator] - [Add assignment], then add the registered app. If you use Privileged Identity Management (PIM), select the app as a member and set the assignment type to [Active].</p>
+</li>
+<li><p>Wait for the settings to synchronize to Exchange Online.</p>
+</li>
+<li><p>In PowerShell, get an access token using application permissions.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Params</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">  <span class="string">&quot;client_id&quot;</span> = <span class="string">&quot;&lt;registered-client-id&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;scope&quot;</span> = <span class="string">&quot;https://outlook.office.com/.default&quot;</span></span><br><span class="line">  <span class="string">&quot;client_secret&quot;</span> = <span class="string">&quot;&lt;client-secret&gt;&quot;</span></span><br><span class="line">  <span class="string">&quot;grant_type&quot;</span> = <span class="string">&quot;client_credentials&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://login.microsoftonline.com/&lt;tenant-name&gt;/oauth2/v2.0/token&quot;</span> <span class="literal">-Method</span> <span class="string">&quot;POST&quot;</span> <span class="literal">-Body</span> <span class="variable">$Params</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>Instead of steps 11 and 12, you can create a URL in the following format, open it in a browser, sign in as a global administrator, and grant consent to the app. The redirect URI and scope must be URL-encoded.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://login.microsoftonline.com/organizations/v2.0/adminconsent?client_id=&lt;client-id&gt;&amp;redirect_uri=&lt;url-encoded-redirect-uri&gt;&amp;scope=&lt;url-encoded-https://outlook.office.com/.default&gt;</span><br></pre></td></tr></table></figure>
+
+<p>The token procedure above uses the Client Credentials Flow. If you are familiar with the process, you can get a token another way, such as with MSAL.</p>
+<p><a id="send-a-request-to-the-office-365-reporting-web-service-with-powershell"></a></p>
+<h2 id="Send-a-request-to-the-Office-365-Reporting-Web-Service-with-PowerShell"><a href="#Send-a-request-to-the-Office-365-Reporting-Web-Service-with-PowerShell" class="headerlink" title="Send a request to the Office 365 Reporting Web Service with PowerShell"></a>Send a request to the Office 365 Reporting Web Service with PowerShell</h2><p>Use the access token to retrieve data equivalent to the <code>Get-MessageTrace</code> cmdlet. This example filters by sender email address.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Headers</span> = <span class="selector-tag">@</span>&#123; <span class="string">&quot;Authorization&quot;</span> = <span class="string">&quot;Bearer &lt;access-token&gt;&quot;</span> &#125;</span><br><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/?`$filter=SenderAddress eq &#x27;user01@contoso.onmicrosoft.com&#x27;&quot;</span> <span class="literal">-Headers</span> <span class="variable">$Headers</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Received&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Received.<span class="string">&quot;#text&quot;</span>.Split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">0</span>] &#125; &#125;,</span><br><span class="line">        SenderAddress, RecipientAddress, Subject, Status |</span><br><span class="line">    <span class="built_in">Format-Table</span></span><br></pre></td></tr></table></figure>
+
+<p>To specify a date range, run a request like this:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/?`$filter=StartDate eq datetime&#x27;2022-09-01T00:00:00Z&#x27; and EndDate eq datetime&#x27;2022-09-02T00:00:00Z&#x27;&quot;</span> <span class="literal">-Headers</span> <span class="variable">$Headers</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Received&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Received.<span class="string">&quot;#text&quot;</span>.Split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">0</span>] &#125; &#125;,</span><br><span class="line">        SenderAddress, RecipientAddress, Subject, Status |</span><br><span class="line">    <span class="built_in">Format-Table</span></span><br></pre></td></tr></table></figure>
+
+<p>To get data equivalent to <code>Get-MessageTraceDetail</code>, you need to create a separate request. The following function creates a URL for retrieving the details from a message trace entry.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Get-MessageTraceDetailUrl</span></span> &#123;</span><br><span class="line">    <span class="keyword">param</span> (</span><br><span class="line">        [<span class="type">Parameter</span>(<span class="type">Mandatory</span> = <span class="variable">$true</span>, <span class="type">Position</span> = <span class="number">0</span>, <span class="type">ValueFromPipeline</span> = <span class="variable">$true</span>)]</span><br><span class="line">        [<span class="type">System.Xml.XmlLinkedNode</span>]<span class="variable">$MessageTraceEntry</span>,</span><br><span class="line">        [<span class="type">switch</span>]<span class="variable">$Escape</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="variable">$MessageTraceId</span> = <span class="variable">$MessageTraceEntry</span>.MessageTraceId.InnerText</span><br><span class="line">    <span class="variable">$RecipientAddress</span> = <span class="variable">$MessageTraceEntry</span>.RecipientAddress</span><br><span class="line">    <span class="variable">$SenderAddress</span> = <span class="variable">$MessageTraceEntry</span>.SenderAddress</span><br><span class="line">    <span class="variable">$StartDate</span> = <span class="variable">$MessageTraceEntry</span>.StartDate.InnerText</span><br><span class="line">    <span class="variable">$EndDate</span> = <span class="variable">$MessageTraceEntry</span>.EndDate.InnerText</span><br><span class="line"></span><br><span class="line">    <span class="variable">$URL</span> = <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTraceDetail?`$filter=MessageTraceId eq guid&#x27;<span class="variable">$MessageTraceId</span>&#x27; and RecipientAddress eq &#x27;<span class="variable">$RecipientAddress</span>&#x27; and SenderAddress eq &#x27;<span class="variable">$SenderAddress</span>&#x27; and StartDate eq datetime&#x27;<span class="variable">$StartDate</span>&#x27; and EndDate eq datetime&#x27;<span class="variable">$EndDate</span>&#x27;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="variable">$Escape</span>) &#123;</span><br><span class="line">        <span class="variable">$URL</span> = <span class="variable">$URL</span>.Replace(<span class="string">&quot;`$&quot;</span>, <span class="string">&quot;``<span class="variable">$</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable">$URL</span> | clip</span><br><span class="line"></span><br><span class="line">    <span class="built_in">Write-Host</span> <span class="string">&quot;URL was copied to your clipboard.&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$URL</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>First, store the message trace results in a variable.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$MessageTrace</span> = <span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/&quot;</span> <span class="literal">-Headers</span> <span class="variable">$Headers</span></span><br></pre></td></tr></table></figure>
+
+<p>Then pass the first message to the function to create a URL for its details.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$MessageTrace</span>.Content.Properties[<span class="number">0</span>] | <span class="built_in">Get-MessageTraceDetailUrl</span> <span class="literal">-Escape</span></span><br></pre></td></tr></table></figure>
+
+<p>Use the generated URL to get data equivalent to <code>Get-MessageTraceDetail</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="string">&quot;&lt;generated-url&gt;&quot;</span> <span class="literal">-Headers</span> <span class="variable">$Headers</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Date&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Date.InnerText &#125; &#125;,</span><br><span class="line">        Event,</span><br><span class="line">        <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Detail&quot;</span>; Expression = &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$_</span>.Detail.GetType().Name <span class="operator">-eq</span> <span class="string">&quot;String&quot;</span>) &#123; <span class="variable">$_</span>.Detail &#125; <span class="keyword">else</span> &#123; <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+<p><a id="try-basic-authentication"></a></p>
+<h2 id="Try-Basic-authentication"><a href="#Try-Basic-authentication" class="headerlink" title="Try Basic authentication"></a>Try Basic authentication</h2><div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The following steps are included only as a historical record. Basic authentication is disabled in all Exchange Online tenants and cannot be used. The Message Trace reports in the Reporting Web Service described in this article have also been retired.</p>
+</div>
+<p>At the time, you could run the following command in Windows PowerShell and enter Office 365 administrator credentials in the authentication dialog. This example filters by sender email address.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Credential</span> = <span class="built_in">Get-Credential</span></span><br><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/?`$filter=SenderAddress eq &#x27;user01@contoso.onmicrosoft.com&#x27;&quot;</span> <span class="literal">-Credential</span> <span class="variable">$Credential</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Received&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Received.<span class="string">&quot;#text&quot;</span>.Split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">0</span>] &#125; &#125;,</span><br><span class="line">        SenderAddress, RecipientAddress, Subject, Status |</span><br><span class="line">    <span class="built_in">Format-Table</span></span><br></pre></td></tr></table></figure>
+
+<p>Check that the result contains data equivalent to the <code>Get-MessageTrace</code> cmdlet. To specify a date range, run a request like this:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/?`$filter=StartDate eq datetime&#x27;2019-07-18T00:00:00Z&#x27; and EndDate eq datetime&#x27;2019-07-19T00:00:00Z&#x27;&quot;</span> <span class="literal">-Credential</span> <span class="variable">$Credential</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Received&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Received.<span class="string">&quot;#text&quot;</span>.Split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">0</span>] &#125; &#125;,</span><br><span class="line">        SenderAddress, RecipientAddress, Subject, Status |</span><br><span class="line">    <span class="built_in">Format-Table</span></span><br></pre></td></tr></table></figure>
+
+<p>To get data equivalent to <code>Get-MessageTraceDetail</code>, define the <code>Get-MessageTraceDetailUrl</code> function shown earlier. First retrieve the message trace results, then create a URL from the first message.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$MessageTrace</span> = <span class="built_in">Invoke-RestMethod</span> <span class="literal">-Uri</span> <span class="string">&quot;https://reports.office365.com/ecp/reportingwebservice/reporting.svc/MessageTrace/&quot;</span> <span class="literal">-Credential</span> <span class="variable">$Credential</span></span><br><span class="line"><span class="variable">$MessageTrace</span>.Content.Properties[<span class="number">0</span>] | <span class="built_in">Get-MessageTraceDetailUrl</span> <span class="literal">-Escape</span></span><br></pre></td></tr></table></figure>
+
+<p>Use the generated URL to get the details.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Invoke-RestMethod</span> <span class="string">&quot;&lt;generated-url&gt;&quot;</span> <span class="literal">-Credential</span> <span class="variable">$Credential</span>).Content.Properties |</span><br><span class="line">    <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Date&quot;</span>; Expression = &#123; <span class="variable">$_</span>.Date.InnerText &#125; &#125;,</span><br><span class="line">        Event,</span><br><span class="line">        <span class="selector-tag">@</span>&#123; Name = <span class="string">&quot;Detail&quot;</span>; Expression = &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$_</span>.Detail.GetType().Name <span class="operator">-eq</span> <span class="string">&quot;String&quot;</span>) &#123; <span class="variable">$_</span>.Detail &#125; <span class="keyword">else</span> &#123; <span class="string">&quot;&quot;</span> &#125;</span><br><span class="line">        &#125; &#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/en/tags/Office-365-Reporting-Web-Services/" rel="tag">Office 365 Reporting Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/getting-started-with-office-365-reporting-web-service.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/en/getting-started-with-office-365-reporting-web-service/" data-id="cuidvWRrPGianl4htMsSpXuqQ" data-title="Getting Started with the Office 365 Reporting Web Service" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/en/getting-started-with-office-365-management-activity-api/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Getting Started with the Office 365 Management Activity API
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/en/getting-started-with-exchange-web-services/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Getting started with Exchange Web Services (EWS)
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/en/tags/Visual-Studio/">Visual Studio</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/en/tags/NET/" class="tagcloud-link" style="font-size: 104%;">.NET</a> <a href="/Docs/en/tags/ActiveSync/" class="tagcloud-link" style="font-size: 104%;">ActiveSync</a> <a href="/Docs/en/tags/Android/" class="tagcloud-link" style="font-size: 104%;">Android</a> <a href="/Docs/en/tags/Attachments/" class="tagcloud-link" style="font-size: 104%;">Attachments</a> <a href="/Docs/en/tags/EWSEditor/" class="tagcloud-link" style="font-size: 104%;">EWSEditor</a> <a href="/Docs/en/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/en/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 170%;">Exchange Server</a> <a href="/Docs/en/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 135%;">Exchange Web Services</a> <a href="/Docs/en/tags/Hexo/" class="tagcloud-link" style="font-size: 104%;">Hexo</a> <a href="/Docs/en/tags/LDAP/" class="tagcloud-link" style="font-size: 104%;">LDAP</a> <a href="/Docs/en/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 113%;">Microsoft 365</a> <a href="/Docs/en/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 126%;">Microsoft Graph</a> <a href="/Docs/en/tags/OAuth/" class="tagcloud-link" style="font-size: 104%;">OAuth</a> <a href="/Docs/en/tags/Office-365-Management-Activity-API/" class="tagcloud-link" style="font-size: 109%;">Office 365 Management Activity API</a> <a href="/Docs/en/tags/Office-365-Reporting-Web-Services/" class="tagcloud-link" style="font-size: 109%;">Office 365 Reporting Web Services</a> <a href="/Docs/en/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 117%;">Office365APIEditor</a> <a href="/Docs/en/tags/Outlook-Add-ins/" class="tagcloud-link" style="font-size: 104%;">Outlook Add-ins</a> <a href="/Docs/en/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 122%;">Outlook REST API</a> <a href="/Docs/en/tags/Outlook-com/" class="tagcloud-link" style="font-size: 109%;">Outlook.com</a> <a href="/Docs/en/tags/PowerShell/" class="tagcloud-link" style="font-size: 178%;">PowerShell</a> <a href="/Docs/en/tags/SmtpClient/" class="tagcloud-link" style="font-size: 109%;">SmtpClient</a> <a href="/Docs/en/tags/Sunrise/" class="tagcloud-link" style="font-size: 104%;">Sunrise</a> <a href="/Docs/en/tags/Visual-Studio/" class="tagcloud-link" style="font-size: 104%;">Visual Studio</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2026/08/">August 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2024/03/">March 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/en/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/en/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/microsoft-graph-get-schedule/">Microsoft Graph getSchedule</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/en/get-all-exchange-online-mailboxes/">Retrieving Mailboxes for All Users in Exchange Online</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

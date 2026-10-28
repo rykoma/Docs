@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging 研究所</title>
+    <link>https://rykoma.github.io/Docs/ja/</link>
+    <description>Developer Messaging 研究所の最新記事</description>
+    <language>ja</language>
+    <atom:link href="https://rykoma.github.io/Docs/ja/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Hello World</title>
+      <link>https://rykoma.github.io/Docs/ja/hello-world/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/hello-world/</guid>
+      <pubDate>Wed, 19 Aug 2026 04:45:36 GMT</pubDate>
+      <description>Hexo で構築したブログの最初のサンプル記事です。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph とメールのいろいろな添付</title>
+      <link>https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 05:28:02 GMT</pubDate>
+      <description>Microsoft Graph で扱う Exchange Online のファイル、アイテム、インライン、クラウド添付の違いを整理します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で下書き状態の会議を作成する</title>
+      <link>https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 00:23:21 GMT</pubDate>
+      <description>Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph の getSchedule</title>
+      <link>https://rykoma.github.io/Docs/ja/microsoft-graph-get-schedule/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/microsoft-graph-get-schedule/</guid>
+      <pubDate>Sat, 24 Aug 2019 06:49:17 GMT</pubDate>
+      <description>Microsoft Graph の getSchedule で空き時間情報を取得する方法を紹介します。予定表に対するアクセス権の違いによって、取得できる情報がどう変わるかを確認します。</description>
+    </item>
+    <item>
+      <title>Exchange Online の全ユーザーのメールボックスを取得する</title>
+      <link>https://rykoma.github.io/Docs/ja/get-all-exchange-online-mailboxes/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-all-exchange-online-mailboxes/</guid>
+      <pubDate>Thu, 15 Aug 2019 02:33:53 GMT</pubDate>
+      <description>Exchange Online で全ユーザーのメールボックスを取得するコマンドが失敗する場合の対処方法として、Get-MsolUser と Get-Mailbox を組み合わせる方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Office 365 の監査ログを全部取得したい?</title>
+      <link>https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/</guid>
+      <pubDate>Sun, 28 Jul 2019 01:05:12 GMT</pubDate>
+      <description>Office 365 の監査ログを全部取得したいときに検討すべきこと、取得方法、Office 365 Management Activity API を使用する際の注意点を紹介します。</description>
+    </item>
+    <item>
+      <title>Office 365 Management Activity API の試し方</title>
+      <link>https://rykoma.github.io/Docs/ja/getting-started-with-office-365-management-activity-api/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getting-started-with-office-365-management-activity-api/</guid>
+      <pubDate>Fri, 19 Jul 2019 01:53:08 GMT</pubDate>
+      <description>Office365APIEditor を使って監査ログを取得する手順を紹介します。2019 年公開の記事を基に、現在の API 情報と注意点を補足しています。</description>
+    </item>
+    <item>
+      <title>Office 365 Reporting Web サービスの試し方</title>
+      <link>https://rykoma.github.io/Docs/ja/getting-started-with-office-365-reporting-web-service/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getting-started-with-office-365-reporting-web-service/</guid>
+      <pubDate>Fri, 19 Jul 2019 01:18:36 GMT</pubDate>
+      <description>Office 365 Reporting Web Service でメッセージ追跡ログを取得する、2019 年から 2022 年当時の手順を紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange Web Service (EWS) の試し方</title>
+      <link>https://rykoma.github.io/Docs/ja/getting-started-with-exchange-web-services/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getting-started-with-exchange-web-services/</guid>
+      <pubDate>Wed, 17 Jul 2019 02:00:54 GMT</pubDate>
+      <description>EWSEditor で Exchange Online の EWS に接続し、基本認証または組み込みの OAuth を使用してフォルダーやアイテムを閲覧する当時の手順を紹介します。</description>
+    </item>
+    <item>
+      <title>Outlook REST API の試し方</title>
+      <link>https://rykoma.github.io/Docs/ja/getting-started-with-outlook-rest-api/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getting-started-with-outlook-rest-api/</guid>
+      <pubDate>Tue, 16 Jul 2019 03:22:30 GMT</pubDate>
+      <description>Office365APIEditor を使用して Outlook REST API からメールを取得する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph の試し方</title>
+      <link>https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/</guid>
+      <pubDate>Tue, 16 Jul 2019 01:45:52 GMT</pubDate>
+      <description>Office365APIEditor を使用して Microsoft Graph からメールを取得する方法を紹介します。ビルトイン アプリとカスタム アプリによる委任されたアクセス許可、およびアプリケーションの許可を使用する手順を説明します。</description>
+    </item>
+    <item>
+      <title>Office 365 Reporting web service の MessageTraceDetail をローカライズする</title>
+      <link>https://rykoma.github.io/Docs/ja/localize-messagetracedetail-reporting-web-service/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/localize-messagetracedetail-reporting-web-service/</guid>
+      <pubDate>Tue, 28 May 2019 01:26:08 GMT</pubDate>
+      <description>Office 365 Reporting Web Service の MessageTraceDetail に Accept-Language ヘッダーを指定し、応答を日本語で取得する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Outlook Web アドインを Visual Studio でデバッグする方法</title>
+      <link>https://rykoma.github.io/Docs/ja/debug-outlook-web-add-in-with-visual-studio/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/debug-outlook-web-add-in-with-visual-studio/</guid>
+      <pubDate>Thu, 21 Mar 2019 21:58:45 GMT</pubDate>
+      <description>2019 年当時の Outlook Web アドインを Visual Studio でデバッグする手順を紹介します。</description>
+    </item>
+    <item>
+      <title>Exchange Online の PowerShell で警告出力を取得する方法</title>
+      <link>https://rykoma.github.io/Docs/ja/get-warning-output-in-exchange-online-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/get-warning-output-in-exchange-online-powershell/</guid>
+      <pubDate>Sat, 22 Dec 2018 18:35:37 GMT</pubDate>
+      <description>Exchange Online PowerShell の警告出力を WarningVariable パラメーターで取得する方法と、Remote PowerShell 接続時との違いを紹介します。</description>
+    </item>
+    <item>
+      <title>Office 365 で利用可能なメッセージング関連 API について</title>
+      <link>https://rykoma.github.io/Docs/ja/office-365-messaging-apis/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/office-365-messaging-apis/</guid>
+      <pubDate>Sat, 23 Jun 2018 22:23:32 GMT</pubDate>
+      <description>2018 年時点で Exchange Online のメールボックスにアクセスするために利用できた EWS、Office 365 API (Outlook REST API)、Microsoft Graph を紹介します。</description>
+    </item>
+    <item>
+      <title>Format-List コマンドの結果をプロパティの名前でならべかえる</title>
+      <link>https://rykoma.github.io/Docs/ja/sort-format-list-output-by-property-name/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/sort-format-list-output-by-property-name/</guid>
+      <pubDate>Mon, 14 May 2018 03:48:34 GMT</pubDate>
+      <description>Get-Mailbox などの実行結果を Format-List でプロパティ名順に表示する方法と、Format-SortedList 関数を紹介します。</description>
+    </item>
+    <item>
+      <title>Export-TransportRuleCollection コマンドの中身を見る</title>
+      <link>https://rykoma.github.io/Docs/ja/inspect-export-transportrulecollection/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/inspect-export-transportrulecollection/</guid>
+      <pubDate>Thu, 10 May 2018 05:34:35 GMT</pubDate>
+      <description>Exchange Server のトランスポート ルールを XML にエクスポートし、Export-TransportRuleCollection コマンドの出力内容を確認する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>代理人と非公開の予定を表示する権限を PowerShell で確認する</title>
+      <link>https://rykoma.github.io/Docs/ja/check-delegate-private-calendar-permissions-powershell/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/check-delegate-private-calendar-permissions-powershell/</guid>
+      <pubDate>Fri, 04 May 2018 22:02:22 GMT</pubDate>
+      <description>Exchange Online PowerShell で予定表の代理人設定と非公開の予定を表示する権限を確認する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Remote PowerShell コマンドの既定の出力内容</title>
+      <link>https://rykoma.github.io/Docs/ja/remote-powershell-default-command-output/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/remote-powershell-default-command-output/</guid>
+      <pubDate>Sun, 29 Apr 2018 08:35:44 GMT</pubDate>
+      <description>Exchange Online Remote PowerShell の Get-Mailbox コマンドで既定の出力内容を確認し、Export-PSSession で出力形式を変更する手順を紹介します。</description>
+    </item>
+    <item>
+      <title>多要素認証を使用した Exchange Online PowerShell の裏側</title>
+      <link>https://rykoma.github.io/Docs/ja/exchange-online-powershell-mfa-under-the-hood/</link>
+      <guid isPermaLink="true">https://rykoma.github.io/Docs/ja/exchange-online-powershell-mfa-under-the-hood/</guid>
+      <pubDate>Thu, 15 Jun 2017 02:59:14 GMT</pubDate>
+      <description>2017 年当時の Exchange Online PowerShell の MFA 接続を調べ、OAuth トークンと Remote PowerShell の内部動作を解説します。</description>
+    </item>
+  </channel>
+</rss>

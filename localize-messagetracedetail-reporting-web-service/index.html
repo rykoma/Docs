@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <title>Office 365 Reporting web service の MessageTraceDetail をローカライズする / Localize MessageTraceDetail in the Office 365 Reporting Web Service</title>
+  <script>
+    (() => {
+      const languages = navigator.languages || [navigator.language];
+      const language = languages.find((value) => /^(ja|en)(-|$)/i.test(value));
+      const destination = language && /^en/i.test(language) ? "/Docs/en/localize-messagetracedetail-reporting-web-service/" : "/Docs/ja/localize-messagetracedetail-reporting-web-service/";
+      window.location.replace(destination);
+    })();
+  </script>
+</head>
+<body>
+  <p>Select a language:</p>
+  <ul>
+    <li><a href="/Docs/ja/localize-messagetracedetail-reporting-web-service/">日本語</a></li>
+    <li><a href="/Docs/en/localize-messagetracedetail-reporting-web-service/">English</a></li>
+  </ul>
+</body>
+</html>

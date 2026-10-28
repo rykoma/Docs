@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Microsoft Graph の試し方 | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/getting-started-with-microsoft-graph/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Office365APIEditor を使用して Microsoft Graph からメールを取得する方法を紹介します。ビルトイン アプリとカスタム アプリによる委任されたアクセス許可、およびアプリケーションの許可を使用する手順を説明します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft Graph の試し方">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Office365APIEditor を使用して Microsoft Graph からメールを取得する方法を紹介します。ビルトイン アプリとカスタム アプリによる委任されたアクセス許可、およびアプリケーションの許可を使用する手順を説明します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2019-07-16T01:45:52.000Z">
+<meta property="article:modified_time" content="2026-10-26T06:52:21.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="Office365APIEditor">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/getting-started-with-microsoft-graph/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/getting-started-with-microsoft-graph/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/getting-started-with-microsoft-graph" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-07-16T01:45:52.000Z" itemprop="datePublished">2019-07-16</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Microsoft Graph の試し方
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-10-26T06:52:21.000Z" itemprop="dateModified">2026-10-26</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor の公式リポジトリ</a> は 2025 年 4 月 3 日にアーカイブされ、すべてのリリースも削除されています。公式リポジトリでは、後継アプリケーションとして <a target="_blank" rel="noopener" href="https://github.com/rykoma/Graph-Editor">Graph Editor</a> を案内しています。以下の手順は執筆当時のものであり、現在の環境でそのまま実行できることを保証するものではありません。</p>
+</div>
+<p>Microsoft Graph を試すには <a target="_blank" rel="noopener" href="https://developer.microsoft.com/en-us/graph/graph-explorer">Graph Explorer</a> を使用するのが簡単です。ですが、自分で用意した Client ID を使用したり、アプリケーションの権限を使用したりすることはできません。そのため、ここでは Office365APIEditor を使用して Microsoft Graph の動作を検証する方法を紹介します。紹介するのはメールの取得方法のみですが、同じ要領で他の権限を使用してさまざまな情報にアクセスできます。Office365APIEditor の通信を Fiddler で取得すれば、どのような通信が行われているのか確認できます。実際に Microsoft Graph を使用するアプリケーションを開発する場合は、これらの通信をライブラリを使用しながら (もちろん使用しないことも可能) 実装することになります。</p>
+<p>Microsoft Graph reports API の試し方については <a target="_blank" rel="noopener" href="https://blog.rykoma.net/2021/01/13/1610/">Microsoft Graph reports API の試し方</a>を参照してください。</p>
+<h2 id="委任されたアクセス許可-を-Office365APIEditor-で試す-ビルトイン編"><a href="#委任されたアクセス許可-を-Office365APIEditor-で試す-ビルトイン編" class="headerlink" title="[委任されたアクセス許可] を Office365APIEditor で試す (ビルトイン編)"></a>[委任されたアクセス許可] を Office365APIEditor で試す (ビルトイン編)</h2><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>アクセス トークンの種類</td>
+<td>Delegated token</td>
+</tr>
+<tr>
+<td>ツール</td>
+<td>Office365APIEditor</td>
+</tr>
+<tr>
+<td>認証エンドポイント</td>
+<td>v2.0</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Microsoft Graph</td>
+</tr>
+</tbody></table>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor</a> をインストールして起動します。</li>
+<li>[Tools] - [New Editor] をクリックします。</li>
+<li>[File] - [New Access Token] をクリックします。</li>
+<li>[I have not registered the application.] を選択して [Next] をクリックします。</li>
+<li>[Office365APIEditor built-in application] を選択して [Next] をクリックします。</li>
+<li>[Scope editor] をクリックします。</li>
+<li>[Select default values] をクリックして [OK] をクリックします。</li>
+<li>[Next] をクリックします。</li>
+<li>Office 365 のユーザーでサインインします。</li>
+<li>上部ペインの [Request] に <code>https://graph.microsoft.com/v1.0/me/messages</code> と入力して [Run] をクリックします。</li>
+<li>下部ペインの [Body] に操作しているユーザーのメールが表示されます。</li>
+</ol>
+<h2 id="委任されたアクセス許可-を-Office365APIEditor-で試す-カスタム-アプリ編"><a href="#委任されたアクセス許可-を-Office365APIEditor-で試す-カスタム-アプリ編" class="headerlink" title="[委任されたアクセス許可] を Office365APIEditor で試す (カスタム アプリ編)"></a>[委任されたアクセス許可] を Office365APIEditor で試す (カスタム アプリ編)</h2><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>アクセス トークンの種類</td>
+<td>Delegated token</td>
+</tr>
+<tr>
+<td>ツール</td>
+<td>Office365APIEditor</td>
+</tr>
+<tr>
+<td>認証エンドポイント</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Microsoft Graph</td>
+</tr>
+</tbody></table>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure Portal</a> にサインインします。</li>
+<li>[Azure Active Directory] - [アプリの登録] - [新規登録] をクリックします。</li>
+<li>[名前] に任意のアプリの名前を入力します。(例: App01)</li>
+<li>[サポートされているアカウントの種類] から [この組織のディレクトリ内のアカウントのみ] を選択します。</li>
+<li>[リダイレクト URI] で [パブリック クライアント (モバイルとデスクトップ)] を選択し、任意の URI を入力します。(例: <code>https://localhost/App01</code>)</li>
+<li>[登録] をクリックします。</li>
+<li>表示された [アプリケーション (クライアント) ID] の値を控えておきます。</li>
+<li>[管理] - [API のアクセス許可] をクリックします。</li>
+<li>[アクセス許可の追加] をクリックします。</li>
+<li>[Microsoft Graph] をクリックします。</li>
+<li>[委任されたアクセス許可] をクリックします。</li>
+<li>[Mail] - [Mail.Read] のチェックをオンにします。</li>
+<li>[アクセス許可の追加] をクリックします。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor</a> をインストールして起動します。</li>
+<li>[Tools] - [New Editor] をクリックします。</li>
+<li>[File] - [New Access Token] をクリックします。</li>
+<li>[v1.0 Endpoint] を選択して [Next] をクリックします。</li>
+<li>[Public client&#x2F;native (mobile &amp; desktop) app] を選択して [Next] をクリックします。</li>
+<li>[Tenant Name] にアプリを登録したテナントの onmicrosoft.com のドメイン名を入力します。(例: <code>contoso.onmicrosoft.com</code>)</li>
+<li>[Application ID] に手順 7 で控えた値を入力します。</li>
+<li>[Redirect URI] に手順 5 で入力した URI を入力します。</li>
+<li>[Resource] から [Microsoft Graph] を選択します。</li>
+<li>[Next] をクリックします。</li>
+<li>Office 365 のユーザーでサインインします。</li>
+<li>上部ペインの [Request] に <code>https://graph.microsoft.com/v1.0/me/messages</code> と入力して [Run] をクリックします。</li>
+<li>下部ペインの [Body] に操作しているユーザーのメールが表示されます。</li>
+</ol>
+<h2 id="アプリケーションの許可-を-Office365APIEditor-で試す"><a href="#アプリケーションの許可-を-Office365APIEditor-で試す" class="headerlink" title="[アプリケーションの許可] を Office365APIEditor で試す"></a>[アプリケーションの許可] を Office365APIEditor で試す</h2><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>アクセス トークンの種類</td>
+<td>App-Only token</td>
+</tr>
+<tr>
+<td>ツール</td>
+<td>Office365APIEditor</td>
+</tr>
+<tr>
+<td>認証エンドポイント</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Microsoft Graph</td>
+</tr>
+</tbody></table>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure Portal</a> にサインインします。</li>
+<li>[Azure Active Directory] - [アプリの登録] - [新規登録] をクリックします。</li>
+<li>[名前] に任意のアプリの名前を入力します。(例: App02)</li>
+<li>[サポートされているアカウントの種類] から [この組織のディレクトリ内のアカウントのみ] を選択します。</li>
+<li>[リダイレクト URI] で [Web] を選択し、任意の URI を入力します。(例: <code>https://localhost/App02</code>)</li>
+<li>[登録] をクリックします。</li>
+<li>表示された [アプリケーション (クライアント) ID] の値を控えておきます。</li>
+<li>[管理] - [証明書とシークレット] - [クライアント シークレット] をクリックします。</li>
+<li>[新しいクライアント シークレット] をクリックします。</li>
+<li>[説明] に任意の説明を入力します。(例: Key1)</li>
+<li>[有効期限] から任意の有効期限を選択します。(例: 推奨: 180 日 (6 か月))</li>
+<li>[追加] をクリックします。</li>
+<li>表示されたクライアント シークレットの値を控えておきます。</li>
+<li>[管理] - [API のアクセス許可] をクリックします。</li>
+<li>[アクセス許可の追加] をクリックします。</li>
+<li>[Microsoft Graph] をクリックします。</li>
+<li>[アプリケーションの許可] をクリックします。</li>
+<li>[Mail] - [Mail.Read] のチェックをオンにします。</li>
+<li>[アクセス許可の追加] をクリックします。</li>
+<li>[&lt;テナント名&gt; に管理者の同意を与えます] をクリックします。</li>
+<li>[はい] をクリックします。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor</a> をインストールして起動します。</li>
+<li>[Tools] - [New Editor] をクリックします。</li>
+<li>[File] - [New Access Token] をクリックします。</li>
+<li>[v1.0 Endpoint] を選択して [Next] をクリックします。</li>
+<li>[Web app &#x2F; API (Use App Only Token by client secret] を選択して [Next] をクリックします。</li>
+<li>[Tenant Name] にアプリを登録したテナントの onmicrosoft.com のドメイン名を入力します。(例: <code>contoso.onmicrosoft.com</code>)</li>
+<li>[Application ID] に手順 7 で控えた値を入力します。</li>
+<li>[Resource] から [Microsoft Graph] を選択します。</li>
+<li>[Client secret] に手順 13 で控えた値を入力します。</li>
+<li>[Next] をクリックします。</li>
+<li>上部ペインの [Request] に <code>https://graph.microsoft.com/v1.0/users/&lt;任意のユーザーの UPN&gt;/messages</code> と入力して [Run] をクリックします。(例: <code>https://graph.microsoft.com/v1.0/users/user01@contoso.onmicrosoft.com/messages</code>)</li>
+<li>下部ペインの [Body] に指定したユーザーのメールが表示されます。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Office365APIEditor/" rel="tag">Office365APIEditor</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/getting-started-with-microsoft-graph.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/getting-started-with-microsoft-graph/" data-id="cuid67vXBxw-sigpZiVioC6vX" data-title="Microsoft Graph の試し方" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/getting-started-with-outlook-rest-api/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Outlook REST API の試し方
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/localize-messagetracedetail-reporting-web-service/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Office 365 Reporting web service の MessageTraceDetail をローカライズする
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Visual-Studio/">Visual Studio</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 104%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 104%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 104%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 104%;">Attachments</a> <a href="/Docs/ja/tags/EWSEditor/" class="tagcloud-link" style="font-size: 104%;">EWSEditor</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 170%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 135%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 104%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 104%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 113%;">Microsoft 365</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 126%;">Microsoft Graph</a> <a href="/Docs/ja/tags/OAuth/" class="tagcloud-link" style="font-size: 104%;">OAuth</a> <a href="/Docs/ja/tags/Office-365-Management-Activity-API/" class="tagcloud-link" style="font-size: 109%;">Office 365 Management Activity API</a> <a href="/Docs/ja/tags/Office-365-Reporting-Web-Services/" class="tagcloud-link" style="font-size: 109%;">Office 365 Reporting Web Services</a> <a href="/Docs/ja/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 117%;">Office365APIEditor</a> <a href="/Docs/ja/tags/Outlook-Add-ins/" class="tagcloud-link" style="font-size: 104%;">Outlook Add-ins</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 122%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 109%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 178%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 109%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 104%;">Sunrise</a> <a href="/Docs/ja/tags/Visual-Studio/" class="tagcloud-link" style="font-size: 104%;">Visual Studio</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/03/">2019 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/04/">2018 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/01/">2017 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-get-schedule/">Microsoft Graph の getSchedule</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-all-exchange-online-mailboxes/">Exchange Online の全ユーザーのメールボックスを取得する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

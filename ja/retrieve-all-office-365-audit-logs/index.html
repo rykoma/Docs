@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Office 365 の監査ログを全部取得したい? | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://rykoma.github.io/Docs/en/retrieve-all-office-365-audit-logs/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Office 365 の監査ログを全部取得したいときに検討すべきこと、取得方法、Office 365 Management Activity API を使用する際の注意点を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Office 365 の監査ログを全部取得したい?">
+<meta property="og:url" content="https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Office 365 の監査ログを全部取得したいときに検討すべきこと、取得方法、Office 365 Management Activity API を使用する際の注意点を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2019-07-28T01:05:12.000Z">
+<meta property="article:modified_time" content="2026-10-28T05:00:00.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Microsoft 365">
+<meta property="article:tag" content="Office 365 Management Activity API">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/Docs/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/Docs/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/Docs/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/Docs/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/Docs/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/Docs/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/ja/retrieve-all-office-365-audit-logs/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/Docs/en/retrieve-all-office-365-audit-logs/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/Docs/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="rykoma.github.io/Docs">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/Docs/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/retrieve-all-office-365-audit-logs" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-07-28T01:05:12.000Z" itemprop="datePublished">2019-07-28</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Microsoft 365</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Office 365 の監査ログを全部取得したい?
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-10-28T05:00:00.000Z" itemprop="dateModified">2026-10-28</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>2026 年 10 月時点の最新状況です。Microsoft Purview の監査ログを取得するための Microsoft Graph の <a target="_blank" rel="noopener" href="https://learn.microsoft.com/ja-jp/graph/api/resources/security-auditlogquery?view=graph-rest-1.0">auditLogQuery API</a> が一般提供 (GA) されました。1 回のクエリで最大 100 万件の監査レコードをエクスポートできます。あわせて、Search-UnifiedAuditLog コマンドは 2027 年 10 月 15 日にリタイアすることが発表されています。リタイア後は、このコマンドで監査ログにアクセスできなくなります。Search-UnifiedAuditLog を使用しているスクリプトや自動化は、Microsoft Graph の auditLogQuery API への移行が必要です。以下の本文は 2023 年時点の内容を基にしているため、Search-UnifiedAuditLog に関する記載は、この状況を踏まえてお読みください。</p>
+</div>
+<h2 id="本当に監査ログを取得する必要があるのか"><a href="#本当に監査ログを取得する必要があるのか" class="headerlink" title="本当に監査ログを取得する必要があるのか"></a>本当に監査ログを取得する必要があるのか</h2><p>Office 365 の監査ログを長期に渡って保存する必要があり全部取得したいという話を時々聞きます。そんな時は、一度冷静に考える必要があります。</p>
+<ul>
+<li>なぜ 180 日 (もしくは 1 年または 10 年) 以上保存する必要があるのか</li>
+<li>監査ログを取得しなかったら何が起きるのか</li>
+<li>取得したとして、どうやって保存するのか</li>
+<li>保存した監査ログをどうやって検索するのか</li>
+</ul>
+<p>根本的に、Office 365 の監査ログの保存期間は原則 180 日です (以前は 90 日でしたが 2023 年 10 月から 180 日に延長されました)。Office 365 E5 &#x2F; Microsoft 365 E5 &#x2F; Microsoft 365 E5 Compliance &#x2F; Microsoft 365 E5 eDiscovery and Audit のライセンスがある場合は最大 1 年です。追加で 10-Year Audit Log Retention のライセンスがあれば最大 10 年です。何らかの事情によりそれ以上監査ログを保存する必要があるとなった場合、Office 365 を使用すること自体が適切ではない可能性があります。そのため、なぜ監査ログを保存する必要があるのかを考える必要があります。当然ですが「上司がそう言っている」とか「監査部門がそう言っている」というのは理由にはなりません。もう一歩踏み込んで理由を明確にしなければなりません。</p>
+<h2 id="どうやって監査ログを取得するのか"><a href="#どうやって監査ログを取得するのか" class="headerlink" title="どうやって監査ログを取得するのか"></a>どうやって監査ログを取得するのか</h2><p>しっかり考えたうえでそれでも監査ログを保存しなくてはならないとなった場合、次にどのように取得するのかを考える必要があります。Office 365 で監査ログを取得する方法としては、技術的には、以下の 3 つがあります。</p>
+<ul>
+<li>Microsoft Purview コンプライアンス ポータル</li>
+<li>Search-UnifiedAuditLog コマンド</li>
+<li>Office 365 Management Activity API</li>
+</ul>
+<p>まず Microsoft Purview コンプライアンス ポータルの [ソリューション] の [監査] に [新規検索] (または [クラシック検索]) があります。ここで監査ログを検索してエクスポートできます。ですが、これはあくまでも GUI ベースの操作のため、全件取得は現実的ではありません。</p>
+<p>次に Search-UnifiedAuditLog コマンドがあります。これは Microsoft Purview コンプライアンス ポータルと同じように監査ログを検索してエクスポートできます。コマンドなのでスクリプトを開発すれば全件取得できそうな気がします。ですが、これも実際には現実的ではありません。コマンドの動詞の通り、これは検索を行うコマンドです。全件取得することはそもそも想定されていません。大量の監査ログを取得するようなコマンドを実行しても、コマンドの実行が失敗してしまうことがあります。そもそも想定していない使い方なので、これはどうしようもありません。</p>
+<p>残されたのは Office 365 Management Activity API です。これは Office 365 の監査ログを取得することを目的とした REST API です。基本的にはパートナー向けの API でありエンド ユーザー企業向けではないですが、エンド ユーザー企業が使用することも可能です。しかし癖が強い API なので、簡単には手を付けられない API です。</p>
+<p>まずこの API には監査ログを検索する機能はありません。あくまで監査ログを取得するための API です。検索したいのであれば Microsoft Purview コンプライアンス ポータルや Search-UnifiedAuditLog コマンドを使えばよいのです。API で取得したログの中から検索を行う機能もありません。またリアルタイム性は全くありません。監査ログのもととなる操作を行ってから監査ログを取得できるようになるまで、数日かかる場合もあります。</p>
+<p>そもそも Microsoft Purview コンプライアンス ポータルの監査ログと Search-UnifiedAuditLog コマンドの監査ログは一緒ですが、Office 365 Management Activity API の監査ログは内容は一緒ではあるもののモノとしては別物です。ユーザーが監査ログのもとになる操作を行うと、Exchange Online や SharePoint Online などで監査ログが生成され、それが収集されて Microsoft Purview コンプライアンス ポータルの監査ログと Search-UnifiedAuditLog コマンドの監査ログになります。これとは別に Office 365 Management Activity API で Subscription を構成しておくと、各サービスから収集したログを基に Office 365 Management Activity API 用にも監査ログが生成されます。</p>
+<h2 id="3rd-パーティ製品の利用"><a href="#3rd-パーティ製品の利用" class="headerlink" title="3rd パーティ製品の利用"></a>3rd パーティ製品の利用</h2><p>技術的には Office 365 Management Activity API を使用する必要があることは分かりましたが、実装するのは大変です。そこで 3rd パーティ製品を利用するというのも視野に入れる必要があります。少し検索すればいくつかの製品がすでに世に出ていることが簡単に見つかります。これらの製品も基本的に Office 365 Management Activity API を使用して監査ログを収集しています。</p>
+<p>なおこれらの製品では、Office 365 としては監査ログではないものまで監査ログと謳っている場合があります。よくあるのはメッセージ追跡ログです。Exchange Online がメールを処理した際のログですが、これは Office 365 としては監査ログではありません。あくまで処理状況を記録しているだけです。本当に自分たちに必要な機能を提供してくれる製品がどれなのか、見極める必要があります。</p>
+<p>補足として、メッセージ追跡ログからいつだれがだれにメールが送ったのかなどが確かに分かりますが、これもまた何のためにそんなことを把握する必要があるのかを明確にする必要があります。メッセージ追跡ログからは本文や添付ファイルの情報は分からないので、訴訟の際などではほぼ役には立ちません。訴訟ホールドなどを使用するべきです。</p>
+<h2 id="1st-パーティ-サービスの利用"><a href="#1st-パーティ-サービスの利用" class="headerlink" title="1st パーティ サービスの利用"></a>1st パーティ サービスの利用</h2><p>Azure Sentinel で Office 365 の監査ログを収集する機能が用意されています。バックグラウンドでは Office 365 Management Activity API が使用されています。Azure Sentinel のみでなく、ログの保存先として Azure Log Analytics が利用されているためこれらの知識が必要になり、取得した後にどうするのかを自分で実装する必要があります。また、現状収集できるのは Office 365 Management Activity API の Exchange と SharePoint、Teams の内容のみになっています。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/ja-jp/azure/sentinel/data-connectors-reference#microsoft-365-formerly-office-365">Microsoft Sentinel 用 Microsoft 365 コネクタ</a></p>
+<p>この機能自体は Azure の機能のため、Office 365 のサポートでは対応してもらえません。Microsoft 365 管理センターから問い合わせるのではなく Azure ポータルから問い合わせる必要があります。状況によっては Azure と Office 365 の両方の観点からの対応が必要になるので、ユニファイド サポートやプレミア サポートの契約が必要になる可能性があります。</p>
+<h2 id="それでも-Office-365-Management-Activity-API-を使用したい"><a href="#それでも-Office-365-Management-Activity-API-を使用したい" class="headerlink" title="それでも Office 365 Management Activity API を使用したい"></a>それでも Office 365 Management Activity API を使用したい</h2><p>それでも Office 365 Management Activity API を使用して自力で実装したい場合、次にやることは以下のページをすべて読むことです。Office 365 Service Communications API に関する内容は読み飛ばして問題ありません。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/office/office-365-management-api/">Welcome to Office 365 Management APIs</a></p>
+<p>一部画面ショットが古い点がありますが、内容としてはここに書いてあることがすべてとなります。ここに書いてあることを理解できなければ、自力での実装はあきらめるべきです。</p>
+<p>ざっと要点をまとめてみましょう。</p>
+<p>まず API を使用するには Azure Activie Directory への登録が必要となります。Microsoft Graph を使いたいときと同じです。そしてアクセス トークンを取得します。次に Subscription を作成します。Subscription を作成すると、Office 365 Management Activity API 用に監査ログが生成されるようになります。あとは定期的に &#x2F;content のリクエストを実行して用意されている監査ログの情報を取得して、そのレスポンスを基に実際に監査ログを取得します。</p>
+<p>すべては上記のページに書いてあります。とりあえず試してみたいという場合は<a href="/ja/getting-started-with-office-365-management-activity-api/">こちら</a>をご覧ください。実際にプログラムを実装するときは、好きな言語で実装すればよいです。</p>
+<p>時々問題になるのが、実装したはいいものの、監査ログの生成量が多すぎて追いつけないということがあります。実行環境のパフォーマンスを見直したり、マルチ スレッドで動作するように実装を見直したりする必要があります。もちろん、取得した監査ログをどうやって検索するのかも、自力で実装する必要があります。Microsoft Purview コンプライアンス ポータルや、すでに販売されている 3rd パーティ製品がやっていることを実装しなければならないということですが、それだけ大変なことをやろうとしているということにここで気が付いても遅いのです。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>Office 365 の監査ログを全部取得したいときは、いったん冷静に考えて、本当に取得しなければいけない時は 3rd パーティ製品の利用も視野に入れつつ、実装することが可能な場合のみ Office 365 Management Activity API を使用しましょう。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Microsoft-365/" rel="tag">Microsoft 365</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/Docs/ja/tags/Office-365-Management-Activity-API/" rel="tag">Office 365 Management Activity API</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/retrieve-all-office-365-audit-logs.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://rykoma.github.io/Docs/ja/retrieve-all-office-365-audit-logs/" data-id="cuidBVuppCo1CEUbm5qrckH_x" data-title="Office 365 の監査ログを全部取得したい?" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/Docs/ja/get-all-exchange-online-mailboxes/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Exchange Online の全ユーザーのメールボックスを取得する
+        
+      </div>
+    </a>
+  
+  
+    <a href="/Docs/ja/getting-started-with-office-365-management-activity-api/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Office 365 Management Activity API の試し方
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Hexo/">Hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/Docs/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-REST-API/">Outlook REST API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/Docs/ja/tags/Visual-Studio/">Visual Studio</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ クラウド</h3>
+    <div class="widget tagcloud">
+      <a href="/Docs/ja/tags/NET/" class="tagcloud-link" style="font-size: 104%;">.NET</a> <a href="/Docs/ja/tags/ActiveSync/" class="tagcloud-link" style="font-size: 104%;">ActiveSync</a> <a href="/Docs/ja/tags/Android/" class="tagcloud-link" style="font-size: 104%;">Android</a> <a href="/Docs/ja/tags/Attachments/" class="tagcloud-link" style="font-size: 104%;">Attachments</a> <a href="/Docs/ja/tags/EWSEditor/" class="tagcloud-link" style="font-size: 104%;">EWSEditor</a> <a href="/Docs/ja/tags/Exchange-Online/" class="tagcloud-link" style="font-size: 200%;">Exchange Online</a> <a href="/Docs/ja/tags/Exchange-Server/" class="tagcloud-link" style="font-size: 170%;">Exchange Server</a> <a href="/Docs/ja/tags/Exchange-Web-Services/" class="tagcloud-link" style="font-size: 135%;">Exchange Web Services</a> <a href="/Docs/ja/tags/Hexo/" class="tagcloud-link" style="font-size: 104%;">Hexo</a> <a href="/Docs/ja/tags/LDAP/" class="tagcloud-link" style="font-size: 104%;">LDAP</a> <a href="/Docs/ja/tags/Microsoft-365/" class="tagcloud-link" style="font-size: 113%;">Microsoft 365</a> <a href="/Docs/ja/tags/Microsoft-Graph/" class="tagcloud-link" style="font-size: 126%;">Microsoft Graph</a> <a href="/Docs/ja/tags/OAuth/" class="tagcloud-link" style="font-size: 104%;">OAuth</a> <a href="/Docs/ja/tags/Office-365-Management-Activity-API/" class="tagcloud-link" style="font-size: 109%;">Office 365 Management Activity API</a> <a href="/Docs/ja/tags/Office-365-Reporting-Web-Services/" class="tagcloud-link" style="font-size: 109%;">Office 365 Reporting Web Services</a> <a href="/Docs/ja/tags/Office365APIEditor/" class="tagcloud-link" style="font-size: 117%;">Office365APIEditor</a> <a href="/Docs/ja/tags/Outlook-Add-ins/" class="tagcloud-link" style="font-size: 104%;">Outlook Add-ins</a> <a href="/Docs/ja/tags/Outlook-REST-API/" class="tagcloud-link" style="font-size: 122%;">Outlook REST API</a> <a href="/Docs/ja/tags/Outlook-com/" class="tagcloud-link" style="font-size: 109%;">Outlook.com</a> <a href="/Docs/ja/tags/PowerShell/" class="tagcloud-link" style="font-size: 178%;">PowerShell</a> <a href="/Docs/ja/tags/SmtpClient/" class="tagcloud-link" style="font-size: 109%;">SmtpClient</a> <a href="/Docs/ja/tags/Sunrise/" class="tagcloud-link" style="font-size: 104%;">Sunrise</a> <a href="/Docs/ja/tags/Visual-Studio/" class="tagcloud-link" style="font-size: 104%;">Visual Studio</a>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2026/08/">2026 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2024/03/">2024 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2019/03/">2019 年 3 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2018/04/">2018 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2017/01/">2017 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2016/01/">2016 年 1 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/Docs/ja/archives/2015/05/">2015 年 5 月</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/Docs/ja/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/microsoft-graph-get-schedule/">Microsoft Graph の getSchedule</a>
+          </li>
+        
+          <li>
+            <a href="/Docs/ja/get-all-exchange-online-mailboxes/">Exchange Online の全ユーザーのメールボックスを取得する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/Docs/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/Docs/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/Docs/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/Docs/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/Docs/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/Docs/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/Docs/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
