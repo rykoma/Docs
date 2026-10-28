@@ -63,7 +63,7 @@
 "1394","post","/2019/07/28/1394/","en","retrieve-all-office-365-audit-logs","Microsoft 365","Microsoft 365 | Office 365 Management Activity API | Exchange Online","migrated","verified"
 "1405","post","/2019/08/15/1405/","ja","get-all-exchange-online-mailboxes","Exchange Online","Exchange Online | PowerShell","migrated","verified"
 "1405","post","/2019/08/15/1405/","en","get-all-exchange-online-mailboxes","Exchange Online","Exchange Online | PowerShell","migrated","verified"
-"1418","post","/2019/08/25/1418/","ja","microsoft-graph-get-schedule","Microsoft Graph","Microsoft Graph | Exchange Online","included","metadata-reviewed"
+"1418","post","/2019/08/25/1418/","ja","microsoft-graph-get-schedule","Microsoft Graph","Microsoft Graph | Exchange Online","in-progress","metadata-reviewed"
 "1423","post","/2019/11/13/1423/","ja","get-mapi-properties-with-microsoft-graph","Microsoft Graph","Microsoft Graph | MAPI","included","metadata-reviewed"
 "1430","post","/2019/11/14/1430/","ja","introducing-robustcloudcommand-module","PowerShell","PowerShell | Exchange Online | RobustCloudCommand","included","metadata-reviewed"
 "1448","post","/2019/12/22/1448/","ja","getting-started-with-microsoft-graph-toolkit","Microsoft Graph","Microsoft Graph | Microsoft Graph Toolkit | Visual Studio Code","included","metadata-reviewed"
