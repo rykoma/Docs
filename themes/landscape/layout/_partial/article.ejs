@@ -1,7 +1,7 @@
 <article id="<%= post.layout %>-<%= post.slug %>" class="h-entry article article-type-<%= post.layout %>" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <% if (post.layout !== 'page') { %>
-      <%- partial('post/date', {class_name: 'article-date', date_format: null, index: true}, {cache: false}) %>
+      <%- partial('post/date', {class_name: 'article-date', date_format: null, index: true, show_time_tooltip: !index}, {cache: false}) %>
     <% } %>
     <%- partial('post/category') %>
   </div>
@@ -11,7 +11,7 @@
       <header class="article-header">
         <%- partial('post/title', {class_name: 'p-name article-title', index: index}, {cache: false}) %>
         <% if (!index && post.layout !== 'page' && post.updated.valueOf() !== post.date.valueOf()) { %>
-          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span><%= __('updated') %>: <time class="dt-updated" datetime="<%= date_xml(post.updated) %>" itemprop="dateModified"><%= date(post.updated) %></time></span></p>
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span><%= __('updated') %>: <time class="dt-updated" datetime="<%= date_xml(post.updated) %>" title="<%= date(post.updated, 'YYYY-MM-DD HH:mm:ss [JST]') %>" itemprop="dateModified"><%= date(post.updated) %></time></span></p>
         <% } %>
       </header>
     <% } %>
