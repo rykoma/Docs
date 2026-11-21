@@ -44,9 +44,9 @@ for (const root of ['/', '/Docs/']) {
 
       assert.match(html, /class="dt-published"/);
       assert.ok(!html.includes(`${publishedLabel}:`));
-      assert.match(html, /datetime="2024-01-10T00:00:00.000Z" itemprop="datePublished">2024-01-10<\/time>/);
+      assert.match(html, /datetime="2024-01-10T00:00:00.000Z" title="2024-01-10 09:00:00 JST" itemprop="datePublished">2024-01-10<\/time>/);
       assert.match(html, new RegExp(`${updatedLabel}: <time class="dt-updated"`));
-      assert.match(html, /datetime="2025-03-05T01:00:00.000Z" itemprop="dateModified">2025-03-05<\/time>/);
+      assert.match(html, /datetime="2025-03-05T01:00:00.000Z" title="2025-03-05 10:00:00 JST" itemprop="dateModified">2025-03-05<\/time>/);
       assert.ok(html.indexOf('dt-published') < html.indexOf('article-inner'));
       assert.ok(html.indexOf('article-title') < html.indexOf('article-updated'));
       assert.ok(html.indexOf('article-updated') < html.indexOf('</header>'));
@@ -67,7 +67,7 @@ for (const root of ['/', '/Docs/']) {
     test(`${root} ${lang}: shows a same-day update without displaying times`, () => {
       const html = render('post', makePost(lang, '2024-01-10T09:00:01+09:00'), root);
 
-      assert.match(html, /datetime="2024-01-10T00:00:01.000Z" itemprop="dateModified">2024-01-10<\/time>/);
+      assert.match(html, /datetime="2024-01-10T00:00:01.000Z" title="2024-01-10 09:00:01 JST" itemprop="dateModified">2024-01-10<\/time>/);
       assert.equal((html.match(/>2024-01-10<\/time>/g) || []).length, 2);
     });
 
@@ -84,6 +84,7 @@ for (const root of ['/', '/Docs/']) {
         assert.doesNotMatch(html, /article-updated|dt-updated|dateModified/);
         assert.ok(!html.includes(`${publishedLabel}:`));
         assert.ok(!html.includes(`${updatedLabel}:`));
+        assert.doesNotMatch(html, /title="[^"]* JST"/);
         if (view !== 'index') {
           const expectedDate = lang === 'ja' ? '1 月 10 日' : 'Jan 10';
           assert.ok(html.includes(`>${expectedDate}</time>`));
