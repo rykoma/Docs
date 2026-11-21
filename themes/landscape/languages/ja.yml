@@ -1,6 +1,8 @@
 categories: カテゴリ
 search: 検索
 tags: タグ
+more_tags: その他のタグを表示
+archive_year_posts: "%s 年のすべての記事"
 tagcloud: タグ クラウド
 tweets: ツイート
 prev: 戻る

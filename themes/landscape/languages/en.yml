@@ -1,6 +1,8 @@
 categories: Categories
 search: Search
 tags: Tags
+more_tags: Show more tags
+archive_year_posts: "All posts in %s"
 tagcloud: Tag Cloud
 tweets: Tweets
 prev: Prev
