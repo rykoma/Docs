@@ -14,7 +14,7 @@ description: Explore the original preview steps for retrieving users, messages, 
 ---
 
 > [!WARNING]
-> The Microsoft Graph PowerShell SDK has been generally released. This article describes the preview and does not apply to the generally available version. I have published a separate article, [Getting started with the Microsoft Graph PowerShell SDK](https://blog.rykoma.net/2020/10/21/1570/) (in Japanese). For current instructions, see the [installation documentation](https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation) and [authentication documentation](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands).
+> The Microsoft Graph PowerShell SDK has been generally released. This article describes the preview and does not apply to the generally available version. I have published a separate article, [Getting started with the Microsoft Graph PowerShell SDK](/en/getting-started-with-microsoft-graph-powershell-sdk/). For current instructions, see the [installation documentation](https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation) and [authentication documentation](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands).
 
 A Microsoft Graph module for PowerShell is available in preview. It acts like a wrapper for using Microsoft Graph from PowerShell. Previously, it was not listed in the PowerShell Gallery, but now that it is available there, it is relatively easy to try.
 

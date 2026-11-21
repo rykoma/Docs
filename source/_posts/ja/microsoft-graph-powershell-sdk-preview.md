@@ -16,7 +16,7 @@ alias:
 ---
 
 > [!WARNING]
-> Microsoft Graph PowerShell SDK は正式リリースされています。この記事はプレビュー版についての内容であり、正式版には当てはまりません。正式版については、[Microsoft Graph PowerShell SDK の試し方](https://blog.rykoma.net/2020/10/21/1570/)を公開しています。現在のインストール方法や認証方法は、[インストールのドキュメント](https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation)と[認証のドキュメント](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands)も参照してください。
+> Microsoft Graph PowerShell SDK は正式リリースされています。この記事はプレビュー版についての内容であり、正式版には当てはまりません。正式版については、[Microsoft Graph PowerShell SDK の試し方](/ja/getting-started-with-microsoft-graph-powershell-sdk/)を公開しています。現在のインストール方法や認証方法は、[インストールのドキュメント](https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation)と[認証のドキュメント](https://learn.microsoft.com/en-us/powershell/microsoftgraph/authentication-commands)も参照してください。
 
 PowerShell 向けの Microsoft Graph のモジュールがプレビュー提供されています。PowerShell から Microsoft Graph を使用するためのラッパーのようなモジュールになっています。以前は PowerShell Gallery にも登録されていない状態でしたが、現時点では PowerShell Gallery に登録されたので、比較的容易に試すことができるようになりました。
 
