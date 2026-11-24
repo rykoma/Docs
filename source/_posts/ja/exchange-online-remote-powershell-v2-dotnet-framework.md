@@ -20,8 +20,8 @@ alias:
 
 他の実行環境向けの情報は以下から確認してください。
 
-- [C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)](https://blog.rykoma.net/2021/06/12/1663/)
-- [C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)](https://blog.rykoma.net/2021/06/12/1666/)
+- [C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)](/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/)
+- [C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)](/ja/exchange-online-remote-powershell-v2-dotnet-5/)
 
 プログラムから Exchange へ PowerShell 接続する方法として、以下の技術情報が公開されています。
 

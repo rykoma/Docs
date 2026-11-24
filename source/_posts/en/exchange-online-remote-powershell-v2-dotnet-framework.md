@@ -18,8 +18,8 @@ description: Learn the historical steps for connecting to Exchange Online from C
 
 For other runtime environments, see:
 
-- [Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET Core 3.1)](https://blog.rykoma.net/2021/06/12/1663/) (Japanese)
-- [Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET 5.0)](https://blog.rykoma.net/2021/06/12/1666/) (Japanese)
+- [Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET Core 3.1)](/en/exchange-online-remote-powershell-v2-dotnet-core-3-1/)
+- [Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET 5.0)](/en/exchange-online-remote-powershell-v2-dotnet-5/)
 
 The following documentation describes how to connect to Exchange with PowerShell from a program:
 
