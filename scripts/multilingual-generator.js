@@ -1,9 +1,11 @@
 const pagination = require('hexo-pagination');
 const googleAnalyticsTag = require('./google-analytics');
+const googleAdsenseTag = require('./google-adsense');
 
 const languages = ['ja', 'en'];
 
 hexo.extend.helper.register('google_analytics_tag', googleAnalyticsTag);
+hexo.extend.helper.register('google_adsense_tag', googleAdsenseTag);
 
 const escapeHtml = (value) =>
   String(value)

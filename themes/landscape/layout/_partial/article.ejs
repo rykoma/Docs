@@ -40,6 +40,13 @@
         <%- post.content %>
       <% } %>
     </div>
+    <% if (!index && post.layout !== 'page') { %>
+      <%- partial('_partial/adsense-ad', {
+        className: 'article-ad',
+        slot: theme.adsense && theme.adsense.article_bottom_slot,
+        language: post.lang || post.language || config.language
+      }) %>
+    <% } %>
     <footer class="article-footer">
       <%- partial('post/tag') %>
       <% if (!index) { %>

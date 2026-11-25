@@ -355,7 +355,8 @@ Phase 5 は、親セッションで次に移行する記事を選定し、記事
 Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン設定、DNS 切り替え、本番確認の順に進めます。DNS を変更する前に、切り戻しに必要な現行設定と復旧条件を記録します。`blog.rykoma.net` 以外の URL、ドメイン、DNS 設定は変更しません。
 
 - canonical、hreflang、robots、サイトマップの方針は Phase 4 で確定済みです。対応するブラウザー言語がない場合の既定言語は日本語とし、404 ページはリクエスト パスの `/ja/` `/en/` プレフィックスを優先する方針です。公開後は決定をやり直すのではなく、本番 URL で実装結果を確認します。
-- Google Analytics 4 は既存の Web データ ストリーム `blog.rykoma.net - GA4` (測定 ID `G-HMDMWWKBVY`、登録 URL `http://blog.rykoma.net`) を新ブログでも再利用します。通常ページと日英の 404 ページで計測し、リダイレクト前の言語選択ページと共通 `404.html` にはタグを付けず、二重計測を防ぎます。タグは `blog.rykoma.net` 上でのみ読み込むため、ローカル環境と GitHub Pages のプレビューは本番データに送信しません。ストリームの登録 URL は計測の送信先を制限する設定ではないため、`http` のままでも HTTPS サイトの計測は可能です。管理画面上の表示を実際のサイト URL と揃える場合は `https://blog.rykoma.net` に更新できますが、必須ではありません。AdSense は未設定です。管理画面で指定された確認方法・広告コードに従い、必要な場合は `ads.txt` もサイト ルートに公開します。アカウント ID やコードを推測せず、Google の管理画面が発行した値を使います。
+- Google Analytics 4 は既存の Web データ ストリーム `blog.rykoma.net - GA4` (測定 ID `G-HMDMWWKBVY`、登録 URL `http://blog.rykoma.net`) を新ブログでも再利用します。通常ページと日英の 404 ページで計測し、リダイレクト前の言語選択ページと共通 `404.html` にはタグを付けず、二重計測を防ぎます。タグは `blog.rykoma.net` 上でのみ読み込むため、ローカル環境と GitHub Pages のプレビューは本番データに送信しません。ストリームの登録 URL は計測の送信先を制限する設定ではないため、`http` のままでも HTTPS サイトの計測は可能です。管理画面上の表示を実際のサイト URL と揃える場合は `https://blog.rykoma.net` に更新できますが、必須ではありません。
+- AdSense は現行ブログで使用中です。管理画面では登録サイト `rykoma.net` が広告配信可能な状態で、自動広告はオフ、ads.txt は検出済みです。現行 `/ads.txt` の行と個別広告ユニットは現行サイトから確認しました。新ブログでは自動広告を使わず、日本語・英語の記事本文下とサイドバー下に個別広告を表示し、トップ、アーカイブ、固定ページはサイドバー下だけに表示します。関連記事下には配置しません。広告コードは `blog.rykoma.net` 用ビルドかつブラウザーのホスト名が `blog.rykoma.net` の場合だけ読み込み、ローカルと GitHub Pages プレビューでは広告を表示・読み込みません。新ブログ公開後のサイト確認、審査、広告配信状況は未確認のため、公開後チェックを完了扱いにしません。
 - GitHub Pages のカスタム ドメイン設定は、DNS の公開先を変更する前に行います。GitHub は、サブドメインを Pages の既定ドメイン (`rykoma.github.io`) へ向ける `CNAME` レコードを案内しています。現在の DNS プロバイダーやレコード値は未確認のため、切り替え前に実値を記録し、プロバイダーの UI に合わせて変更します。
 - 現在の `.github/workflows/deploy.yml` は、`main` への push では GitHub Pages のプロジェクト サイト URL (`https://rykoma.github.io/Docs`、root `/Docs/`) でデプロイし、`CNAME` を生成しません。独自ドメインへの切り替え後もこの動作のままだと、次の push で本番用 URL を含む生成物を上書きします。切り替えまでは現在の自動デプロイを維持し、切り替え直前にワークフローを修正して、以後の push でも独自ドメイン URL (`https://blog.rykoma.net`、root `/`) と `CNAME` を使って生成・公開します。
 - 参考: [GitHub Pages のカスタム ドメイン管理](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)、[Google Analytics のタグ設定](https://support.google.com/analytics/answer/15756615)、[AdSense へのサイト接続](https://support.google.com/adsense/answer/7584263)、[ads.txt ガイド](https://support.google.com/adsense/answer/12171612)
@@ -464,9 +465,9 @@ Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン
 - [x] 既存の Google Analytics 4 Web データ ストリーム `blog.rykoma.net - GA4` の登録 URL が `http://blog.rykoma.net` であることを確認した。この設定は計測先を制限しないため変更は必須ではなく、表示を実際の HTTPS サイト URL と揃える場合に限り更新する
 - [x] 既存ストリームの測定 ID `G-HMDMWWKBVY` をテーマ設定に反映し、通常ページと独立生成の言語別 404 ページで使うようにした。リダイレクト元の言語選択ページと共通 `404.html` にはタグを付けない
 - [x] Analytics の生成 HTML で測定 ID、重複しないタグ、`blog.rykoma.net` のみでの読み込みを確認した。GitHub Pages の既定 URL とローカル プレビューでは本番データへ送信されないため、実イベントの確認は独自ドメイン公開後に行う
-- [ ] AdSense の管理画面で `blog.rykoma.net` をサイトとして追加し、管理画面が指定するサイト確認方法を選んだ。発行された確認コード、広告コード、publisher ID を記録し、必要なテンプレートまたは設定に反映した
-- [ ] AdSense が `ads.txt` を要求する場合は、管理画面が発行した行を `source/ads.txt` に追加し、生成後にサイト ルートの `/ads.txt` で取得できることを確認した。publisher ID や ads.txt の値は推測しない
-- [ ] AdSense の確認コードと広告コードを生成 HTML で確認し、意図しないページ (言語選択ページ、404 ページなど) に広告枠を出さないことを確認した。アカウント審査や広告配信が未完了の場合は、未完了として記録した
+- [x] 現行サイトの AdSense 状態、自動広告がオフであること、現行の広告ユニット、`/ads.txt` の内容を確認し、既存 publisher ID とユニットを使用した新ブログ向け設定を反映した。新ブログの公開後のサイト確認・審査状態は未確認
+- [x] 確認済みの ads.txt 行を `source/ads.txt` に追加し、生成後にサイト ルートの `/ads.txt` で取得できることを確認した
+- [x] 生成 HTML で記事下とサイドバー下の広告枠を確認し、トップ・アーカイブ・固定ページはサイドバーだけ、言語選択ページと 404 ページには広告コードを出さないことを確認した。ローカルと GitHub Pages プレビューで広告スクリプトを読み込まないことも確認した
 - [ ] 変更を含むビルドとリンク・画像検証を成功させ、GitHub Pages の既定 URL で日英のトップ、記事、固定ページ、旧 URL リダイレクト、404 を確認した
 - [ ] GitHub のリポジトリ設定で Pages のカスタム ドメインを `blog.rykoma.net` に設定した。GitHub Pages の既定 URL での確認を済ませてから設定し、まだ DNS の配信先は変更しない
 
@@ -486,7 +487,7 @@ Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン
 - [ ] 独自ドメイン上で旧 WordPress URL から新 URL へリダイレクトでき、未知の URL では 404 ページが正しく表示されることを確認した
 - [ ] canonical URL、hreflang、robots 設定、サイトマップ、言語別 RSS を独自ドメイン上で確認した。Phase 4 / 5 で確定済みの SEO 方針や既定言語は変更しない
 - [ ] Google Analytics のリアルタイム レポートまたは DebugView で、通常ページ、言語選択ページ、404 ページのイベントを独自ドメインから確認した
-- [ ] AdSense の管理画面でサイト確認・審査状況を確認し、要求された場合は `/ads.txt` が取得可能で正しい publisher ID が含まれることを確認した。広告が承認済みの場合は、対象ページで広告表示とポリシー適合を確認した。審査中の場合は完了扱いにせず、状態を記録して後日確認する
+- [ ] AdSense の管理画面で新ブログのサイト確認・審査状況を確認し、要求された場合は `/ads.txt` が取得可能で正しい publisher ID が含まれることを確認した。広告が承認済みの場合は、対象ページで広告表示とポリシー適合を確認した。審査中の場合は完了扱いにせず、状態を記録して後日確認する
 - [ ] DNS 切り替え後の観察期間と異常の有無を記録し、切り戻し条件に該当しないことを確認した
 
 #### 4. 切り戻し
