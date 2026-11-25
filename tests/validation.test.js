@@ -46,6 +46,23 @@ description: About this site.
   assert.deepEqual(validateFrontMatter(root), []);
 });
 
+test('validates translated drafts and their internal links', () => {
+  const root = fixtureRoot();
+  const jaDraft = validPost.replaceAll('example-post', 'hello-world');
+  const enDraft = validPost
+    .replaceAll('example-post', 'hello-world')
+    .replaceAll('lang: ja', 'lang: en');
+  write(root, 'source/_drafts/ja/hello-world.md', `${jaDraft}\n<img src="image.png" alt="Japanese draft image">\n`);
+  write(root, 'source/_drafts/en/hello-world.md', `${enDraft}\n<img src="image.png" alt="English draft image">\n`);
+  write(root, 'source/_drafts/ja/hello-world/image.png', 'image');
+  write(root, 'source/_drafts/en/hello-world/image.png', 'image');
+  assert.deepEqual(validateFrontMatter(root), []);
+  assert.deepEqual(validateLinks(root), []);
+
+  write(root, 'source/_drafts/ja/invalid.md', validPost.replaceAll('lang: ja', 'lang: en'));
+  assert.ok(validateFrontMatter(root).some(error => error.includes('lang は配置先')));
+});
+
 test('reports invalid page keys, values, and duplicate slugs', () => {
   const root = fixtureRoot();
   write(root, 'source/ja/about.md', `---

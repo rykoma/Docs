@@ -179,5 +179,5 @@ Content-Type: application/json
 
 A sample to check the spacing balance of captions when images are placed consecutively.
 
-<img src="{% asset_path image.png %}" alt="Caption for the first image">
-<img src="{% asset_path image.png %}" alt="Caption for the second image">
+<img src="image.png" alt="Caption for the first image">
+<img src="image.png" alt="Caption for the second image">

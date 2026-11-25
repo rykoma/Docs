@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const contentDirectories = ['source/_posts', 'source/ja', 'source/en'];
+const contentDirectories = ['source/_posts', 'source/_drafts', 'source/ja', 'source/en'];
 const markdownPattern = /\.(?:md|markdown)$/i;
 const externalPattern = /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i;
 
@@ -25,7 +25,11 @@ function isExistingPath(candidate) {
 function validate(baseRoot = root) {
   const errors = [];
   const slugs = new Set();
-  for (const directory of ['source/_posts/ja', 'source/_posts/en', 'source/ja', 'source/en']) {
+  for (const directory of [
+    'source/_posts/ja', 'source/_posts/en',
+    'source/_drafts/ja', 'source/_drafts/en',
+    'source/ja', 'source/en',
+  ]) {
     for (const filePath of markdownFiles(path.join(baseRoot, directory))) {
       const text = fs.readFileSync(filePath, 'utf8');
       const match = text.match(/^slug:\s*([a-z0-9]+(?:-[a-z0-9]+)*)\s*$/m);
@@ -51,8 +55,15 @@ function validate(baseRoot = root) {
           continue;
         }
         if (isMarkdownImage || match[0].startsWith('<img')) {
-          const target = path.resolve(path.dirname(filePath), reference);
-          if (!isExistingPath(target)) errors.push(`${path.relative(baseRoot, filePath)}: 参照先がありません "${reference}"`);
+          const sourceDirectory = path.dirname(filePath);
+          const target = path.resolve(sourceDirectory, reference);
+          const isPost = /[\\/](?:_posts|_drafts)[\\/]/i.test(filePath);
+          const assetTarget = isPost
+            ? path.resolve(sourceDirectory, path.basename(filePath, path.extname(filePath)), reference)
+            : target;
+          if (!isExistingPath(target) && !isExistingPath(assetTarget)) {
+            errors.push(`${path.relative(baseRoot, filePath)}: 参照先がありません "${reference}"`);
+          }
         } else {
           const slugMatch = reference.match(/(?:^|\/)(?:ja|en)\/([^/]+)\/?$/);
           const slug = slugMatch ? slugMatch[1] : null;

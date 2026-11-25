@@ -179,5 +179,5 @@ Content-Type: application/json
 
 画像を連続して配置した場合のキャプションの余白バランスを確認するためのサンプルです。
 
-<img src="{% asset_path image.png %}" alt="1 枚目の画像のキャプション">
-<img src="{% asset_path image.png %}" alt="2 枚目の画像のキャプション">
+<img src="image.png" alt="1 枚目の画像のキャプション">
+<img src="image.png" alt="2 枚目の画像のキャプション">

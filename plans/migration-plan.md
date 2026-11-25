@@ -150,6 +150,8 @@ alias:
 
 日本語記事と英語記事は、`source/_posts/ja/` と `source/_posts/en/` のようにディレクトリを分割して管理します。固定ページも同様に `source/ja/` と `source/en/` を切って配置します。
 
+`hello-world` の日本語版と英語版は、表示機能のテスト用記事として `source/_drafts/ja/` と `source/_drafts/en/` に保持します。通常のビルドや公開対象には含めず、ローカルで下書きを含めて確認するときだけ使用します。
+
 記事の画像は Hexo のページごとのアセット フォルダー機能 (`post_asset_folder: true`) を使用し、各記事のアセット フォルダー内に配置します。固定ページの画像は `source/ja/<slug>/assets/` または `source/en/<slug>/assets/` に配置します。
 
 Hexo 本体の設定はリポジトリ ルートの `_config.yml` で管理し、`timezone` は `Asia/Tokyo` に設定します。テーマの設定は `themes/hexo-theme-landscape/_config.yml` で管理します。
@@ -310,7 +312,7 @@ Front Matter の `title`、`date`、`updated`、`lang`、`slug`、`categories`�
 
 コード ブロックの言語指定にも注意してください。特に HTTP のリクエスト / レスポンスを記述するコード ブロックは、`http` ではなく `http-request` (リクエスト) または `http-response` (レスポンス) を言語指定として使用します (詳細は Phase 4 の記載および `scripts/http-highlighter.js` を参照)。
 
-移行元記事に、廃止された API や仕様変更など読者への注意喣起が必要な内容が含まれる場合は、GitHub 準拠の Markdown 注記記法 (`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`) を使用します (WordPress ID 20 の移行で `scripts/markdown-alerts.js` として実装済み)。`scripts/markdown-alerts.js` が `after_post_render` フィルターで `<blockquote>` を色とアイコン付きの注記ボックスに変換するため、記事 Markdown 側でスタイル付き HTML を直接記述する必要はありません。表示例は `source/_posts/ja/hello-world.md` と `source/_posts/en/hello-world.md` を参照してください。
+移行元記事に、廃止された API や仕様変更など読者への注意喚起が必要な内容が含まれる場合は、GitHub 準拠の Markdown 注記記法 (`> [!NOTE]`、`> [!TIP]`、`> [!IMPORTANT]`、`> [!WARNING]`、`> [!CAUTION]`) を使用します (WordPress ID 20 の移行で `scripts/markdown-alerts.js` として実装済み)。`scripts/markdown-alerts.js` が `after_post_render` フィルターで `<blockquote>` を色とアイコン付きの注記ボックスに変換するため、記事 Markdown 側でスタイル付き HTML を直接記述する必要はありません。表示例は `source/_drafts/ja/hello-world.md` と `source/_drafts/en/hello-world.md` を参照してください。
 
 #### 外部リンクの検証と対応
 

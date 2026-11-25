@@ -6,6 +6,8 @@ const root = path.resolve(__dirname, '..');
 const contentRoots = [
   ['source/_posts/ja', 'post', 'ja'],
   ['source/_posts/en', 'post', 'en'],
+  ['source/_drafts/ja', 'post', 'ja'],
+  ['source/_drafts/en', 'post', 'en'],
   ['source/ja', 'page', 'ja'],
   ['source/en', 'page', 'en'],
 ];
@@ -99,7 +101,7 @@ function validateContent(baseRoot, filePath, kind, expectedLanguage, errors, ent
     }
   }
   if (typeof data.slug === 'string' && slugPattern.test(data.slug)) {
-    entries.push({ filePath, language: expectedLanguage, slug: data.slug });
+    entries.push({ filePath, kind, language: expectedLanguage, slug: data.slug });
   }
 }
 
@@ -118,7 +120,7 @@ function validate(baseRoot = root) {
     bySlug.set(entry.slug, list);
   }
   for (const [slug, list] of bySlug) {
-    const kinds = new Set(list.map(entry => entry.filePath.includes(`${path.sep}source${path.sep}_posts${path.sep}`) ? 'post' : 'page'));
+    const kinds = new Set(list.map(entry => entry.kind));
     const languages = new Set(list.map(entry => entry.language));
     if (list.length > 2 || kinds.size > 1 || languages.size !== list.length) {
       for (const entry of list) addError(errors, baseRoot, entry.filePath, `slug "${slug}" が翻訳ペア以外で重複しています`);
