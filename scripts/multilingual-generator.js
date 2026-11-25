@@ -1,6 +1,9 @@
 const pagination = require('hexo-pagination');
+const googleAnalyticsTag = require('./google-analytics');
 
 const languages = ['ja', 'en'];
+
+hexo.extend.helper.register('google_analytics_tag', googleAnalyticsTag);
 
 const escapeHtml = (value) =>
   String(value)
@@ -573,6 +576,7 @@ const notFoundPage = (config, theme, language) => {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>${escapeHtml(title(host))}</title>
+${googleAnalyticsTag(theme.google_analytics)}
 ${faviconTag(config, theme)}  <style>
     * {
       box-sizing: border-box;
