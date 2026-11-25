@@ -5,19 +5,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      enable_cname:
-        description: Generate CNAME for custom domain deployment
-        required: true
-        default: 'false'
-      deploy_url:
-        description: Base URL to build the site with
-        required: true
-        default: 'https://rykoma.github.io/Docs'
-      deploy_root:
-        description: URL root path to build the site with
-        required: true
-        default: '/Docs/'
 
 permissions:
   contents: write
@@ -42,29 +29,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine deployment settings
-        id: deployment
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "url=${{ inputs.deploy_url }}" >> "$GITHUB_OUTPUT"
-            echo "root=${{ inputs.deploy_root }}" >> "$GITHUB_OUTPUT"
-            if [ "${{ inputs.deploy_root }}" = "/" ]; then
-              echo "config=_config.yml" >> "$GITHUB_OUTPUT"
-            else
-              echo "config=_config.yml,_config.github-pages.yml" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "url=https://rykoma.github.io/Docs" >> "$GITHUB_OUTPUT"
-            echo "root=/Docs/" >> "$GITHUB_OUTPUT"
-            echo "config=_config.yml,_config.github-pages.yml" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Build site
-        run: npm run validate && npx hexo generate --config "${{ steps.deployment.outputs.config }}" --url "${{ steps.deployment.outputs.url }}" --root "${{ steps.deployment.outputs.root }}"
+        run: npm run validate && npx hexo generate --config _config.yml --url https://blog.rykoma.net --root /
 
       - name: Ensure CNAME
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.enable_cname == 'true' }}
-        run: echo "blog.rykoma.net" > public/CNAME
+        run: printf '%s\n' 'blog.rykoma.net' > public/CNAME
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4

@@ -221,11 +221,11 @@ Hexo の実行環境と公開経路を構築します。
 - GitHub Pages 設定
 - `blog.rykoma.net` のカスタム ドメイン設定
 
-GitHub Actions はソース ブランチからサイトをビルドし、生成物を `gh-pages` ブランチへ公開します。公開設定、権限、`CNAME`、必要なシークレットを確認し、ビルド失敗を検知できるようにします。切り替え前の検証期間は既定の GitHub Pages FQDN で確認できるように、通常デプロイでは `CNAME` を生成しません。独自ドメインへの切り替え直前にワークフローを修正し、以後の通常デプロイでも `CNAME` を生成して公開します。
+GitHub Actions はソース ブランチからサイトをビルドし、生成物を `gh-pages` ブランチへ公開します。公開設定、権限、`CNAME`、必要なシークレットを確認し、ビルド失敗を検知できるようにします。既定 URL での検証期間中は通常デプロイで `CNAME` を生成しない運用でしたが、Phase 6 の設定変更後は、通常デプロイで独自ドメイン用の URL と `CNAME` を使って公開します。
 
 検証時は `_config.github-pages.yml` を追加指定し、`--url https://rykoma.github.io/Docs` と `--root /Docs/` でビルドします。`root` を `/Docs/` にすることで、CSS、JavaScript、画像などのアセットを GitHub Pages のプロジェクト サイト配下から参照します。検証時は `CNAME` を生成しません。
 
-独自ドメインへ切り替える際は `_config.yml` の `url: https://blog.rykoma.net` と `root: /` を使用し、`--url https://blog.rykoma.net` と `--root /` でビルドします。切り替え直前のワークフロー修正後は、通常デプロイでも `public/CNAME` に `blog.rykoma.net` を生成します。
+独自ドメイン用 build は `_config.yml` の `url: https://blog.rykoma.net` と `root: /` を使用し、`--url https://blog.rykoma.net` と `--root /` で実行します。Phase 6 のワークフロー変更後は、通常デプロイでも `public/CNAME` に `blog.rykoma.net` を生成します。GitHub Pages の既定 URL での確認が必要な場合は、上記のプロジェクト サイト用 build をローカルで実行します。
 
 ### 開発プレビューと検証コマンド
 
@@ -354,13 +354,13 @@ Phase 5 は、親セッションで次に移行する記事を選定し、記事
 
 移行前の確認と、公開後に独自ドメイン上で行う確認を分けます。移行前に確認済みの項目は下のチェックリストに記録し、公開後の確認では本番 URL で再検証します。移行前の確認だけで、公開後の確認を完了扱いにはしません。
 
-Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン用ワークフローへの切り替えとデプロイ、GitHub Pages のカスタム ドメイン設定、DNS 切り替え、本番確認の順に進めます。カスタム ドメインを設定した後のデプロイで設定や `CNAME` が失われないよう、ワークフローの修正とデプロイを先に済ませ、設定後は DNS 切り替えまで追加デプロイを行わず、設定と `CNAME` が維持されていることを確認します。DNS を変更する前に、切り戻しに必要な現行設定と復旧条件を記録します。`blog.rykoma.net` 以外の URL、ドメイン、DNS 設定は変更しません。
+Phase 6 は、GitHub Pages の既定 URL での確認、独自ドメイン用ワークフローへの切り替えとデプロイ、GitHub Pages のカスタム ドメイン設定、DNS 切り替え、本番確認の順に進めます。現在のワークフローは、`main` への push と手動実行のどちらも独自ドメイン用 URL と `CNAME` で生成・公開します。ワークフローの変更後に実際のデプロイ結果を確認してから Pages のカスタム ドメインを設定し、DNS の切り替えまでは追加デプロイを行わず、設定と `CNAME` が維持されていることを確認します。DNS を変更する前に、切り戻しに必要な現行設定と復旧条件を記録します。`blog.rykoma.net` 以外の URL、ドメイン、DNS 設定は変更しません。
 
 - canonical、hreflang、robots、サイトマップの方針は Phase 4 で確定済みです。対応するブラウザー言語がない場合の既定言語は日本語とし、404 ページはリクエスト パスの `/ja/` `/en/` プレフィックスを優先する方針です。公開後は決定をやり直すのではなく、本番 URL で実装結果を確認します。
 - Google Analytics 4 は既存の Web データ ストリーム `blog.rykoma.net - GA4` (測定 ID `G-HMDMWWKBVY`、登録 URL `http://blog.rykoma.net`) を新ブログでも再利用します。通常ページと日英の 404 ページで計測し、リダイレクト前の言語選択ページと共通 `404.html` にはタグを付けず、二重計測を防ぎます。タグは `blog.rykoma.net` 上でのみ読み込むため、ローカル環境と GitHub Pages のプレビューは本番データに送信しません。ストリームの登録 URL は計測の送信先を制限する設定ではないため、`http` のままでも HTTPS サイトの計測は可能です。管理画面上の表示を実際のサイト URL と揃える場合は `https://blog.rykoma.net` に更新できますが、必須ではありません。
 - AdSense は現行ブログで使用中です。管理画面では登録サイト `rykoma.net` が広告配信可能な状態で、自動広告はオフ、ads.txt は検出済みです。現行 `/ads.txt` の行と個別広告ユニットは現行サイトから確認しました。新ブログでは自動広告を使わず、日本語・英語の記事本文下とサイドバー下に個別広告を表示し、トップ、アーカイブ、固定ページはサイドバー下だけに表示します。関連記事下には配置しません。広告コードは `blog.rykoma.net` 用ビルドかつブラウザーのホスト名が `blog.rykoma.net` の場合だけ読み込み、ローカルと GitHub Pages プレビューでは広告を表示・読み込みません。新ブログ公開後のサイト確認、審査、広告配信状況は未確認のため、公開後チェックを完了扱いにしません。
 - GitHub Pages のカスタム ドメイン設定は、DNS の公開先を変更する前に行います。GitHub は、サブドメインを Pages の既定ドメイン (`rykoma.github.io`) へ向ける `CNAME` レコードを案内しています。現在の DNS プロバイダーやレコード値は未確認のため、切り替え前に実値を記録し、プロバイダーの UI に合わせて変更します。
-- 現在の `.github/workflows/deploy.yml` は、`main` への push では GitHub Pages のプロジェクト サイト URL (`https://rykoma.github.io/Docs`、root `/Docs/`) でデプロイし、`CNAME` を生成しません。独自ドメインへの切り替え後もこの動作のままだと、次の push で本番用 URL を含む生成物を上書きします。切り替えまでは現在の自動デプロイを維持し、切り替え直前にワークフローを修正・デプロイして、以後の push でも独自ドメイン URL (`https://blog.rykoma.net`、root `/`) と `CNAME` を使って生成・公開します。GitHub Pages のカスタム ドメイン設定はこのデプロイ後、DNS の変更前に行います。
+- Phase 6 のワークフロー変更により、`main` への push と手動実行は `https://blog.rykoma.net`、root `/` で生成し、`gh-pages` のルートに `blog.rykoma.net` を記した `CNAME` を公開します。設定変更前の通常デプロイは GitHub Pages のプロジェクト サイト URL (`https://rykoma.github.io/Docs`、root `/Docs/`) を使い、`CNAME` を生成しない動作でした。最新の内容はユーザーが既定 URL で確認済みです。DNS は引き続き WordPress を向いており、この変更では DNS と GitHub Pages のカスタム ドメイン設定を行いません。変更後の実デプロイが完了すると、既定 URL の表示やリダイレクトに影響する可能性があります。GitHub Pages の設定はデプロイ結果と `CNAME` を確認してから、DNS の変更前に行います。
 - 参考: [GitHub Pages のカスタム ドメイン管理](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)、[Google Analytics のタグ設定](https://support.google.com/analytics/answer/15756615)、[AdSense へのサイト接続](https://support.google.com/adsense/answer/7584263)、[ads.txt ガイド](https://support.google.com/adsense/answer/12171612)
 
 ### Phase 7: 廃止
@@ -457,24 +457,24 @@ Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン
 
 #### 1. DNS 切り替え前の準備
 
-- [ ] GitHub Pages の既定 URL (`https://rykoma.github.io/Docs/`) に通常デプロイし、生成物、ページ遷移、画像、言語切り替えを最終確認した。`CNAME` が含まれていないことも確認した
+- [x] ワークフロー変更前の最新版をユーザーが GitHub Pages の既定 URL (`https://rykoma.github.io/Docs/`) で確認した。変更前の通常デプロイは `/Docs/` と `CNAME` なしで生成されていた
 - [ ] 現行 WordPress の正常性を確認し、DNS を戻せば再び提供できる状態を保った。WordPress、Azure リソース、バックアップは切り戻し期間中に停止・削除しない
 - [ ] DNS プロバイダーと管理権限を確認し、`blog.rykoma.net` の現在のレコード種別、値、TTL、関連する A / AAAA / CNAME レコードを記録した。メール用 MX / TXT レコードや他のホスト名も記録し、変更対象と混同しない
 - [ ] 切り戻し時に復元する DNS レコードの正確な値、確認担当者、切り替えの実施時間帯、異常時の判断条件を記録した
 - [ ] DNS プロバイダーが対応する場合は、切り替え前に `blog` レコードの TTL を短くし、変更前の TTL が経過するまで待った
 - [ ] GitHub Pages の対象リポジトリで `blog.rykoma.net` のドメイン所有権を確認した。GitHub が DNS TXT レコードでの検証を案内する場合は、その値だけを追加し、検証後も必要な TXT レコードを保持した
-- [ ] `.github/workflows/deploy.yml` の現在の push 時の動作 (`https://rykoma.github.io/Docs`、`/Docs/`、`CNAME` なし) と、切り替えまではこの自動デプロイを維持する方針を確認した
+- [x] ワークフロー変更前の `main` push は `https://rykoma.github.io/Docs`、`/Docs/`、`CNAME` なしでデプロイされていたことを確認した
 - [x] 既存の Google Analytics 4 Web データ ストリーム `blog.rykoma.net - GA4` の登録 URL が `http://blog.rykoma.net` であることを確認した。この設定は計測先を制限しないため変更は必須ではなく、表示を実際の HTTPS サイト URL と揃える場合に限り更新する
 - [x] 既存ストリームの測定 ID `G-HMDMWWKBVY` をテーマ設定に反映し、通常ページと独立生成の言語別 404 ページで使うようにした。リダイレクト元の言語選択ページと共通 `404.html` にはタグを付けない
 - [x] Analytics の生成 HTML で測定 ID、重複しないタグ、`blog.rykoma.net` のみでの読み込みを確認した。GitHub Pages の既定 URL とローカル プレビューでは本番データへ送信されないため、実イベントの確認は独自ドメイン公開後に行う
 - [x] 現行サイトの AdSense 状態、自動広告がオフであること、現行の広告ユニット、`/ads.txt` の内容を確認し、既存 publisher ID とユニットを使用した新ブログ向け設定を反映した。新ブログの公開後のサイト確認・審査状態は未確認
 - [x] 確認済みの ads.txt 行を `source/ads.txt` に追加し、生成後にサイト ルートの `/ads.txt` で取得できることを確認した
 - [x] 生成 HTML で記事下とサイドバー下の広告枠を確認し、トップ・アーカイブ・固定ページはサイドバーだけ、言語選択ページと 404 ページには広告コードを出さないことを確認した。ローカルと GitHub Pages プレビューで広告スクリプトを読み込まないことも確認した
-- [ ] 変更を含むビルドとリンク・画像検証を成功させ、GitHub Pages の既定 URL で日英のトップ、記事、固定ページ、旧 URL リダイレクト、404 を確認した
+- [x] `npm run validate` と独自ドメイン用 build を実行し、生成 URL が `https://blog.rykoma.net` 基準であることと `CNAME` の値を確認した。既定 URL での最新版はワークフロー変更前にユーザーが確認済み
 
 #### 2. 独自ドメインへの切り替え
 
-- [ ] GitHub Pages の既定 URL での最終確認後、独自ドメインへの切り替え直前に `.github/workflows/deploy.yml` を修正し、以後の push 時も `https://blog.rykoma.net`、`/`、`CNAME` で生成・公開されることを検証した
+- [x] `.github/workflows/deploy.yml` を修正し、`main` push と手動実行で `https://blog.rykoma.net`、`/`、`CNAME` を使って生成・公開する設定にした。ローカル build で設定を検証済み。GitHub Actions の実デプロイ結果は未確認
 - [ ] 修正した GitHub Actions ワークフローで独自ドメイン用にビルド・デプロイした
 - [ ] デプロイ結果と `gh-pages` ブランチのルートに `CNAME` があり、その内容が `blog.rykoma.net` と完全一致することを確認した。HTML の canonical、hreflang、サイトマップ、アセット URL も `https://blog.rykoma.net` を基準に生成されていることを確認した
 - [ ] GitHub のリポジトリ設定で Pages のカスタム ドメインを `blog.rykoma.net` に設定した。DNS の配信先はまだ変更しない
