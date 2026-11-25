@@ -20,7 +20,7 @@ alias:
 
 Microsoft Graph を使用する方法として、[Microsoft Graph PowerShell SDK](https://github.com/microsoftgraph/msgraph-sdk-powershell) を使用する方法があります。SDK を使用しなくても PowerShell なら比較的容易に Microsoft Graph をはじめとした REST API を使用できますが、なるべく自分でコードを書きたくない場合は Microsoft Graph PowerShell SDK を使用するというのも選択肢になります。
 
-Microsoft Graph PowerShell SDK はすでに一般提供されていますが、ところどころ実装が不安定なものがあるので注意が必要です。また、Microsoft Graph 全体を操作できるようにしているため、SDK をインストールすると大量のコマンドが使えるようになります。リソースなどの単位で PowerShell モジュールも分けられているため、大量のモジュールがインストールされます ([特定のモジュールのみを利用する](https://blog.rykoma.net/2022/02/22/1721/)方法もあります)。多くのシナリオにおいて、これらのコマンドのほとんどは使われることはありません。そのため、本当に Microsoft Graph PowerShell モジュールを使用することが適切なのか、もしくは OAuth で MSAL を使用したとしても残りの部分は PowerShell の標準機能だけで実装することが適切なのか、検討する必要があります。
+Microsoft Graph PowerShell SDK はすでに一般提供されていますが、ところどころ実装が不安定なものがあるので注意が必要です。また、Microsoft Graph 全体を操作できるようにしているため、SDK をインストールすると大量のコマンドが使えるようになります。リソースなどの単位で PowerShell モジュールも分けられているため、大量のモジュールがインストールされます ([特定のモジュールのみを利用する](/ja/use-specific-microsoft-graph-powershell-sdk-modules/)方法もあります)。多くのシナリオにおいて、これらのコマンドのほとんどは使われることはありません。そのため、本当に Microsoft Graph PowerShell モジュールを使用することが適切なのか、もしくは OAuth で MSAL を使用したとしても残りの部分は PowerShell の標準機能だけで実装することが適切なのか、検討する必要があります。
 
 紹介する内容は以下の環境で動作確認をしています。このバージョンを Windows PowerShell で使用するとリクエストのクエリ文字列の内容に問題が生じるので、Windows PowerShell ではなく PowerShell 7 を使用して動作確認をしています。
 

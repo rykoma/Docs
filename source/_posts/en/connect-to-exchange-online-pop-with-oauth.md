@@ -25,7 +25,7 @@ Here is a basic C# sample. I won't explain the code itself, so please read it al
 
 There is little benefit in connecting to Exchange Online using POP, so you should consider migrating to Microsoft Graph instead.
 
-For the client credentials flow, see [Connect to Exchange Online POP with the client credentials flow](https://blog.rykoma.net/2023/07/14/1790/) (in Japanese).
+For the client credentials flow, see [Connect to Exchange Online POP with the client credentials flow](/en/connect-to-exchange-online-pop-with-client-credentials/).
 
 ## Sample code
 

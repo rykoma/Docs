@@ -25,7 +25,7 @@ Here is a basic C# sample. I won't explain the code itself, so please read it al
 
 There is little benefit in connecting to Exchange Online using IMAP, so you should consider migrating to Microsoft Graph instead.
 
-For the client credentials flow, see [Connect to Exchange Online IMAP with the client credentials flow](https://blog.rykoma.net/2023/07/14/1801/) (in Japanese).
+For the client credentials flow, see [Connect to Exchange Online IMAP with the client credentials flow](/en/connect-to-exchange-online-imap-with-client-credentials/).
 
 ## Sample code
 

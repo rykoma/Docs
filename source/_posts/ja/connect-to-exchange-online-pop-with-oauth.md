@@ -27,7 +27,7 @@ C# で実装する場合の基本的なサンプル コードを紹介します�
 
 なお、POP を使用して Exchange Online へ接続するメリット自体がないので、本来であれば Microsoft Graph への移行を検討すべきです。
 
-Client Credential Flow を使用する場合は [Client Credential Flow を使って Exchange Online に POP で接続する](https://blog.rykoma.net/2023/07/14/1790/)を参照してください。
+Client Credential Flow を使用する場合は [Client Credential Flow を使って Exchange Online に POP で接続する](/ja/connect-to-exchange-online-pop-with-client-credentials/)を参照してください。
 
 ## サンプル コード
 
