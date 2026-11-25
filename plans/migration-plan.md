@@ -352,14 +352,17 @@ Phase 5 は、親セッションで次に移行する記事を選定し、記事
 
 移行前の確認と、公開後に独自ドメイン上で行う確認を分けます。移行前に確認済みの項目は下のチェックリストに記録し、公開後の確認では本番 URL で再検証します。移行前の確認だけで、公開後の確認を完了扱いにはしません。
 
-Phase 6 で維持する方針と設定時の注意事項は次のとおりです。
+Phase 6 は、GitHub Pages の既定 URL での最終確認、独自ドメイン設定、DNS 切り替え、本番確認の順に進めます。DNS を変更する前に、切り戻しに必要な現行設定と復旧条件を記録します。`blog.rykoma.net` 以外の URL、ドメイン、DNS 設定は変更しません。
 
 - canonical、hreflang、robots、サイトマップの方針は Phase 4 で確定済みです。対応するブラウザー言語がない場合の既定言語は日本語とし、404 ページはリクエスト パスの `/ja/` `/en/` プレフィックスを優先する方針です。公開後は決定をやり直すのではなく、本番 URL で実装結果を確認します。
-- Google Analytics は未設定です。設定時は、通常ページの `head.ejs` を経由しない独立レイアウトの 404 ページ (`404.html`、`ja/404.html`、`en/404.html`) でも計測できるよう、`not-found-pages` ジェネレーターへの計測タグ追加が必要です。
+- Google Analytics と Google AdSense は未設定です。Analytics のタグはテーマの通常ページだけでなく、独自 HTML を生成する言語選択ページ (`/`、言語共通 URL など) と 404 ページにも必要に応じて実装します。AdSense はアカウントで指定された確認方法・広告コードに従い、必要な場合は `ads.txt` もサイト ルートに公開します。アカウント ID やコードを推測せず、Google の管理画面が発行した値を使います。
+- GitHub Pages のカスタム ドメイン設定は、DNS の公開先を変更する前に行います。GitHub は、サブドメインを Pages の既定ドメイン (`rykoma.github.io`) へ向ける `CNAME` レコードを案内しています。現在の DNS プロバイダーやレコード値は未確認のため、切り替え前に実値を記録し、プロバイダーの UI に合わせて変更します。
+- 現在の `.github/workflows/deploy.yml` は、`main` への push では GitHub Pages のプロジェクト サイト URL (`https://rykoma.github.io/Docs`、root `/Docs/`) でデプロイし、`CNAME` を生成しません。独自ドメインへの切り替え後もこの動作のままだと、次の push で本番用 URL を含む生成物を上書きします。切り替え前に、切り替え前のプレビュー用と切り替え後の本番用のデプロイ モードを分け、本番モードでは push 時も独自ドメイン URL (`https://blog.rykoma.net`、root `/`) で生成・公開されるように整える必要があります。
+- 参考: [GitHub Pages のカスタム ドメイン管理](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site)、[Google Analytics のタグ設定](https://support.google.com/analytics/answer/15756615)、[AdSense へのサイト接続](https://support.google.com/adsense/answer/7584263)、[ads.txt ガイド](https://support.google.com/adsense/answer/12171612)
 
 ### Phase 7: 廃止
 
-新サイトの安定稼働と切り戻し不要の判断後に、旧環境を廃止します。
+新サイトの安定稼働を観察期間にわたって確認し、切り戻し不要と判断した後に、旧環境を廃止します。
 
 - WordPress 停止
 - Azure リソース削除
@@ -448,20 +451,51 @@ Phase 6 で維持する方針と設定時の注意事項は次のとおりです
   - [x] `/ja/` と `/en/` のトップ、日本語と英語の記事・固定ページを確認した
   - [x] 旧 WordPress URL から新 URL へのリダイレクトと 404 ページを Phase 5 で確認した
   - [x] canonical URL、hreflang、robots 設定を Phase 5 で確認した
-- 公開後に本番 URL で確認
-- [ ] `/` と言語指定のない URL から、ブラウザー言語別に正しくリダイレクトできる
-- [ ] 独自ドメイン上の `/ja/` と `/en/`、日本語と英語の記事・固定ページ、画像を確認した
-- [ ] 独自ドメイン上で旧 WordPress URL から新 URL へリダイレクトでき、404 ページが正しく表示される
-- [ ] `blog.rykoma.net` の `CNAME` を設定した
-- [ ] 独自ドメインで HTTPS 接続できる
-- [ ] canonical URL、hreflang、robots 設定、サイトマップを独自ドメイン上で確認した
-- [ ] Google Analytics を設定し、通常ページと 404 ページの計測を確認した
-- [ ] Google AdSense を設定し、表示と計測を確認した
-- [ ] 切り戻し手順と判断条件を確認した
+
+#### 1. DNS 切り替え前の準備
+
+- [ ] GitHub Pages の既定 URL (`https://rykoma.github.io/Docs/`) に通常デプロイし、生成物、ページ遷移、画像、言語切り替えを最終確認した。`CNAME` が含まれていないことも確認した
+- [ ] 現行 WordPress の正常性を確認し、DNS を戻せば再び提供できる状態を保った。WordPress、Azure リソース、バックアップは切り戻し期間中に停止・削除しない
+- [ ] DNS プロバイダーと管理権限を確認し、`blog.rykoma.net` の現在のレコード種別、値、TTL、関連する A / AAAA / CNAME レコードを記録した。メール用 MX / TXT レコードや他のホスト名も記録し、変更対象と混同しない
+- [ ] 切り戻し時に復元する DNS レコードの正確な値、確認担当者、切り替えの実施時間帯、異常時の判断条件を記録した
+- [ ] DNS プロバイダーが対応する場合は、切り替え前に `blog` レコードの TTL を短くし、変更前の TTL が経過するまで待った
+- [ ] GitHub Pages の対象リポジトリで `blog.rykoma.net` のドメイン所有権を確認した。GitHub が DNS TXT レコードでの検証を案内する場合は、その値だけを追加し、検証後も必要な TXT レコードを保持した
+- [ ] `.github/workflows/deploy.yml` の push 時の既定動作を確認した。現在は `https://rykoma.github.io/Docs`、`/Docs/`、`CNAME` なしであり、このまま切り替えると後続の push が本番向け生成物を上書きする。DNS を変える前に、プレビュー用と本番用のデプロイ モードを明示して分け、本番モードでは push 時も `https://blog.rykoma.net`、`/`、独自ドメイン設定でデプロイされるように修正・検証した
+- [ ] Google Analytics 4 のプロパティと Web データ ストリームを用意し、対象 URL を `https://blog.rykoma.net` に設定して測定 ID を記録した。測定 ID をテーマ設定に反映し、通常ページに加えて独立生成の言語選択ページと 404 ページにもタグが必要なことを確認した
+- [ ] Analytics の生成 HTML を確認し、測定 ID が正しいこと、同じページでタグが重複しないこと、GitHub Pages の既定 URL で DebugView またはリアルタイム レポートにテスト イベントが届くことを確認した。この確認は独自ドメインでの本番計測確認の代わりにしない
+- [ ] AdSense の管理画面で `blog.rykoma.net` をサイトとして追加し、管理画面が指定するサイト確認方法を選んだ。発行された確認コード、広告コード、publisher ID を記録し、必要なテンプレートまたは設定に反映した
+- [ ] AdSense が `ads.txt` を要求する場合は、管理画面が発行した行を `source/ads.txt` に追加し、生成後にサイト ルートの `/ads.txt` で取得できることを確認した。publisher ID や ads.txt の値は推測しない
+- [ ] AdSense の確認コードと広告コードを生成 HTML で確認し、意図しないページ (言語選択ページ、404 ページなど) に広告枠を出さないことを確認した。アカウント審査や広告配信が未完了の場合は、未完了として記録した
+- [ ] 変更を含むビルドとリンク・画像検証を成功させ、GitHub Pages の既定 URL で日英のトップ、記事、固定ページ、旧 URL リダイレクト、404 を確認した
+- [ ] GitHub のリポジトリ設定で Pages のカスタム ドメインを `blog.rykoma.net` に設定した。GitHub Pages の既定 URL での確認を済ませてから設定し、まだ DNS の配信先は変更しない
+
+#### 2. 独自ドメインへの切り替え
+
+- [ ] GitHub Actions の `workflow_dispatch` を実行し、`enable_cname: true`、`deploy_url: https://blog.rykoma.net`、`deploy_root: /` を指定して独自ドメイン用にビルド・デプロイした
+- [ ] デプロイ結果と `gh-pages` ブランチのルートに `CNAME` があり、その内容が `blog.rykoma.net` と完全一致することを確認した。HTML の canonical、hreflang、サイトマップ、アセット URL も `https://blog.rykoma.net` を基準に生成されていることを確認した
+- [ ] DNS プロバイダーで `blog.rykoma.net` に対応する Web 用レコードだけを、GitHub Pages のサブドメイン用 CNAME (`blog` → `rykoma.github.io`) に変更した。CNAME と共存できない同一ホストの A / AAAA レコードは整理し、ルート ドメイン、ネームサーバー、メール用レコード、他のホスト名は変更しなかった
+- [ ] `Resolve-DnsName blog.rykoma.net` などで DNS の応答を確認し、GitHub Pages のカスタム ドメイン設定でドメイン エラーが解消したことを確認した。伝播中は DNS と HTTPS の状態を記録し、複数のネットワークから確認した
+- [ ] GitHub Pages の HTTPS 証明書発行を待ち、`https://blog.rykoma.net/` で証明書エラーがないことを確認してから Enforce HTTPS を有効にした
+
+#### 3. 公開後の本番確認
+
+- [ ] `/` と言語指定のない URL から、ブラウザー言語別に正しくリダイレクトできることを本番 URL で確認した。該当言語がない場合の既定値が日本語であることも確認した
+- [ ] 独自ドメイン上の `/ja/` と `/en/`、日本語と英語の記事・固定ページ、画像、ページ内言語切り替えを確認した
+- [ ] 独自ドメイン上で旧 WordPress URL から新 URL へリダイレクトでき、未知の URL では 404 ページが正しく表示されることを確認した
+- [ ] canonical URL、hreflang、robots 設定、サイトマップ、言語別 RSS を独自ドメイン上で確認した。Phase 4 / 5 で確定済みの SEO 方針や既定言語は変更しない
+- [ ] Google Analytics のリアルタイム レポートまたは DebugView で、通常ページ、言語選択ページ、404 ページのイベントを独自ドメインから確認した
+- [ ] AdSense の管理画面でサイト確認・審査状況を確認し、要求された場合は `/ads.txt` が取得可能で正しい publisher ID が含まれることを確認した。広告が承認済みの場合は、対象ページで広告表示とポリシー適合を確認した。審査中の場合は完了扱いにせず、状態を記録して後日確認する
+- [ ] DNS 切り替え後の観察期間と異常の有無を記録し、切り戻し条件に該当しないことを確認した
+
+#### 4. 切り戻し
+
+- [ ] DNS を変更する前に、記録した現行レコードを復元すれば WordPress へ戻ること、復旧担当者と判断条件を確認した
+- [ ] 本番で重大な配信障害、継続する HTTPS エラー、主要 URL や旧 URL リダイレクトの広範な不具合が発生した場合は、原因と影響を記録し、判断条件に従って `blog.rykoma.net` の Web 用 DNS レコードを記録済みの WordPress 向け値へ戻した。GitHub Pages のドメイン所有権設定、その他の DNS レコード、Azure リソースは削除しない
+- [ ] DNS 伝播後に WordPress の HTTPS と主要ページを確認し、復旧時刻、変更内容、未解決事項を記録した。原因修正と再検証が終わるまで再切り替えや Phase 7 の廃止作業を行わない
 
 ### Phase 7: 廃止
 
-- [ ] 新サイトの公開後の安定稼働を確認した
+- [ ] 新サイトの公開後に定めた観察期間が経過し、切り戻し不要と判断した。Analytics の計測と AdSense の設定・審査・配信状況も確認して記録した
 - [ ] 最終バックアップを取得した
 - [ ] WordPress の停止日と担当作業を記録した
 - [ ] Azure 上の削除対象リソースを確定した
@@ -475,8 +509,8 @@ Phase 6 で維持する方針と設定時の注意事項は次のとおりです
 
 1. 日本語と英語のコンテンツが `/ja/` と `/en/` で表示できる。
 2. 旧 WordPress URL の主要なアクセスが新 URL に到達できる。
-3. GitHub Actions でビルドと `gh-pages` へのデプロイを再実行できる。
+3. GitHub Actions でビルドと `gh-pages` へのデプロイを再実行でき、公開後の push でも独自ドメイン向け URL で生成・公開される。
 4. `blog.rykoma.net` で HTTPS 配信できる。
-5. Google Analytics と Google AdSense が継続して動作する。
+5. Google Analytics の計測と Google AdSense の設定・審査・配信状況を確認し、未完了事項がない。
 6. 主要なリンク、画像、SEO 情報に問題がない。
 7. Azure 上の旧 WordPress を廃止してよいと判断でき、削除記録が残っている。
