@@ -1,1 +1,4 @@
 <%- partial('_partial/archive', {expand: true, index: true}) %>
+<% if (page.home) { %>
+  <p class="article-more-link home-archive-link"><a href="<%- url_for(`${page.language}/${config.archive_dir}/`) %>"><%= page.language === 'ja' ? 'すべての記事を見る' : 'View all posts' %></a></p>
+<% } %>

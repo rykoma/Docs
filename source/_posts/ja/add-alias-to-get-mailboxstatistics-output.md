@@ -1,7 +1,7 @@
 ---
 title: Get-MailboxStatistics コマンドの出力にエイリアスを追加する
 date: 2016-01-22T23:30:17+09:00
-updated: 2026-09-03T23:15:19+09:00
+updated: 2016-01-22T23:30:17+09:00
 lang: ja
 slug: add-alias-to-get-mailboxstatistics-output
 categories:

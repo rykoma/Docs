@@ -179,25 +179,32 @@ hexo.extend.helper.register('language_archives', function (posts, options = {}) 
   posts.forEach(post => {
     const year = post.date.year();
     const month = post.date.month() + 1;
-    const key = type === 'monthly' ? `${year}-${month}` : String(year);
-    const group = groups.get(key) || {year, month, count: 0};
-    group.count++;
-    groups.set(key, group);
+    const months = groups.get(year) || new Map();
+    months.set(month, (months.get(month) || 0) + 1);
+    groups.set(year, months);
   });
 
-  const items = [...groups.values()].sort((a, b) =>
-    b.year - a.year || b.month - a.month
-  );
   const archiveDir = this.config.archive_dir;
-  const list = items.map(item => {
-    const date = this.date(new Date(item.year, item.month - 1), format);
-    const monthPath = type === 'monthly' ? `${item.month < 10 ? '0' : ''}${item.month}/` : '';
-    const path = localizedPath(`${archiveDir}/${item.year}/${monthPath}`, language);
-    const count = showCount ? `<span class="archive-list-count">${item.count}</span>` : '';
-    return `<li class="archive-list-item"><a class="archive-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(date)}</a>${count}</li>`;
+  const list = [...groups.entries()].sort((a, b) => b[0] - a[0]).map(([year, months]) => {
+    const yearPath = localizedPath(`${archiveDir}/${year}/`, language);
+    const yearLabel = language === 'ja' ? `${year} 年` : String(year);
+    const yearCount = [...months.values()].reduce((total, count) => total + count, 0);
+    const count = showCount ? `<span class="archive-list-count">${yearCount}</span>` : '';
+    const monthList = [...months.entries()].sort((a, b) => b[0] - a[0]).map(([month, monthCount]) => {
+      const date = this.date(new Date(year, month - 1), format);
+      const path = localizedPath(`${archiveDir}/${year}/${String(month).padStart(2, '0')}/`, language);
+      const countHtml = showCount ? `<span class="archive-list-count">${monthCount}</span>` : '';
+      return `<li class="archive-list-item"><a class="archive-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(date)}</a>${countHtml}</li>`;
+    }).join('');
+    const yearUrl = escapeHtml(this.url_for(yearPath));
+    if (type !== 'monthly') {
+      return `<li class="archive-list-item"><a class="archive-list-link" href="${yearUrl}">${escapeHtml(yearLabel)}</a>${count}</li>`;
+    }
+    const yearLink = `<li class="archive-list-item"><a class="archive-list-link" href="${yearUrl}">${escapeHtml(this.__('archive_year_posts', year))}</a></li>`;
+    return `<li class="archive-list-item"><details class="archive-months"><summary>${escapeHtml(yearLabel)}${count}</summary><ul class="archive-month-list">${yearLink}${monthList}</ul></details></li>`;
   }).join('');
 
-  return items.length ? `<ul class="archive-list">${list}</ul>` : '';
+  return list ? `<ul class="archive-list">${list}</ul>` : '';
 });
 
 const taxonomyHelper = (posts, type) => function (options = {}) {
@@ -208,13 +215,19 @@ const taxonomyHelper = (posts, type) => function (options = {}) {
     values.forEach(value => counts.set(value.name, (counts.get(value.name) || 0) + 1));
   });
   const className = type === 'category' ? 'category' : 'tag';
-  const items = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-  const links = items.map(([name, count]) => {
+  const items = [...counts.entries()].sort((a, b) =>
+    (type === 'tag' ? b[1] - a[1] : 0) || a[0].localeCompare(b[0])
+  );
+  const renderLinks = entries => entries.map(([name, count]) => {
     const path = localizedPath(taxonomySlug(this, type, name), language);
     const countHtml = options.show_count ? `<span class="${className}-list-count">${count}</span>` : '';
     return `<li class="${className}-list-item"><a class="${className}-list-link" href="${escapeHtml(this.url_for(path))}">${escapeHtml(name)}</a>${countHtml}</li>`;
   }).join('');
-  return items.length ? `<ul class="${className}-list">${links}</ul>` : '';
+  if (!items.length) return '';
+  if (type !== 'tag' || items.length <= 10) {
+    return `<ul class="${className}-list">${renderLinks(items)}</ul>`;
+  }
+  return `<ul class="tag-list">${renderLinks(items.slice(0, 10))}</ul><details class="more-tags"><summary>${escapeHtml(this.__('more_tags'))}</summary><ul class="tag-list">${renderLinks(items.slice(10))}</ul></details>`;
 };
 
 hexo.extend.helper.register('language_categories', function (posts, options) {
@@ -269,7 +282,7 @@ hexo.extend.generator.register('multilingual-pages', function () {
       perPage: indexConfig.per_page || config.per_page,
       format: paginationFormat,
       layout: ['index', 'archive'],
-      data: pageData(language, {ja: `${root}ja/`, en: `${root}en/`}),
+      data: pageData(language, {ja: `${root}ja/`, en: `${root}en/`}, {home: true}),
     }));
   }
 
