@@ -99,6 +99,10 @@ ignore:
 theme: landscape
 theme_config:
   google_analytics: G-HMDMWWKBVY
+  adsense:
+    publisher_id: ca-pub-6208566823743408
+    article_bottom_slot: '9998882942'
+    sidebar_slot: '1021211470'
 
 # Deployment
 deploy:

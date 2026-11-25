@@ -1,6 +1,7 @@
 <head>
   <meta charset="utf-8">
   <%- partial('google-analytics') %>
+  <%- google_adsense_tag(theme.adsense, config.url) %>
   <%
   var title = page.title;
   var pathParts = (page.path || '').split('/').filter(Boolean);

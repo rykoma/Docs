@@ -2,4 +2,9 @@
   <% theme.widgets.forEach(function(widget){ %>
     <%- partial('_widget/' + widget) %>
   <% }) %>
+  <%- partial('_partial/adsense-ad', {
+    className: 'sidebar-ad',
+    slot: theme.adsense && theme.adsense.sidebar_slot,
+    language: page.lang || page.language || config.language
+  }) %>
 </aside>
