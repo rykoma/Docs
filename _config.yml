@@ -97,6 +97,8 @@ ignore:
 
 # Extensions
 theme: landscape
+theme_config:
+  google_analytics: G-HMDMWWKBVY
 
 # Deployment
 deploy:
