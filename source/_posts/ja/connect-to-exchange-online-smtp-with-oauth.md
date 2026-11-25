@@ -27,7 +27,7 @@ C# で実装する場合の基本的なサンプル コードを紹介します�
 
 なお、SMTP を使用して Exchange Online へ接続しなければならない明確な要件がないのであれば、Microsoft Graph への移行を検討すべきです。
 
-Client Credential Flow を使用する場合は [Client Credential Flow を使って Exchange Online に SMTP で接続する](https://blog.rykoma.net/2023/07/14/1780/)を参照してください。
+Client Credential Flow を使用する場合は [Client Credential Flow を使って Exchange Online に SMTP で接続する](/ja/connect-to-exchange-online-smtp-with-client-credentials/)を参照してください。
 
 ## サンプル コード
 

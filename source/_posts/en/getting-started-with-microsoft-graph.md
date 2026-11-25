@@ -17,7 +17,7 @@ description: Learn how to retrieve email with Microsoft Graph in Office365APIEdi
 
 [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer) is an easy way to try Microsoft Graph. However, it does not let you use your own Client ID or application permissions. This article therefore explains how to test Microsoft Graph with Office365APIEditor. Although the examples only retrieve email, you can use other permissions in the same way to access various types of information. You can capture Office365APIEditor traffic with Fiddler to see what requests and responses are exchanged. When developing an application that uses Microsoft Graph, you implement these exchanges using a library (or without one, if you prefer).
 
-For instructions on trying the Microsoft Graph reports API, see [Getting started with the Microsoft Graph reports API](https://blog.rykoma.net/2021/01/13/1610/).
+For instructions on trying the Microsoft Graph reports API, see [Getting started with the Microsoft Graph reports API](/en/getting-started-with-microsoft-graph-reports-api/).
 
 ## Try delegated permissions with Office365APIEditor (built-in application)
 

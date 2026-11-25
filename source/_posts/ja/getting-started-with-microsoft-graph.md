@@ -19,7 +19,7 @@ alias:
 
 Microsoft Graph を試すには [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer) を使用するのが簡単です。ですが、自分で用意した Client ID を使用したり、アプリケーションの権限を使用したりすることはできません。そのため、ここでは Office365APIEditor を使用して Microsoft Graph の動作を検証する方法を紹介します。紹介するのはメールの取得方法のみですが、同じ要領で他の権限を使用してさまざまな情報にアクセスできます。Office365APIEditor の通信を Fiddler で取得すれば、どのような通信が行われているのか確認できます。実際に Microsoft Graph を使用するアプリケーションを開発する場合は、これらの通信をライブラリを使用しながら (もちろん使用しないことも可能) 実装することになります。
 
-Microsoft Graph reports API の試し方については [Microsoft Graph reports API の試し方](https://blog.rykoma.net/2021/01/13/1610/)を参照してください。
+Microsoft Graph reports API の試し方については [Microsoft Graph reports API の試し方](/ja/getting-started-with-microsoft-graph-reports-api/)を参照してください。
 
 ## [委任されたアクセス許可] を Office365APIEditor で試す (ビルトイン編)
 
