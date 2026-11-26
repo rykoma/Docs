@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Introducing the RobustCloudCommand Module | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/introducing-robustcloudcommand-module/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/introducing-robustcloudcommand-module/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/introducing-robustcloudcommand-module/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to use the MFA-enabled RobustCloudCommand module to process large numbers of users in Exchange Online.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Introducing the RobustCloudCommand Module">
+<meta property="og:url" content="https://blog.rykoma.net/en/introducing-robustcloudcommand-module/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to use the MFA-enabled RobustCloudCommand module to process large numbers of users in Exchange Online.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-11-14T11:39:07.000Z">
+<meta property="article:modified_time" content="2022-04-01T05:18:03.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="PowerShell">
+<meta property="article:tag" content="RobustCloudCommand">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/introducing-robustcloudcommand-module/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/introducing-robustcloudcommand-module/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/introducing-robustcloudcommand-module" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-11-14T11:39:07.000Z" title="2019-11-14 20:39:07 JST" itemprop="datePublished">2019-11-14</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">PowerShell</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Introducing the RobustCloudCommand Module
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2022-04-01T05:18:03.000Z" title="2022-04-01 14:18:03 JST" itemprop="dateModified">2022-04-01</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>The <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/Exchange-Team-Blog/Running-PowerShell-cmdlets-for-large-numbers-of-users-in-Office/ba-p/604280">Start-RobustCloudCommand.ps1 script</a> is now a <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/t5/Exchange-Team-Blog/Updated-Running-PowerShell-cmdlets-for-large-numbers-of-users-in/ba-p/1000628">module that also supports MFA</a>. This article shows how to use it.</p>
+<h2 id="A-quick-recap"><a href="#A-quick-recap" class="headerlink" title="A quick recap"></a>A quick recap</h2><p>Because of throttling and unstable sessions, Exchange Online PowerShell is not well suited to processing large numbers of objects over a long period. <code>Start-RobustCloudCommand.ps1</code> manages sessions while running Exchange Online commands for this kind of workload.</p>
+<h2 id="Preparation"><a href="#Preparation" class="headerlink" title="Preparation"></a>Preparation</h2><p>First, install the module. Run the following command in Windows PowerShell started with administrator privileges. The module may not install correctly without the <code>-Force</code> switch, possibly because it has dependencies, so it is safer to include it.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Install-Module</span> <span class="literal">-Name</span> RobustCloudCommand <span class="literal">-Force</span></span><br></pre></td></tr></table></figure>
+
+<p>Next, create a list of the users that the commands will process. This is mostly unchanged from before. You could use the <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2/exchange-online-powershell-v2?view=exchange-ps">PowerShell V2 Module</a>, but this example uses the traditional <code>Get-Mailbox</code> command to create the list:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-Command</span> <span class="literal">-Session</span> (<span class="built_in">Get-PSSession</span>) <span class="literal">-ScriptBlock</span> &#123; <span class="built_in">Get-Mailbox</span> <span class="literal">-ResultSize</span> Unlimited | <span class="built_in">Select-Object</span> <span class="literal">-Property</span> DisplayName, Identity, PrimarySMTPAddress &#125; | <span class="built_in">Export-Csv</span> c:\temp\users.csv <span class="literal">-NoTypeInformation</span> <span class="literal">-Encoding</span> UTF8</span><br></pre></td></tr></table></figure>
+
+<h2 id="Non-interactive-use-basic-authentication"><a href="#Non-interactive-use-basic-authentication" class="headerlink" title="Non-interactive use (basic authentication)"></a>Non-interactive use (basic authentication)</h2><p>Restart Windows PowerShell and import the list you created:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Users</span> = <span class="built_in">Import-Csv</span> c:\temp\users.csv</span><br></pre></td></tr></table></figure>
+
+<p>Prepare the credentials and explicitly import the module to be safe:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$SecPassword</span> = <span class="built_in">ConvertTo-SecureString</span> <span class="string">&quot;password&quot;</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span></span><br><span class="line"><span class="variable">$Cred</span> = <span class="built_in">New-Object</span> System.Management.Automation.PSCredential (<span class="string">&quot;admin@contoso.onmicrosoft.com&quot;</span>, <span class="variable">$SecPassword</span>)</span><br><span class="line"><span class="built_in">Import-Module</span> RobustCloudCommand</span><br></pre></td></tr></table></figure>
+
+<p>The module includes the <code>Start-RobustCloudCommand</code> command. Run it as follows. This example retrieves mobile device information for the users in the list and writes it to a CSV file. The <code>Agree</code> switch from the script version is no longer available.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Start-RobustCloudCommand</span> <span class="literal">-LogFile</span> c:\temp\RobustCloudCommand.log <span class="literal">-Recipients</span> <span class="variable">$Users</span> <span class="literal">-ScriptBlock</span> &#123; <span class="built_in">Get-MobileDeviceStatistics</span> <span class="literal">-Mailbox</span> <span class="variable">$Input</span>.PrimarySmtpAddress.ToString() | <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123;Name=<span class="string">&quot;DisplayName&quot;</span>;Expression=&#123;<span class="variable">$Input</span>.DisplayName&#125;&#125;, Status, DeviceOS, DeviceModel, LastSuccessSync, FirstSyncTime | <span class="built_in">Export-Csv</span> c:\temp\devices.csv <span class="literal">-Append</span> <span class="literal">-NoTypeInformation</span> <span class="literal">-Encoding</span> UTF8 &#125; <span class="literal">-Credential</span> <span class="variable">$Cred</span></span><br></pre></td></tr></table></figure>
+
+<p>As the output file shows, the command retrieves the information as it did in the script version.</p>
+<h2 id="Interactive-use-MFA"><a href="#Interactive-use-MFA" class="headerlink" title="Interactive use (MFA)"></a>Interactive use (MFA)</h2><p>The module now supports MFA, so you can run the same process interactively. Restart Windows PowerShell, then import the list and module as before:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Users</span> = <span class="built_in">Import-Csv</span> c:\temp\users.csv</span><br><span class="line"><span class="built_in">Import-Module</span> RobustCloudCommand</span><br></pre></td></tr></table></figure>
+
+<p>Run the command without specifying the <code>-Credential</code> parameter:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Start-RobustCloudCommand</span> <span class="literal">-LogFile</span> c:\temp\RobustCloudCommand.log <span class="literal">-Recipients</span> <span class="variable">$Users</span> <span class="literal">-ScriptBlock</span> &#123; <span class="built_in">Get-MobileDeviceStatistics</span> <span class="literal">-Mailbox</span> <span class="variable">$Input</span>.PrimarySmtpAddress.ToString() | <span class="built_in">Select-Object</span> <span class="selector-tag">@</span>&#123;Name=<span class="string">&quot;DisplayName&quot;</span>;Expression=&#123;<span class="variable">$Input</span>.DisplayName&#125;&#125;, Status, DeviceOS, DeviceModel, LastSuccessSync, FirstSyncTime | <span class="built_in">Export-Csv</span> c:\temp\devices.csv <span class="literal">-Append</span> <span class="literal">-NoTypeInformation</span> <span class="literal">-Encoding</span> UTF8 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>The Office 365 sign-in screen appears. After you sign in with administrator credentials, the process runs as it does in non-interactive mode and creates the output file.</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/RobustCloudCommand/" rel="tag">RobustCloudCommand</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/introducing-robustcloudcommand-module.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/introducing-robustcloudcommand-module/" data-id="cuidBH7J7vh8vhSW8zWB5Sfw0" data-title="Introducing the RobustCloudCommand Module" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/getting-started-with-microsoft-graph-toolkit/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Getting started with Microsoft Graph Toolkit
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/get-mapi-properties-with-microsoft-graph/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Get MAPI properties with Microsoft Graph
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

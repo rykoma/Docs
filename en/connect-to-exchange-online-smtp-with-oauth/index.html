@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Connect to Exchange Online SMTP with OAuth | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-oauth/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/connect-to-exchange-online-smtp-with-oauth/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-oauth/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="A C# sample that connects to Exchange Online via SMTP using MSAL and the device code flow.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Connect to Exchange Online SMTP with OAuth">
+<meta property="og:url" content="https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-oauth/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="A C# sample that connects to Exchange Online via SMTP using MSAL and the device code flow.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-06T07:15:47.000Z">
+<meta property="article:modified_time" content="2026-11-21T14:11:25.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="MSAL">
+<meta property="article:tag" content="OAuth">
+<meta property="article:tag" content="SMTP">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/connect-to-exchange-online-smtp-with-oauth/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/connect-to-exchange-online-smtp-with-oauth/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/connect-to-exchange-online-smtp-with-oauth" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2020-05-06T07:15:47.000Z" title="2020-05-06 16:15:47 JST" itemprop="datePublished">2020-05-06</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Online</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Connect to Exchange Online SMTP with OAuth
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-11-21T14:11:25.000Z" title="2026-11-21 23:11:25 JST" itemprop="dateModified">2026-11-21</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>Azure Active Directory is now called Microsoft Entra ID. The app registration steps below are based on the portal interface at the time of writing. For the planned retirement of basic authentication for SMTP AUTH, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-basic-authentication-exchange-online">Deprecation of Basic authentication in Exchange Online</a>.</p>
+</div>
+<p>As Exchange Online moves away from basic authentication, OAuth is now supported for SMTP. Developer information is available on the following page:</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth">Authenticate an IMAP, POP or SMTP connection using OAuth</a></p>
+<p>Here is a basic C# sample. I won’t explain the code itself, so please read it alongside the developer documentation above. It implements only the minimum functionality, so a full implementation requires knowledge of the Microsoft identity platform and SMTP. This is a C# console application that uses MSAL for authentication. It uses the device authorization grant flow because there is little benefit in creating a new SMTP client that uses the authorization code flow. I’ll also show how to register the application in Azure AD for this flow.</p>
+<p>If you don’t have a clear requirement to connect to Exchange Online using SMTP, you should consider migrating to Microsoft Graph instead.</p>
+<p>For the client credentials flow, see <a href="/en/connect-to-exchange-online-smtp-with-client-credentials/">Connect to Exchange Online SMTP with the client credentials flow</a>.</p>
+<h2 id="Sample-code"><a href="#Sample-code" class="headerlink" title="Sample code"></a>Sample code</h2><p>The sample was tested with MSAL (Microsoft.Identity.Client) version 4.54.1 on .NET Framework 4.8.</p>
+<div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>This is a minimal example; a production implementation needs appropriate error handling and SMTP response processing.</p>
+</div>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.Identity.Client;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"><span class="keyword">using</span> System.Linq;</span><br><span class="line"><span class="keyword">using</span> System.Net;</span><br><span class="line"><span class="keyword">using</span> System.Net.Security;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"><span class="keyword">using</span> System.Threading.Tasks;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">SmtpOAuthDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> ClientId = <span class="string">&quot;&lt;CLIENT ID OF YOUR APP&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> Authority = <span class="string">&quot;https://login.microsoftonline.com/organizations&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span>[] Scopes = <span class="keyword">new</span> <span class="built_in">string</span>[] &#123; <span class="string">&quot;https://outlook.office.com/SMTP.Send&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> RecipientSmtpAddress = <span class="string">&quot;user01@contoso.com&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> tokenResult = GetToken().Result;</span><br><span class="line">            <span class="built_in">string</span> token = tokenResult.AccessToken;</span><br><span class="line">            <span class="built_in">string</span> user = tokenResult.Account.Username;</span><br><span class="line">            <span class="built_in">string</span> XOAUTH2 = Base64Encode(<span class="string">$&quot;user=<span class="subst">&#123;user&#125;</span>\u0001auth=Bearer <span class="subst">&#123;token&#125;</span>\u0001\u0001&quot;</span>);</span><br><span class="line">            <span class="built_in">string</span> fromAddress = user;</span><br><span class="line">            <span class="comment">// In case of sending as someone else, replace the value of fromAddress variable with the user&#x27;s email address.</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (ExoSmtpClient client = <span class="keyword">new</span> ExoSmtpClient())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// Receive the greating.</span></span><br><span class="line">                <span class="keyword">var</span> response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;220&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">$&quot;EHLO <span class="subst">&#123;Dns.GetHostName()&#125;</span>&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.Contains(<span class="string">&quot;STARTTLS&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;STARTTLS is not supported&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;STARTTLS&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;220&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.UpgradeToSsl();</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">$&quot;EHLO <span class="subst">&#123;Dns.GetHostName()&#125;</span>&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.Contains(<span class="string">&quot;XOAUTH2&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;OAuth is not supported&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;AUTH XOAUTH2&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;334&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(XOAUTH2, sensitive: <span class="literal">true</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;235&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Authentication failure&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">$&quot;MAIL FROM: <span class="subst">&#123;fromAddress&#125;</span>&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;250&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">$&quot;RCPT TO: <span class="subst">&#123;RecipientSmtpAddress&#125;</span>&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;250&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;DATA&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;354&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">$&quot;From: <span class="subst">&#123;fromAddress&#125;</span>&quot;</span>);</span><br><span class="line">                client.Send(<span class="string">$&quot;To: <span class="subst">&#123;RecipientSmtpAddress&#125;</span>&quot;</span>);</span><br><span class="line">                client.Send(<span class="string">&quot;Subject: Test Mail&quot;</span>);</span><br><span class="line">                client.Send(<span class="string">&quot;&quot;</span>);</span><br><span class="line">                client.Send(<span class="string">&quot;Test message.&quot;</span>);</span><br><span class="line">                client.Send(<span class="string">&quot;.&quot;</span>);</span><br><span class="line"></span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;250&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;QUIT&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task&lt;AuthenticationResult&gt; <span class="title">GetToken</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            IPublicClientApplication pca = PublicClientApplicationBuilder</span><br><span class="line">                .Create(ClientId)</span><br><span class="line">                .WithAuthority(Authority)</span><br><span class="line">                .WithDefaultRedirectUri()</span><br><span class="line">                .Build();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> accounts = <span class="keyword">await</span> pca.GetAccountsAsync();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">await</span> pca.AcquireTokenSilent(Scopes, accounts.FirstOrDefault()).ExecuteAsync();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (MsalUiRequiredException)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">await</span> AcquireByDeviceCodeAsync(pca);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">async</span> Task&lt;AuthenticationResult&gt; <span class="title">AcquireByDeviceCodeAsync</span>(<span class="params">IPublicClientApplication pca</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">try</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> result = <span class="keyword">await</span> pca.AcquireTokenWithDeviceCode(Scopes,</span><br><span class="line">                    deviceCodeResult =&gt;</span><br><span class="line">                    &#123;</span><br><span class="line">                        Console.WriteLine(deviceCodeResult.Message);</span><br><span class="line">                        <span class="keyword">return</span> Task.FromResult(<span class="number">0</span>);</span><br><span class="line">                    &#125;).ExecuteAsync();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Authentication failure&quot;</span>, ex);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">Base64Encode</span>(<span class="params"><span class="built_in">string</span> plainText</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> plainTextBytes = Encoding.UTF8.GetBytes(plainText);</span><br><span class="line">            <span class="keyword">return</span> Convert.ToBase64String(plainTextBytes);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExoSmtpClient</span> : <span class="title">TcpClient</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> Stream stream;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> host = <span class="string">&quot;outlook.office365.com&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="built_in">byte</span>[] receiveBuffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ExoSmtpClient</span>()</span></span><br><span class="line"><span class="function">            : <span class="title">base</span>(<span class="params"><span class="string">&quot;outlook.office365.com&quot;</span>, <span class="number">587</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            stream = GetStream();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">UpgradeToSsl</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> sslStream = <span class="keyword">new</span> SslStream(stream, <span class="literal">false</span>);</span><br><span class="line">            sslStream.AuthenticateAsClient(host);</span><br><span class="line">            stream = sslStream;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Send</span>(<span class="params"><span class="built_in">string</span> command, <span class="built_in">bool</span> sensitive = <span class="literal">false</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> commandBytes = Encoding.ASCII.GetBytes(command + Environment.NewLine);</span><br><span class="line">            stream.Write(commandBytes, <span class="number">0</span>, commandBytes.Length);</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(sensitive ? <span class="string">&quot;C:\t[authentication data redacted]&quot;</span> : <span class="string">$&quot;C:\t<span class="subst">&#123;command&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Receive</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (; ; )</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> temp = stream.Read(receiveBuffer, <span class="number">0</span>, receiveBuffer.Length);</span><br><span class="line">                stringBuilder.Append(Encoding.ASCII.GetString(receiveBuffer, <span class="number">0</span>, temp));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="number">0</span> &lt; Available)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="number">2</span> &lt;= stringBuilder.Length &amp;&amp; stringBuilder[stringBuilder.Length - <span class="number">2</span>] == <span class="string">&#x27;\r&#x27;</span> &amp;&amp; stringBuilder[stringBuilder.Length - <span class="number">1</span>] == <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> response = stringBuilder.ToString();</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;S:\t<span class="subst">&#123;stringBuilder.Replace(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\r\n\t&quot;</span>).ToString(<span class="number">0</span>, stringBuilder.Length - <span class="number">1</span>)&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Register-the-app"><a href="#Register-the-app" class="headerlink" title="Register the app"></a>Register the app</h2><ol>
+<li>Go to the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a> and sign in.</li>
+<li>Go to the Azure Active Directory blade.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>App registrations</strong> &gt; <strong>New registration</strong>.</li>
+<li>Configure the following settings and select <strong>Register</strong>:<ul>
+<li><strong>Name</strong>: Enter any application name (for example, SmtpTest01).</li>
+<li><strong>Supported account types</strong>: Accounts in any organizational directory (any Azure AD directory - multitenant).</li>
+<li><strong>Redirect URI</strong>: Select <strong>Public client&#x2F;native (mobile &amp; desktop)</strong> from the drop-down list and enter <code>https://login.microsoftonline.com/common/oauth2/nativeclient</code>.</li>
+</ul>
+</li>
+<li>Select <strong>Manage</strong> &gt; <strong>Authentication</strong>.</li>
+<li>Set <strong>Enable the following mobile and desktop flows</strong> to <strong>Yes</strong>.</li>
+<li>Select <strong>Save</strong>.</li>
+</ol>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/OAuth/" rel="tag">OAuth</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/MSAL/" rel="tag">MSAL</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/SMTP/" rel="tag">SMTP</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/connect-to-exchange-online-smtp-with-oauth.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-oauth/" data-id="cuidOWDPhBlFWNotisNwpNYNy" data-title="Connect to Exchange Online SMTP with OAuth" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/connect-to-exchange-online-pop-with-oauth/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Connect to Exchange Online POP with OAuth
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/connect-to-exchange-online-imap-with-oauth/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Connect to Exchange Online IMAP with OAuth
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

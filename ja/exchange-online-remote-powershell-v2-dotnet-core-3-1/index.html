@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編) | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-core-3-1/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="C# と .NET Core 3.1 から Exchange Online Remote PowerShell V2 Module を使用して接続する当時の手順を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)">
+<meta property="og:url" content="https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="C# と .NET Core 3.1 から Exchange Online Remote PowerShell V2 Module を使用して接続する当時の手順を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2021-06-11T15:32:36.000Z">
+<meta property="article:modified_time" content="2026-11-24T09:38:53.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content=".NET Core">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Online PowerShell V2 Module">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/exchange-online-remote-powershell-v2-dotnet-core-3-1/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/exchange-online-remote-powershell-v2-dotnet-core-3-1" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2021-06-11T15:32:36.000Z" title="2021-06-12 00:32:36 JST" itemprop="datePublished">2021-06-12</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Online</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-11-24T09:38:53.000Z" title="2026-11-24 18:38:53 JST" itemprop="dateModified">2026-11-24</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-important">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Important</span></p>
+<p>この記事は 2021 年時点の手順です。Exchange Online の Remote PowerShell は廃止されており、この方法で接続することはできません。また、.NET Core 3.1 のサポートは 2022 年 12 月 13 日に終了しており、セキュリティ更新プログラムや技術サポートは提供されていません。詳しくは <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/deprecation-of-remote-powershell-in-exchange-online-%e2%80%93-re-enabling-or-extending-r/3779692">Remote PowerShell の廃止に関する Exchange Team Blog</a>、<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/lifecycle/products/microsoft-net-and-net-core">Microsoft .NET のライフサイクル情報</a>、および現在の <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps">Exchange Online PowerShell のドキュメント</a> を参照してください。以下のサンプルは当時の記録であり、パスワードをコードに埋め込まないでください。</p>
+</div>
+<p>他の実行環境向けの情報は以下から確認してください。</p>
+<ul>
+<li><a href="/ja/exchange-online-remote-powershell-v2-dotnet-framework/">C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Framework 4.7.2 編)</a></li>
+<li><a href="/ja/exchange-online-remote-powershell-v2-dotnet-5/">C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)</a></li>
+</ul>
+<p>プログラムから Exchange へ PowerShell 接続する方法として、以下の技術情報が公開されています。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/client-developer/management/how-to-get-a-list-of-mail-users-by-using-the-exchange-management-shell">Get a list of mail users by using the Exchange Management Shell</a></p>
+<p>ただし、本記事の執筆時点ではこの技術情報の最終更新は 2015 年 9 月と非常に古く、更新が行われていません。また、ここで説明されている内容は参考にはなりますが、Remote Runspace に接続する方法になっています。Remote Runspace は、ざっくりとしたイメージとしては Exchange サーバーや Exchange Online のサーバー上でコマンドを実行させるものとなります。そのため、さまざまなセキュリティ上の制限を受けることになります。例えば変数や代入式の利用など、スクリプティングで一般的に使用されている構文が利用できません。</p>
+<p>そのため、特に制限がない Local Runspace の使用が必要になりますが、その方法についてはサンプル コードが公開されていません。とはいえ、やることは Windows PowerShell で Exchange Online に接続する場合と同じです。従来の基本認証による接続であれば <code>New-PSSession</code> と <code>Import-PSSession</code> を行うことで Exchange Online のコマンドが Local Runspace にインポートされます。Exchange Online PowerShell V2 Module を利用する場合は、<code>Connect-ExchangeOnline</code> が内部で <code>New-PSSession</code> と <code>Import-PSSession</code> を行います。</p>
+<p>ここでは、C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する方法を紹介します。Visual Studio の利用方法や C# でのアプリケーション開発方法を理解している方を対象としていますので、ステップ バイ ステップのような詳細な手順は記載していません。</p>
+<h2 id="環境"><a href="#環境" class="headerlink" title="環境"></a>環境</h2><p>以下の環境で動作確認を行っています。</p>
+<ul>
+<li>Visual Studio 2019</li>
+<li>.NET Core 3.1</li>
+<li>PowerShell 7.1.3</li>
+<li>ExchangeOnlineManagement PowerShell Module 2.0.5</li>
+<li>Microsoft.PowerShell.SDK 7.0.6</li>
+<li>System.Management.Automation 7.0.6</li>
+</ul>
+<p>今回は実行環境として .NET Core 3.1 を想定しています。そのため PowerShell は .NET Core で動作する PowerShell 7 を使用します。.NET Framework 環境で動作する Windows PowerShell は利用できません。</p>
+<p>System.Management.Automation 7.1.0 以上は .NET Core 3.1 で使用できません。そのため .NET Core 3.1 で利用できる System.Management.Automation 7.0 系を使用します。Microsoft.PowerShell.SDK のバージョンも同じものに揃えます。</p>
+<p>Azure Functions 環境上で動作させることは想定していません。Azure Functions から Exchange Online へ PowerShell 接続することは、動作する可能性はありますが厳密にはサポートされません。ExchangeOnlineManagement PowerShell Module は、クライアント端末上での動作を想定しており、Azure Functions 環境上では正しく動作しない可能性があります。</p>
+<h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><p>開発環境および本番環境で、ExchangeOnlineManagement PowerShell Module を使用した接続が既にできるようになっている必要があります。<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps">公開情報</a>を参考に環境を用意してください。プログラムの実行アカウントと ExchangeOnlineManagement PowerShell Module をインストールするユーザーが違う場合は、Module を <code>Install-Module</code> コマンドの <code>Scope</code> パラメーターで <code>AllUsers</code> を指定してインストールしておく必要があります。</p>
+<p>証明書を使用して接続を行うには、<a href="/ja/non-interactive-exchange-online-powershell-connection/">Exchange Online への PowerShell 接続を非対話的に行う方法</a>などを参考に証明書を使用した接続ができるようになっている必要があります。</p>
+<h2 id="手順"><a href="#手順" class="headerlink" title="手順"></a>手順</h2><ol>
+<li>Visual Studio を起動して新しい C# のコンソール アプリケーションのプロジェクトを作成します。ターゲットのフレームワークは .NET Core 3.1 にします。</li>
+<li>プロジェクトに NuGet で Microsoft.PowerShell.SDK と System.Management.Automation をインストールします。<a href="#%E7%92%B0%E5%A2%83">環境</a>で確認したバージョンをインストールします。</li>
+<li>以下の内容を参考に、コーディングします。</li>
+</ol>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.PowerShell;</span><br><span class="line"><span class="keyword">using</span> System;</span><br><span class="line"><span class="keyword">using</span> System.Collections.ObjectModel;</span><br><span class="line"><span class="keyword">using</span> System.Management.Automation;</span><br><span class="line"><span class="keyword">using</span> System.Management.Automation.Remoting;</span><br><span class="line"><span class="keyword">using</span> System.Management.Automation.Runspaces;</span><br><span class="line"><span class="keyword">using</span> System.Security;</span><br><span class="line"><span class="keyword">using</span> System.Security.Cryptography.X509Certificates;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">ExchangeOnlinePowerShellNetCore</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Connect Exchange Online PowerShell using V2 module.</span></span><br><span class="line">            <span class="comment">// ExchangeOnlineManagement PowerShell module need to be installed.</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// If you don&#x27;t know which PowerShell Nuget Packages you should use, read this blog.</span></span><br><span class="line">            <span class="comment">// https://devblogs.microsoft.com/powershell/depending-on-the-right-powershell-nuget-package-in-your-net-project/</span></span><br><span class="line">            <span class="comment">// You need to install Microsoft.PowerShell.SDK 7.0.x and System.Management.Automation 7.0.x when you use PowerShell 7 and .NET Core 3.1.</span></span><br><span class="line"></span><br><span class="line">            V2ModuleExchangeOnlineRemotePowerShell();</span><br><span class="line"></span><br><span class="line">            Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">WriteStreams</span>(<span class="params">PSDataStreams Streams</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Write Error, Warning and Information stream</span></span><br><span class="line"></span><br><span class="line">            PSDataCollection&lt;ErrorRecord&gt; errorStream = Streams.Error;</span><br><span class="line">            <span class="keyword">foreach</span> (ErrorRecord errorRecord <span class="keyword">in</span> errorStream)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(errorRecord.ToString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            PSDataCollection&lt;WarningRecord&gt; warningRecords = Streams.Warning;</span><br><span class="line">            <span class="keyword">foreach</span> (WarningRecord warningRecord <span class="keyword">in</span> warningRecords)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(warningRecord.ToString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            PSDataCollection&lt;InformationRecord&gt; informationRecords = Streams.Information;</span><br><span class="line">            <span class="keyword">foreach</span> (InformationRecord informationRecord <span class="keyword">in</span> informationRecords)</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(informationRecord.ToString());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ConnectExchangeOnlineUsingUserPrinsipalNameAndPassword</span>(<span class="params">Runspace runspace</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Connect to Exchange Online using UPN and password</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;Running : Connect-ExchangeOnline -Credential &lt;Cred&gt; -ShowProgress $false -ShowBanner $false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">string</span> userPrincipalName = <span class="string">&quot;admin@contoso.onmicrosoft.com&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> password = <span class="string">&quot;pass&quot;</span>;</span><br><span class="line"></span><br><span class="line">                SecureString secureString = <span class="keyword">new</span> SecureString();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">foreach</span> (<span class="keyword">var</span> ch <span class="keyword">in</span> password)</span><br><span class="line">                &#123;</span><br><span class="line">                    secureString.AppendChar(ch);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                PSCredential pSCredential = <span class="keyword">new</span> PSCredential(userPrincipalName, secureString);</span><br><span class="line"></span><br><span class="line">                shell.Runspace = runspace;</span><br><span class="line">                shell.Commands.AddCommand(<span class="string">&quot;Connect-ExchangeOnline&quot;</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;Credential&quot;</span>, pSCredential);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowProgress&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowBanner&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;PSSessionOption&quot;</span>, <span class="keyword">new</span> PSSessionOption() &#123; ProxyAccessType = ProxyAccessType.IEConfig &#125;);</span><br><span class="line"></span><br><span class="line">                shell.Invoke();</span><br><span class="line"></span><br><span class="line">                WriteStreams(shell.Streams);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ConnectExchangeOnlineUsingPfxFile</span>(<span class="params">Runspace runspace</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Connect to Exchange Online using PFX file</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;Running : Connect-ExchangeOnline -CertificateFilePath &lt;PFX file&gt; -CertificatePassword &lt;Password&gt; -AppID &lt;App ID&gt; -Organization &lt;Tenant&gt; -ShowProgress $false -ShowBanner $false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">string</span> pfxFilePath = <span class="string">@&quot;c:\temp\mycert.pfx&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> pfxFilePassword = <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> appId = <span class="string">&quot;7ffc8551-ac13-4fbc-b045-c57e9a9f2fbe&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> tenant = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span>;</span><br><span class="line"></span><br><span class="line">                SecureString secureString = <span class="keyword">new</span> SecureString();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">foreach</span> (<span class="keyword">var</span> ch <span class="keyword">in</span> pfxFilePassword)</span><br><span class="line">                &#123;</span><br><span class="line">                    secureString.AppendChar(ch);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                shell.Runspace = runspace;</span><br><span class="line">                shell.Commands.AddCommand(<span class="string">&quot;Connect-ExchangeOnline&quot;</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;CertificateFilePath&quot;</span>, pfxFilePath);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;CertificatePassword&quot;</span>, secureString);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;AppID&quot;</span>, appId);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;Organization&quot;</span>, tenant);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowProgress&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowBanner&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;PSSessionOption&quot;</span>, <span class="keyword">new</span> PSSessionOption() &#123; ProxyAccessType = ProxyAccessType.IEConfig &#125;);</span><br><span class="line"></span><br><span class="line">                shell.Invoke();</span><br><span class="line"></span><br><span class="line">                WriteStreams(shell.Streams);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ConnectExchangeOnlineUsingThumbprint</span>(<span class="params">Runspace runspace</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Connect to Exchange Online using thumbprint</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;Running : Connect-ExchangeOnline -CertificateThumbPrint &lt;Thumbprint&gt; -AppID &lt;App ID&gt; -Organization &lt;Tenant&gt; -ShowProgress $false -ShowBanner $false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">string</span> certificateThumbPrint = <span class="string">&quot;29F54F053F87ABBB0301FB51D002261AE217D85E&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> appId = <span class="string">&quot;7ffc8551-ac13-4fbc-b045-c57e9a9f2fbe&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> tenant = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span>;</span><br><span class="line"></span><br><span class="line">                shell.Runspace = runspace;</span><br><span class="line">                shell.Commands.AddCommand(<span class="string">&quot;Connect-ExchangeOnline&quot;</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;CertificateThumbPrint&quot;</span>, certificateThumbPrint);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;AppID&quot;</span>, appId);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;Organization&quot;</span>, tenant);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowProgress&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowBanner&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;PSSessionOption&quot;</span>, <span class="keyword">new</span> PSSessionOption() &#123; ProxyAccessType = ProxyAccessType.IEConfig &#125;);</span><br><span class="line"></span><br><span class="line">                shell.Invoke();</span><br><span class="line"></span><br><span class="line">                WriteStreams(shell.Streams);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ConnectExchangeOnlineUsingX509Certificate2</span>(<span class="params">Runspace runspace</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Connect to Exchange Online using X509Certificate2</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">            &#123;</span><br><span class="line">                Console.WriteLine(<span class="string">&quot;Running : Connect-ExchangeOnline -Certificate &lt;Cert&gt; -AppID &lt;App ID&gt; -Organization &lt;Tenant&gt; -ShowProgress $false -ShowBanner $false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="built_in">string</span> certificateThumbPrint = <span class="string">&quot;29F54F053F87ABBB0301FB51D002261AE217D85E&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> appId = <span class="string">&quot;7ffc8551-ac13-4fbc-b045-c57e9a9f2fbe&quot;</span>;</span><br><span class="line">                <span class="built_in">string</span> tenant = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span>;</span><br><span class="line"></span><br><span class="line">                X509Store store = <span class="keyword">new</span> X509Store(StoreName.My, StoreLocation.CurrentUser);</span><br><span class="line">                store.Open(OpenFlags.ReadOnly);</span><br><span class="line">                <span class="keyword">var</span> collection = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbPrint, <span class="literal">false</span>);</span><br><span class="line">                X509Certificate2 x509Certificate2 = collection[<span class="number">0</span>];</span><br><span class="line">                store.Close();</span><br><span class="line"></span><br><span class="line">                shell.Runspace = runspace;</span><br><span class="line">                shell.Commands.AddCommand(<span class="string">&quot;Connect-ExchangeOnline&quot;</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;Certificate&quot;</span>, x509Certificate2);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;AppID&quot;</span>, appId);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;Organization&quot;</span>, tenant);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowProgress&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;ShowBanner&quot;</span>, <span class="literal">false</span>);</span><br><span class="line">                shell.Commands.AddParameter(<span class="string">&quot;PSSessionOption&quot;</span>, <span class="keyword">new</span> PSSessionOption() &#123; ProxyAccessType = ProxyAccessType.IEConfig &#125;);</span><br><span class="line"></span><br><span class="line">                shell.Invoke();</span><br><span class="line"></span><br><span class="line">                WriteStreams(shell.Streams);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">V2ModuleExchangeOnlineRemotePowerShell</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Collection&lt;PSObject&gt; results;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> defaultSessionState = InitialSessionState.CreateDefault();</span><br><span class="line">            defaultSessionState.ExecutionPolicy = ExecutionPolicy.RemoteSigned;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (Runspace runspace = RunspaceFactory.CreateRunspace(defaultSessionState))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// Open local runspace</span></span><br><span class="line">                runspace.Open();</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Load Exchange Online PowerShell V2 module</span></span><br><span class="line">                <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;Running : Import-Module ExchangeOnlineManagement&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    shell.Runspace = runspace;</span><br><span class="line">                    shell.Commands.AddScript(<span class="string">&quot;Import-Module ExchangeOnlineManagement&quot;</span>);</span><br><span class="line">                    shell.Invoke();</span><br><span class="line"></span><br><span class="line">                    WriteStreams(shell.Streams);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Connect to Exchange Online</span></span><br><span class="line">                <span class="comment">//ConnectExchangeOnlineUsingUserPrinsipalNameAndPassword(runspace);</span></span><br><span class="line">                <span class="comment">//ConnectExchangeOnlineUsingPfxFile(runspace);</span></span><br><span class="line">                <span class="comment">//ConnectExchangeOnlineUsingThumbprint(runspace);</span></span><br><span class="line">                ConnectExchangeOnlineUsingX509Certificate2(runspace);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Run Get-Mailbox</span></span><br><span class="line">                <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;Running : Get-Mailbox -ResultSize Unlimited&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    shell.Runspace = runspace;</span><br><span class="line">                    shell.AddScript(<span class="string">&quot;Get-Mailbox -ResultSize Unlimited&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    results = shell.Invoke();</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">foreach</span> (PSObject result <span class="keyword">in</span> results)</span><br><span class="line">                    &#123;</span><br><span class="line">                        Console.WriteLine(result.Properties[<span class="string">&quot;UserPrincipalName&quot;</span>].Value.ToString());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    WriteStreams(shell.Streams);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Run Get-EXOMailbox</span></span><br><span class="line">                <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;Running : Get-EXOMailbox -PropertySets Minimum -ResultSize Unlimited&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    shell.Runspace = runspace;</span><br><span class="line">                    shell.AddScript(<span class="string">&quot;Get-EXOMailbox -PropertySets Minimum -ResultSize Unlimited&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    results = shell.Invoke();</span><br><span class="line">                    <span class="keyword">foreach</span> (PSObject result <span class="keyword">in</span> results)</span><br><span class="line">                    &#123;</span><br><span class="line">                        Console.WriteLine(result.Properties[<span class="string">&quot;UserPrincipalName&quot;</span>].Value.ToString());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    WriteStreams(shell.Streams);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Disconnect from Exchange Online</span></span><br><span class="line">                <span class="keyword">using</span> (PowerShell shell = PowerShell.Create())</span><br><span class="line">                &#123;</span><br><span class="line">                    Console.WriteLine(<span class="string">&quot;Running : Disconnect-ExchangeOnline -Confirm:$false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    shell.Runspace = runspace;</span><br><span class="line">                    shell.AddScript(<span class="string">&quot;Disconnect-ExchangeOnline -Confirm:$false&quot;</span>);</span><br><span class="line"></span><br><span class="line">                    results = shell.Invoke();</span><br><span class="line">                    <span class="keyword">foreach</span> (PSObject result <span class="keyword">in</span> results)</span><br><span class="line">                    &#123;</span><br><span class="line">                        Console.WriteLine(result.Properties[<span class="string">&quot;UserPrincipalName&quot;</span>].Value.ToString());</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    WriteStreams(shell.Streams);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>このコードには、<code>Connect-ExchangeOnline</code> が提供している以下の 4 つの方法が実装されています。<code>V2ModuleExchangeOnlineRemotePowerShell</code> 内の接続メソッドの呼び出しを、試したいもの 1 つ以外はコメント アウトします。<ul>
+<li>UPN とパスワードを使用する方法 (<code>ConnectExchangeOnlineUsingUserPrinsipalNameAndPassword</code>)</li>
+<li>PFX ファイルを使用する方法 (<code>ConnectExchangeOnlineUsingPfxFile</code>)</li>
+<li>拇印を指定する方法 (<code>ConnectExchangeOnlineUsingThumbprint</code>)</li>
+<li><code>X509Certificate2</code> のオブジェクトを指定する方法 (<code>ConnectExchangeOnlineUsingX509Certificate2</code>)</li>
+</ul>
+</li>
+<li>デバッグ実行を開始します。正常に実行されると、<code>Get-Mailbox</code> の結果と <code>Get-EXOMailbox</code> の結果が表示されます。</li>
+</ol>
+<h2 id="補足解説"><a href="#補足解説" class="headerlink" title="補足解説"></a>補足解説</h2><p><code>WriteStreams</code> メソッドは、実行したコマンドのエラー出力、警告出力、情報出力をコンソールに書き出すものです。標準出力の書き出しが必要なものに関しては各コマンドごとに実装しています。</p>
+<p>4 つの接続方法のメソッドには、それぞれ環境固有の情報が必要になっているので、実行環境に合わせてテナント名などの変数の内容を書き換える必要があります。</p>
+<p><code>Connect-ExchangeOnline</code> で IE のプロキシ設定を使用するように <code>PSSessionOption</code> を指定しています。プロキシ サーバーを使用しない環境では必ずしも必要な指定ではありません。トラブルシューティングで Fiddler トレースを採取する時には、この設定があれば Exchange Online への通信も Fiddler を経由するようにできます。</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/" rel="tag">Exchange Online PowerShell V2 Module</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/NET-Core/" rel="tag">.NET Core</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/" data-id="cuidK7i2v_yJ-_3E6MwYhfjky" data-title="C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/ja/exchange-online-remote-powershell-v2-dotnet-5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/ja/convert-pr-entryid-to-microsoft-graph-rest-id/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          PR_ENTRYID を Microsoft Graph の REST ID に変換する
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

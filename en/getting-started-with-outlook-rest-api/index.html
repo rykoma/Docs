@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Getting started with the Outlook REST API | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/getting-started-with-outlook-rest-api/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/getting-started-with-outlook-rest-api/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/getting-started-with-outlook-rest-api/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to retrieve email with the Outlook REST API using Office365APIEditor.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Getting started with the Outlook REST API">
+<meta property="og:url" content="https://blog.rykoma.net/en/getting-started-with-outlook-rest-api/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to retrieve email with the Outlook REST API using Office365APIEditor.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-07-16T12:22:30.000Z">
+<meta property="article:modified_time" content="2026-10-26T16:27:54.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Office365APIEditor">
+<meta property="article:tag" content="Outlook REST API">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/getting-started-with-outlook-rest-api/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/getting-started-with-outlook-rest-api/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/getting-started-with-outlook-rest-api" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-07-16T12:22:30.000Z" title="2019-07-16 21:22:30 JST" itemprop="datePublished">2019-07-16</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Outlook REST API</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Getting started with the Outlook REST API
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-10-26T16:27:54.000Z" title="2026-10-27 01:27:54 JST" itemprop="dateModified">2026-10-27</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The Outlook REST API was retired on November 30, 2022. Use <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/graph/overview">Microsoft Graph</a> to develop new applications. For details, see <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/outlook-rest-api-beta-and-outlook-rest-api-v2-0-deprecation-notice/1898162">Microsoft’s deprecation notice</a>.</p>
+<p>This article is kept as a record of how the Outlook REST API and Office365APIEditor were used at the time of writing. The API and tools described below are no longer available in the current environment.</p>
+</div>
+<p>The easiest way to try the Outlook REST API was to use Outlook Sandbox. However, you could not use your own Client ID or application permissions with it. Outlook Sandbox was also scheduled to be retired by the end of 2020. This article therefore explains how to test the Outlook REST API with Office365APIEditor. It covers retrieving email only, but you could use other permissions in the same way to access various types of information. You could capture Office365APIEditor traffic with Fiddler to see what requests were being made. To develop an application that used the Outlook REST API, you would implement these requests in a programming language. A method for using application permissions had previously been included, but it was removed because new applications could no longer try it after the Outlook REST API deprecation was announced.</p>
+<h2 id="Try-delegated-permissions-with-Office365APIEditor-built-in-application"><a href="#Try-delegated-permissions-with-Office365APIEditor-built-in-application" class="headerlink" title="Try delegated permissions with Office365APIEditor (built-in application)"></a>Try delegated permissions with Office365APIEditor (built-in application)</h2><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Access token type</td>
+<td>Delegated Token</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>Office365APIEditor</td>
+</tr>
+<tr>
+<td>Authentication endpoint</td>
+<td>v2.0</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Outlook REST API</td>
+</tr>
+</tbody></table>
+<ol>
+<li>Install and start <a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor</a>.</li>
+<li>Click [Tools] - [New Editor].</li>
+<li>Click [File] - [New Access Token].</li>
+<li>Select [I have not registered the application.] and click [Next].</li>
+<li>Select [Office365APIEditor built-in application] and click [Next].</li>
+<li>Click [Scope editor].</li>
+<li>Click [Deselect all].</li>
+<li>Select <code>https://outlook.office.com/mail.read</code>.</li>
+<li>Click [OK].</li>
+<li>Click [Next].</li>
+<li>Sign in with an Office 365 account.</li>
+<li>Enter <code>https://outlook.office.com/api/v2.0/me/messages</code> in [Request] in the upper pane and click [Run].</li>
+<li>The signed-in user’s email appears in [Body] in the lower pane.</li>
+</ol>
+<h2 id="Try-delegated-permissions-with-Office365APIEditor-custom-application"><a href="#Try-delegated-permissions-with-Office365APIEditor-custom-application" class="headerlink" title="Try delegated permissions with Office365APIEditor (custom application)"></a>Try delegated permissions with Office365APIEditor (custom application)</h2><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Access token type</td>
+<td>Delegated Token</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>Office365APIEditor</td>
+</tr>
+<tr>
+<td>Authentication endpoint</td>
+<td>v2.0</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Outlook REST API</td>
+</tr>
+</tbody></table>
+<ol>
+<li>Sign in to the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a>.</li>
+<li>Click [Active Directory] - [App registrations] - [New registration].</li>
+<li>Enter an application name in [Name] (for example, App03).</li>
+<li>Under [Supported account types], select [Accounts in this organizational directory only].</li>
+<li>Under [Redirect URI], select [Public client (mobile &amp; desktop)] and enter a URI of your choice (for example, <code>https://localhost/App03</code>).</li>
+<li>Click [Register].</li>
+<li>Make a note of the displayed [Application (client) ID].</li>
+<li>Install and start <a target="_blank" rel="noopener" href="https://github.com/microsoft/Office365APIEditor">Office365APIEditor</a>.</li>
+<li>Click [Tools] - [New Editor].</li>
+<li>Click [File] - [New Access Token].</li>
+<li>Select [v2.0 Endpoint] and click [Next].</li>
+<li>Select [Public client&#x2F;native (mobile &amp; desktop) app] and click [Next].</li>
+<li>Under [Tenant Name], enter the onmicrosoft.com domain name of the tenant where you registered the application (for example, <code>contoso.onmicrosoft.com</code>).</li>
+<li>Under [Application ID], enter the value you noted in step 7.</li>
+<li>Under [Redirect URI], enter the URI you entered in step 5.</li>
+<li>Click [Scope editor].</li>
+<li>Click [Deselect all].</li>
+<li>Select <code>https://outlook.office.com/mail.read</code>.</li>
+<li>Click [OK].</li>
+<li>Click [Next].</li>
+<li>Sign in with an Office 365 account.</li>
+<li>Enter <code>https://outlook.office.com/api/v2.0/me/messages</code> in [Request] in the upper pane and click [Run].</li>
+<li>The signed-in user’s email appears in [Body] in the lower pane.</li>
+</ol>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Outlook-REST-API/" rel="tag">Outlook REST API</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Office365APIEditor/" rel="tag">Office365APIEditor</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/getting-started-with-outlook-rest-api.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/getting-started-with-outlook-rest-api/" data-id="cuidWJLkmRuZ7YlcpfqRIAOp8" data-title="Getting started with the Outlook REST API" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/getting-started-with-exchange-web-services/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Getting started with Exchange Web Services (EWS)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/getting-started-with-microsoft-graph/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Getting started with Microsoft Graph
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

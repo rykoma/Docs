@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Control which mailboxes an app can access with Role Based Access Control for Applications | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/control-application-mailbox-access-with-rbac/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Configure Application RBAC in Exchange Online and use resource scopes to limit which mailboxes an app can access.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Control which mailboxes an app can access with Role Based Access Control for Applications">
+<meta property="og:url" content="https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Configure Application RBAC in Exchange Online and use resource scopes to limit which mailboxes an app can access.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-08-03T14:25:42.000Z">
+<meta property="article:modified_time" content="2026-11-25T08:15:05.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="RBAC">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/control-application-mailbox-access-with-rbac/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/control-application-mailbox-access-with-rbac/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/control-application-mailbox-access-with-rbac" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2023-08-03T14:25:42.000Z" title="2023-08-03 23:25:42 JST" itemprop="datePublished">2023-08-03</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Control which mailboxes an app can access with Role Based Access Control for Applications
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-11-25T08:15:05.000Z" title="2026-11-25 17:15:05 JST" itemprop="dateModified">2026-11-25</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>Azure Active Directory is now called Microsoft Entra ID. The portal labels and steps below reflect the interface at the time of writing.</p>
+</div>
+<div class="markdown-alert markdown-alert-important">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Important</span></p>
+<p>Application RBAC scopes do not restrict organization-wide application permissions granted in Microsoft Entra ID. Both permission grants are independent, so an app with a broad Microsoft Entra ID application permission such as <code>Mail.Read</code> may also access mailboxes outside its RBAC scope. If you rely on Application RBAC to limit access, remove any unnecessary Microsoft Entra ID permissions and verify access with an actual Microsoft Graph request. See the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac">Microsoft Learn documentation</a>. The <code>Test-ServicePrincipalAuthorization</code> cmdlet does not evaluate permissions granted separately in Microsoft Entra ID.</p>
+</div>
+<p>Role Based Access Control for Applications (Application RBAC) lets Exchange Online administrators control which mailboxes and data are available to apps that use Microsoft Graph application permissions to access Exchange Online. Traditionally, application permissions were granted in Azure AD, allowing an app to access all mailboxes. An additional Exchange Online Application Access Policy was needed to restrict an app to specific mailboxes. Application RBAC uses Exchange Online RBAC to configure permissions and their resource scope.</p>
+<p>This article introduces how to configure Application RBAC. For detailed instructions, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac">Role Based Access Control for Applications in Exchange Online</a>.</p>
+<h2 id="Prepare-the-enterprise-application"><a href="#Prepare-the-enterprise-application" class="headerlink" title="Prepare the enterprise application"></a>Prepare the enterprise application</h2><p>First, get the information about the app that will receive permissions. If the app and the target are in the same tenant, follow the steps in <a href="#register-the-app">Register the app</a>. If you are using an app that is already registered as a multitenant app in another tenant, follow the steps in <a href="#register-the-enterprise-application">Register the enterprise application</a>.</p>
+<h3 id="Register-the-app"><a href="#Register-the-app" class="headerlink" title="Register the app"></a>Register the app</h3><p>Register the app with any configuration that supports application permissions. The app developer normally does this. The following steps are an example.</p>
+<ol>
+<li>Sign in to the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a>.</li>
+<li>Select <strong>Azure Active Directory</strong> &gt; <strong>Manage</strong> &gt; <strong>App registrations</strong> &gt; <strong>New registration</strong>.</li>
+<li>Enter any app name under <strong>Name</strong> (for example, <code>RbacTest01</code>).</li>
+<li>Under <strong>Supported account types</strong>, select <strong>Accounts in any organizational directory (Any Azure AD directory - Multitenant)</strong>.</li>
+<li>Under <strong>Redirect URI</strong>, select <strong>Web</strong> and enter any URI (for example, <code>https://localhost/RbacTest01</code>).</li>
+<li>Select <strong>Register</strong>.</li>
+<li>Record the <strong>Application (client) ID</strong> that appears.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>Certificates &amp; secrets</strong> &gt; <strong>Client secrets</strong>.</li>
+<li>Select <strong>New client secret</strong>.</li>
+<li>Enter any description (for example, <code>Key1</code>).</li>
+<li>Select an expiration period (for example, the recommended 180 days).</li>
+<li>Select <strong>Add</strong>.</li>
+<li>Record the value of the client secret that appears.</li>
+<li>Go to the top of the Azure Active Directory blade.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>Enterprise applications</strong>.</li>
+<li>Find the app you registered and record its <strong>Object ID</strong>.</li>
+</ol>
+<h3 id="Register-the-enterprise-application"><a href="#Register-the-enterprise-application" class="headerlink" title="Register the enterprise application"></a>Register the enterprise application</h3><p>If the app is already registered as a multitenant app in another tenant, use its application (client) ID to register an enterprise application in your tenant. For instructions, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/create-service-principal-cross-tenant">Create an enterprise application from a multitenant application</a>.</p>
+<p>After you register it, find the app in <strong>Manage</strong> &gt; <strong>Enterprise applications</strong> in the Azure portal and record its <strong>Object ID</strong>.</p>
+<h2 id="Define-a-scope"><a href="#Define-a-scope" class="headerlink" title="Define a scope"></a>Define a scope</h2><p>Define the mailboxes that the app can access as an Exchange Online Management Scope or a Microsoft Entra ID Administrative Unit. If one is already configured, you can use it. The following sections show examples of how to create each type.</p>
+<h3 id="Create-an-Exchange-Online-Management-Scope"><a href="#Create-an-Exchange-Online-Management-Scope" class="headerlink" title="Create an Exchange Online Management Scope"></a>Create an Exchange Online Management Scope</h3><p>For example, to allow access only to mailboxes whose Department is <code>HR</code>, connect to Exchange Online with PowerShell and run the following command to create a Management Scope:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ManagementScope</span> <span class="literal">-Name</span> <span class="string">&quot;HrManagementScope&quot;</span> <span class="literal">-RecipientRestrictionFilter</span> <span class="string">&quot;Department -eq &#x27;HR&#x27;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Create-a-Microsoft-Entra-ID-Administrative-Unit"><a href="#Create-a-Microsoft-Entra-ID-Administrative-Unit" class="headerlink" title="Create a Microsoft Entra ID Administrative Unit"></a>Create a Microsoft Entra ID Administrative Unit</h3><p>See <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-manage">Create or delete administrative units</a> and <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-members-add">Add users, groups, or devices to an administrative unit</a> to create an Administrative Unit that contains only the mailboxes to which you want to grant access.</p>
+<p>After you create it, connect to Exchange Online with PowerShell and run <code>Get-AdministrativeUnit</code> to confirm that the Administrative Unit can be retrieved. Record its <code>Name</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-AdministrativeUnit</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Create-a-Service-Principal"><a href="#Create-a-Service-Principal" class="headerlink" title="Create a Service Principal"></a>Create a Service Principal</h2><p>Register the app information as a Service Principal in Exchange Online. Connect to Exchange Online with PowerShell and run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ServicePrincipal</span> <span class="literal">-AppId</span> &lt;application (client) ID of the app&gt; <span class="literal">-ObjectId</span> &lt;object ID of the enterprise application&gt; <span class="literal">-DisplayName</span> &lt;app name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ServicePrincipal</span> <span class="literal">-AppId</span> b2361178<span class="literal">-2067-444b-82d7-e8c57e6bac67</span> <span class="literal">-ObjectId</span> <span class="number">0392</span>f3d6<span class="literal">-ad56-4381-bab8-57b585524856</span> <span class="literal">-DisplayName</span> RbacTest01</span><br></pre></td></tr></table></figure>
+
+<h2 id="Configure-permissions"><a href="#Configure-permissions" class="headerlink" title="Configure permissions"></a>Configure permissions</h2><p>Configure the access to grant to the app as an Application Management Role. Run the appropriate command for a Management Scope or an Administrative Unit. For supported permissions, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac#supported-application-roles">Supported Application Roles</a>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ManagementRoleAssignment</span> <span class="literal">-Role</span> &lt;permission to grant&gt; <span class="literal">-App</span> &lt;application (client) ID of the app&gt; <span class="literal">-CustomResourceScope</span> &lt;created Management Scope&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ManagementRoleAssignment</span> <span class="literal">-Role</span> &lt;permission to grant&gt; <span class="literal">-App</span> &lt;application (client) ID of the app&gt; <span class="literal">-RecipientAdministrativeUnitScope</span> &lt;Administrative Unit Name <span class="keyword">in</span> Exchange Online&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Examples:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ManagementRoleAssignment</span> <span class="literal">-Role</span> <span class="string">&quot;Application Mail.Read&quot;</span> <span class="literal">-App</span> b2361178<span class="literal">-2067-444b-82d7-e8c57e6bac67</span> <span class="literal">-CustomResourceScope</span> <span class="string">&quot;HrManagementScope&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ManagementRoleAssignment</span> <span class="literal">-Role</span> <span class="string">&quot;Application Mail.Read&quot;</span> <span class="literal">-App</span> b2361178<span class="literal">-2067-444b-82d7-e8c57e6bac67</span> <span class="literal">-RecipientAdministrativeUnitScope</span> <span class="number">5</span>af01861<span class="literal">-ca3f-481d-844e-4e8ea07877d9</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Test-with-the-test-cmdlet"><a href="#Test-with-the-test-cmdlet" class="headerlink" title="Test with the test cmdlet"></a>Test with the test cmdlet</h2><p>Use the <code>Test-ServicePrincipalAuthorization</code> cmdlet to check the permissions assigned to the app.</p>
+<p>When you specify a target mailbox with <code>Resource</code>, the cmdlet tests whether the app’s permission applies to that mailbox. If <code>InScope</code> is <code>True</code>, the mailbox is in scope. If it is <code>False</code>, the mailbox is out of scope.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-ServicePrincipalAuthorization</span> <span class="literal">-Identity</span> &lt;application (client) ID of the app&gt; <span class="literal">-Resource</span> &lt;target mailbox&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-ServicePrincipalAuthorization</span> <span class="literal">-Identity</span> b2361178<span class="literal">-2067-444b-82d7-e8c57e6bac67</span> <span class="literal">-Resource</span> User01</span><br></pre></td></tr></table></figure>
+
+<p>If you run the cmdlet without <code>Resource</code>, it displays the permissions assigned to the app. In this case, <code>InScope</code> is shown as <code>Not Run</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-ServicePrincipalAuthorization</span> <span class="literal">-Identity</span> &lt;application (client) ID of the app&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Test-ServicePrincipalAuthorization</span> <span class="literal">-Identity</span> b2361178<span class="literal">-2067-444b-82d7-e8c57e6bac67</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Test-access-with-Microsoft-Graph"><a href="#Test-access-with-Microsoft-Graph" class="headerlink" title="Test access with Microsoft Graph"></a>Test access with Microsoft Graph</h2><p>The configuration is now complete. Test access to Microsoft Graph. If you registered the app in your own tenant, see <a href="/ja/getting-started-with-microsoft-graph/">How to try Microsoft Graph (Japanese)</a> and follow the section about testing application permissions with Office365APIEditor. If the app is registered as a multitenant app in another tenant, you probably do not have the information needed to get an access token, so test the behavior with an app provided by its developer.</p>
+<p>If the app tries to access a mailbox it is not allowed to access, the response has status code <code>403</code> and the following body:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ErrorAccessDenied&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Access is denied. Check credentials and try again.&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p>This article includes information from shortly after Role Based Access Control for Applications became generally available. The following observations reflect behavior at that time and may have changed since:</p>
+<ul>
+<li>Even after configuration and obtaining an access token, the permissions configured through Application RBAC were not visible under <strong>Security</strong> &gt; <strong>Permissions</strong> for the enterprise application in the Azure portal.</li>
+<li>If no additional permissions were configured in Azure AD, the issued access token did not contain a <code>role</code> claim. Therefore, the permissions configured through Application RBAC could not be determined from the access token.</li>
+</ul>
+<p><small><a target="_blank" rel="noopener" href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/control-application-mailbox-access-with-rbac.md">Source</a></small></p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/RBAC/" rel="tag">RBAC</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/control-application-mailbox-access-with-rbac.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/" data-id="cuidayJj0ZA7DysT_caT1p4yM" data-title="Control which mailboxes an app can access with Role Based Access Control for Applications" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/find-ews-applications-in-tenant/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Find EWS apps registered in a tenant
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/connect-to-exchange-online-imap-with-client-credentials/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Connect to Exchange Online IMAP with the client credentials flow
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

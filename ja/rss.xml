@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging 研究所</title>
+    <link>https://blog.rykoma.net/ja/</link>
+    <description>Developer Messaging 研究所の最新記事</description>
+    <language>ja</language>
+    <atom:link href="https://blog.rykoma.net/ja/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</title>
+      <link>https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/</guid>
+      <pubDate>Thu, 26 Nov 2026 13:33:41 GMT</pubDate>
+      <description>WordPress から Hexo と GitHub Pages へのブログ移行を GitHub Copilot と一緒に進めた経験を紹介します。</description>
+    </item>
+    <item>
+      <title>C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</title>
+      <link>https://blog.rykoma.net/ja/connect-exchange-server-2019-management-tools-snapin/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/connect-exchange-server-2019-management-tools-snapin/</guid>
+      <pubDate>Mon, 02 Dec 2024 05:31:03 GMT</pubDate>
+      <description>C# から Exchange Management Tools の RecipientManagement スナップインを使用して Exchange Server 2019 に接続する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</title>
+      <link>https://blog.rykoma.net/ja/prevent-user-profile-photo-changes-in-microsoft-365/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/prevent-user-profile-photo-changes-in-microsoft-365/</guid>
+      <pubDate>Mon, 07 Oct 2024 14:29:22 GMT</pubDate>
+      <description>Microsoft Graph を使用して、Microsoft 365 でユーザーがプロフィール写真を変更できないようにする方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph とメールのいろいろな添付</title>
+      <link>https://blog.rykoma.net/ja/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 14:28:02 GMT</pubDate>
+      <description>Microsoft Graph で扱う Exchange Online のファイル、アイテム、インライン、クラウド添付の違いを整理します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で下書き状態の会議を作成する</title>
+      <link>https://blog.rykoma.net/ja/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 09:23:21 GMT</pubDate>
+      <description>Microsoft Graph を使用して下書き状態の会議を作成し、必要なタイミングで送信する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>テナントに登録されている EWS アプリを探す</title>
+      <link>https://blog.rykoma.net/ja/find-ews-applications-in-tenant/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/find-ews-applications-in-tenant/</guid>
+      <pubDate>Wed, 15 Nov 2023 15:51:50 GMT</pubDate>
+      <description>Microsoft Entra ID と Exchange Online に登録され、EWS のアクセス許可が事前設定されたアプリを PowerShell で探す方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Role Based Access Control for Applications を使用してアプリが接続可能なメールボックスを制御する</title>
+      <link>https://blog.rykoma.net/ja/control-application-mailbox-access-with-rbac/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/control-application-mailbox-access-with-rbac/</guid>
+      <pubDate>Thu, 03 Aug 2023 14:25:42 GMT</pubDate>
+      <description>Exchange Online の Application RBAC を構成し、アプリがアクセスできるメールボックスをスコープで制限する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Client Credential Flow を使って Exchange Online に IMAP で接続する</title>
+      <link>https://blog.rykoma.net/ja/connect-to-exchange-online-imap-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/connect-to-exchange-online-imap-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 07:23:21 GMT</pubDate>
+      <description>Client Credential Flow と MSAL を使い、Exchange Online に IMAP で接続するための設定と C# のサンプルを紹介します。</description>
+    </item>
+    <item>
+      <title>Client Credential Flow を使って Exchange Online に POP で接続する</title>
+      <link>https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 05:58:02 GMT</pubDate>
+      <description>Client Credential Flow と MSAL を使い、Exchange Online に POP で接続するための設定と C# のサンプルを紹介します。</description>
+    </item>
+    <item>
+      <title>Client Credential Flow を使って Exchange Online に SMTP で接続する</title>
+      <link>https://blog.rykoma.net/ja/connect-to-exchange-online-smtp-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/connect-to-exchange-online-smtp-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 04:32:07 GMT</pubDate>
+      <description>Client Credential Flow と MSAL を使い、Exchange Online に SMTP で接続するための設定と C# のサンプルを紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph PowerShell SDK を使用して Exchange Online からメールを送信する</title>
+      <link>https://blog.rykoma.net/ja/send-exchange-online-email-with-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/send-exchange-online-email-with-graph-powershell-sdk/</guid>
+      <pubDate>Fri, 13 May 2022 15:10:13 GMT</pubDate>
+      <description>Microsoft Graph PowerShell SDK の Send-MgUserMail コマンドを使用して、Exchange Online のメールボックスからメールを送信する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph で @メンション付きのメールを送信する</title>
+      <link>https://blog.rykoma.net/ja/send-email-mentions-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/send-email-mentions-with-microsoft-graph/</guid>
+      <pubDate>Fri, 06 May 2022 15:29:55 GMT</pubDate>
+      <description>Microsoft Graph beta で @メンション付きのメールを送信する方法と、Outlook でメンションとして認識させるための指定を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph PowerShell SDK の特定のモジュールのみを利用する</title>
+      <link>https://blog.rykoma.net/ja/use-specific-microsoft-graph-powershell-sdk-modules/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/use-specific-microsoft-graph-powershell-sdk-modules/</guid>
+      <pubDate>Tue, 22 Feb 2022 08:24:56 GMT</pubDate>
+      <description>Microsoft Graph PowerShell SDK から必要なコマンドが含まれるモジュールを調べ、個別にインストールする方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph PowerShell SDK を使用して Exchange Online から予定を取得する</title>
+      <link>https://blog.rykoma.net/ja/get-exchange-online-calendar-with-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/get-exchange-online-calendar-with-graph-powershell-sdk/</guid>
+      <pubDate>Wed, 29 Sep 2021 14:28:17 GMT</pubDate>
+      <description>Microsoft Graph PowerShell SDK の Get-MgUserCalendarView コマンドを使用して、Exchange Online の予定表から指定期間の予定を取得し、必要な情報を整形する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法</title>
+      <link>https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/</guid>
+      <pubDate>Sun, 29 Aug 2021 15:44:57 GMT</pubDate>
+      <description>Microsoft Graph PowerShell SDK を使用して、Microsoft 365 のライセンスを確認、割り当て、変更、削除する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)</title>
+      <link>https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-5/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-5/</guid>
+      <pubDate>Fri, 11 Jun 2021 15:53:50 GMT</pubDate>
+      <description>C# と .NET 5.0 から Exchange Online Remote PowerShell V2 Module を使用して接続する当時の手順を紹介します。</description>
+    </item>
+    <item>
+      <title>C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Core 3.1 編)</title>
+      <link>https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-core-3-1/</guid>
+      <pubDate>Fri, 11 Jun 2021 15:32:36 GMT</pubDate>
+      <description>C# と .NET Core 3.1 から Exchange Online Remote PowerShell V2 Module を使用して接続する当時の手順を紹介します。</description>
+    </item>
+    <item>
+      <title>PR_ENTRYID を Microsoft Graph の REST ID に変換する</title>
+      <link>https://blog.rykoma.net/ja/convert-pr-entryid-to-microsoft-graph-rest-id/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/convert-pr-entryid-to-microsoft-graph-rest-id/</guid>
+      <pubDate>Tue, 11 May 2021 13:03:20 GMT</pubDate>
+      <description>MFCMAPI で確認できる PR_ENTRYID を、Microsoft Graph の translateExchangeIds で REST ID に変換する方法を紹介します。</description>
+    </item>
+    <item>
+      <title>C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Framework 4.7.2 編)</title>
+      <link>https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-framework/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/exchange-online-remote-powershell-v2-dotnet-framework/</guid>
+      <pubDate>Mon, 18 Jan 2021 15:14:01 GMT</pubDate>
+      <description>C# と .NET Framework 4.7.2 から Exchange Online PowerShell V2 Module を使用して接続する当時の手順を紹介します。</description>
+    </item>
+    <item>
+      <title>Power Automate で Microsoft Graph reports API を利用する</title>
+      <link>https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/</guid>
+      <pubDate>Wed, 13 Jan 2021 14:25:56 GMT</pubDate>
+      <description>Power Automate と Microsoft Graph reports API を使用してレポートを取得し、メールに添付して送信するフローを紹介します。</description>
+    </item>
+  </channel>
+</rss>

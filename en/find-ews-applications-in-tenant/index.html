@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Find EWS apps registered in a tenant | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/find-ews-applications-in-tenant/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/find-ews-applications-in-tenant/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/find-ews-applications-in-tenant/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to find apps registered in Microsoft Entra ID and Exchange Online with preconfigured EWS permissions by using PowerShell.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Find EWS apps registered in a tenant">
+<meta property="og:url" content="https://blog.rykoma.net/en/find-ews-applications-in-tenant/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to find apps registered in Microsoft Entra ID and Exchange Online with preconfigured EWS permissions by using PowerShell.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-11-15T15:51:50.000Z">
+<meta property="article:modified_time" content="2026-11-25T08:22:21.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Web Services">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/find-ews-applications-in-tenant/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/find-ews-applications-in-tenant/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/find-ews-applications-in-tenant" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2023-11-15T15:51:50.000Z" title="2023-11-16 00:51:50 JST" itemprop="datePublished">2023-11-16</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Find EWS apps registered in a tenant
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-11-25T08:22:21.000Z" title="2026-11-25 17:22:21 JST" itemprop="dateModified">2026-11-25</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>This article describes procedures as of November 2023. The retirement of EWS in Exchange Online began in October 2026. Microsoft now says that, in the multitenant (WW) cloud, tenants with <code>EWSEnabled</code> set to <code>True</code> must configure <code>EWSAllowedAppIDs</code> with the app IDs they want to allow. Microsoft says it will not change EWS availability for tenants that already have <code>EWSEnabled</code> set to <code>True</code> until April 2027. The commands in this article find apps with preconfigured EWS permissions; they do not show actual usage or determine whether EWS is currently available. For the latest changes and timeline, see the <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/ews-deprecation-is-here-%E2%80%93-what-this-means-to-you/4561431">Exchange Team Blog post about the EWS retirement</a>.</p>
+</div>
+<p>As described in Microsoft’s <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/retirement-of-exchange-web-services-in-exchange-online/3924440">announcement about the retirement of Exchange Web Services (EWS)</a>, blocking EWS requests was scheduled to begin on October 1, 2026. Exchange Online admins may want to check whether EWS is used in their tenant. Microsoft has published <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/identify-applications-using-exchange-online-outlookrestv2-or-exchange-web-servic/3957435">guidance for identifying apps that use the Outlook REST v2 or EWS APIs in Exchange Online</a> and a <a target="_blank" rel="noopener" href="https://jpmessaging.github.io/blog/identify-applications-using-exchange-online-outlookrestv2-or/">Japanese version of the guidance</a>, but these articles contain a lot of technical detail.</p>
+<p>This article presents a simpler way to find EWS apps registered in a tenant.</p>
+<p>This method finds only apps registered in the tenant with preconfigured permissions to use EWS. It does not cover apps registered and used outside the tenant (that is, third-party apps). Exchange Online admins do not have visibility into how third-party apps use EWS. Even if a third-party app uses EWS, an Exchange Online admin cannot take action on that app. If you have concerns, contact the app developer.</p>
+<p>Also, finding an app with this method does not tell you whether it actually uses EWS. Find the app’s developer in your tenant and ask them to confirm. If the app uses EWS, its developer—not the Exchange Online admin—should consider migrating it from EWS to Microsoft Graph.</p>
+<p>This method does not find apps that are registered in the tenant but obtain EWS permissions dynamically. All apps can request delegated EWS permissions dynamically. EWS application permissions, on the other hand, must be configured in advance, so this method can find apps with those permissions.</p>
+<p>There are two ways to register an app that uses EWS: an app registration in Microsoft Entra ID, or application RBAC in Exchange Online. By default, anyone in a tenant can register an app in Microsoft Entra ID, so there may be apps that admins do not know about. In contrast, only an Exchange Online admin can register application RBAC assignments. If the admin does not remember registering one, no such app is present.</p>
+<p>The steps for finding EWS apps registered through each method follow.</p>
+<h2 id="Find-EWS-apps-registered-through-Microsoft-Entra-ID"><a href="#Find-EWS-apps-registered-through-Microsoft-Entra-ID" class="headerlink" title="Find EWS apps registered through Microsoft Entra ID"></a>Find EWS apps registered through Microsoft Entra ID</h2><p>Use the Microsoft Graph PowerShell SDK (the Microsoft.Graph PowerShell module). See <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation?view=graph-powershell-1.0">Install the Microsoft Graph PowerShell SDK</a> or other guidance to install the PowerShell module.</p>
+<p>First, connect to Microsoft Graph by running the following command. Sign in with a Global Administrator account.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-Scopes</span> Application.Read.All</span><br></pre></td></tr></table></figure>
+
+<p>After connecting, run this command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgApplication</span> <span class="literal">-All</span> <span class="literal">-Property</span> DisplayName, Id, AppId, RequiredResourceAccess | ?&#123;<span class="variable">$_</span>.RequiredResourceAccess | ?&#123;<span class="variable">$_</span>.ResourceAppId <span class="operator">-eq</span> <span class="string">&quot;00000002-0000-0ff1-ce00-000000000000&quot;</span> <span class="operator">-and</span> ((<span class="variable">$_</span>.ResourceAccess | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> Id).Contains(<span class="string">&quot;3b5f3d61-589b-4a3c-a359-5dd4b5ee5bd5&quot;</span>) <span class="operator">-or</span> (<span class="variable">$_</span>.ResourceAccess | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> Id).Contains(<span class="string">&quot;dc890d15-9560-4a4c-9b7f-a736ec74ec40&quot;</span>))&#125;&#125; | <span class="built_in">Select-Object</span> DisplayName, Id, AppId</span><br></pre></td></tr></table></figure>
+
+<p>If the command returns a result, that app has preconfigured permissions to use EWS. Find the app in Microsoft Entra admin center under [Identity] - [Applications] - [App registrations] - [All applications], and review its details. The <code>AppId</code> value in the output is the Application (client) ID shown in Microsoft Entra admin center.</p>
+<p>This command finds apps that have <code>EWS.AccessAsUser.All</code> (a delegated permission) or <code>full_access_as_app</code> (an application permission) configured for Office 365 Exchange Online. In Microsoft Entra admin center, open the app under [App registrations] and check [Manage] - [API permissions]. In the command, <code>00000002-0000-0ff1-ce00-000000000000</code> is the resource ID for Office 365 Exchange Online, and <code>3b5f3d61-589b-4a3c-a359-5dd4b5ee5bd5</code> is the ID for the EWS delegated permission. Similarly, <code>dc890d15-9560-4a4c-9b7f-a736ec74ec40</code> is the ID for the EWS application permission.</p>
+<h2 id="Find-EWS-apps-registered-through-application-RBAC-in-Exchange-Online"><a href="#Find-EWS-apps-registered-through-application-RBAC-in-Exchange-Online" class="headerlink" title="Find EWS apps registered through application RBAC in Exchange Online"></a>Find EWS apps registered through application RBAC in Exchange Online</h2><p>Use the Exchange Online PowerShell module (the ExchangeOnlineManagement PowerShell module). See <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-to-exchange-online-powershell?view=exchange-ps">Connect to Exchange Online PowerShell</a> or other guidance to install the module and connect to Exchange Online. Sign in with an Exchange Online admin account.</p>
+<p>After connecting, run this command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-ManagementRoleAssignment</span> <span class="literal">-Role</span> <span class="string">&quot;Application EWS.AccessAsApp&quot;</span> <span class="literal">-RoleAssigneeType</span> ServicePrincipal | %&#123;<span class="built_in">Get-ServicePrincipal</span> <span class="literal">-Identity</span> <span class="variable">$_</span>.RoleAssignee&#125;</span><br></pre></td></tr></table></figure>
+
+<p>If the command returns a result, that app has preconfigured permissions to use EWS. Find the app in Microsoft Entra admin center under [Identity] - [Applications] - [App registrations] - [All applications], and review its details. The <code>AppId</code> value in the output is the Application (client) ID shown in Microsoft Entra admin center.</p>
+<p>This command finds apps with EWS permissions configured by using the methods described in <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/permissions-exo/application-rbac">Role Based Access Control for Applications in Exchange Online</a> and <a href="/ja/control-application-mailbox-access-with-rbac/">Control which mailboxes an app can connect to with application RBAC</a>.</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/find-ews-applications-in-tenant.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/find-ews-applications-in-tenant/" data-id="cuidDx__bTe1r_oovCQGKkDQb" data-title="Find EWS apps registered in a tenant" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/create-draft-meeting-with-microsoft-graph/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Create a draft meeting with Microsoft Graph
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/control-application-mailbox-access-with-rbac/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Control which mailboxes an app can access with Role Based Access Control for Applications
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Power Automate で Microsoft Graph reports API を利用する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/use-microsoft-graph-reports-api-with-power-automate/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Power Automate と Microsoft Graph reports API を使用してレポートを取得し、メールに添付して送信するフローを紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Power Automate で Microsoft Graph reports API を利用する">
+<meta property="og:url" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Power Automate と Microsoft Graph reports API を使用してレポートを取得し、メールに添付して送信するフローを紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/2021011301.png">
+<meta property="og:image" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/2021011302.png">
+<meta property="og:image" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/2021011303.png">
+<meta property="og:image" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/2021011304.png">
+<meta property="article:published_time" content="2021-01-13T14:25:56.000Z">
+<meta property="article:modified_time" content="2026-11-24T05:36:18.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Microsoft 365">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="Power Automate">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/2021011301.png">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/use-microsoft-graph-reports-api-with-power-automate/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/use-microsoft-graph-reports-api-with-power-automate/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/use-microsoft-graph-reports-api-with-power-automate" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2021-01-13T14:25:56.000Z" title="2021-01-13 23:25:56 JST" itemprop="datePublished">2021-01-13</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Power Automate で Microsoft Graph reports API を利用する
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-11-24T05:36:18.000Z" title="2026-11-24 14:36:18 JST" itemprop="dateModified">2026-11-24</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>この記事の手順と画面は執筆当時のものです。クライアント シークレットの有効期限に [なし] を指定するオプションは現在の Azure Portal では利用できません。現在の有効期限や推奨事項については、<a target="_blank" rel="noopener" href="https://learn.microsoft.com/ja-jp/entra/identity-platform/how-to-add-credentials">Microsoft Entra ID でアプリの資格情報を追加および管理する</a>を参照してください。</p>
+</div>
+<p>Microsoft 365 管理センターで取得できるレポートは、Microsoft Graph reports API でも取得できます。そのため、Microsoft Graph を使用してレポートの取得を自動化することも可能です。ここでは Power Automate で Microsoft Graph reports API を利用するフローの作成方法を紹介します。取得したレポートはメールに添付して送信します。</p>
+<p>基本的な Microsoft Graph reports API の試し方については、<a href="/ja/getting-started-with-microsoft-graph-reports-api/">Microsoft Graph reports API の試し方</a>を参照してください。</p>
+<p>厳密には、Microsoft 365 管理センターのレポートは beta 版の Microsoft Graph reports API を使用することで取得できます。ただし、本番環境で beta 版の Microsoft Graph を使用することはサポートされません。また、Microsoft 365 管理センターのどのレポートが Microsoft Graph reports API のどのレポートに対応しているのかについてまとまった情報はないため、リファレンスを参照したり実際に取得したりして確認する必要があります。</p>
+<p>Microsoft Graph reports API のレスポンスは <code>302</code> リダイレクトになっています。そのため、Power Automate の HTTP コネクタでリクエストを送信すると、<code>302</code> リダイレクトを処理しないためコネクタの実行は失敗します。これに対処するために、後続の HTTP コネクタをもう 1 つ作成して、前段の HTTP コネクタが失敗したときに実行されるように構成します。そして、<code>Location</code> ヘッダーの値を取得してリクエストを送信し直します。</p>
+<h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><p>Power Automate の HTTP コネクタを使用します。そのため、無償版ではなく有償の Power Automate ライセンスが必要です。</p>
+<p>アクセス トークンの取得で Microsoft Graph のアプリケーションの許可を使用するため、Office 365 の管理者アカウントが必要です。</p>
+<h2 id="手順"><a href="#手順" class="headerlink" title="手順"></a>手順</h2><ol>
+<li><p><a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure Portal</a> に Office 365 の管理者でサインインします。</p>
+</li>
+<li><p>[Active Directory] - [アプリの登録] - [新規登録] を選択します。</p>
+</li>
+<li><p>[名前] に任意のアプリ名を入力します (例: <code>App01</code>)。</p>
+</li>
+<li><p>[サポートされているアカウントの種類] から [この組織のディレクトリ内のアカウントのみ] を選択します。</p>
+</li>
+<li><p>[リダイレクト URI] で [Web] を選択し、任意の URI を入力します (例: <code>https://localhost/App01</code>)。</p>
+</li>
+<li><p>[登録] を選択します。</p>
+</li>
+<li><p>表示された [アプリケーション (クライアント) ID] の値を控えます。</p>
+</li>
+<li><p>[管理] - [証明書とシークレット] を選択します。</p>
+</li>
+<li><p>[新しいクライアント シークレット] を選択します。</p>
+</li>
+<li><p>[説明] に任意の説明を入力します (例: <code>Key1</code>)。</p>
+</li>
+<li><p>[有効期限] から任意の有効期限を選択します (例: なし)。</p>
+</li>
+<li><p>[追加] を選択します。</p>
+</li>
+<li><p>表示されたクライアント シークレットの値を控えます。</p>
+</li>
+<li><p>[管理] - [API のアクセス許可] を選択します。</p>
+</li>
+<li><p>[アクセス許可の追加] を選択します。</p>
+</li>
+<li><p>[Microsoft Graph] を選択します。</p>
+</li>
+<li><p>[アプリケーションの許可] を選択します。</p>
+</li>
+<li><p>[Reports] - [Reports.Read.All] のチェックをオンにします。</p>
+</li>
+<li><p>[アクセス許可の追加] を選択します。</p>
+</li>
+<li><p>[&lt;テナント名&gt; に管理者の同意を与えます] を選択します。</p>
+</li>
+<li><p>[はい] を選択します。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://make.powerautomate.com/">Power Automate</a> にサインインします。</p>
+</li>
+<li><p>[作成] を選択します。</p>
+</li>
+<li><p>[空白から開始] - [インスタント クラウド フロー] を選択します。</p>
+</li>
+<li><p>[フロー名] を適宜入力し、[このフローをトリガーする方法を選択します] から [手動でフローをトリガーします] を選択して [作成] を選択します。</p>
+</li>
+<li><p>[新しいステップ] を選択します。</p>
+</li>
+<li><p>[プレミアム] タブを表示して [コネクタとアクションを検索する] に「HTTP」と入力し、[アクション] から [HTTP] を選択します。</p>
+</li>
+<li><p>[詳細オプションを表示する] を選択し、次のように構成します。</p>
+<ul>
+<li>方法: GET</li>
+<li>URI: リクエストする Microsoft Graph reports API の URL</li>
+<li>認証: Active Directory OAuth</li>
+<li>テナント: アプリを登録したテナントの <code>onmicrosoft.com</code> ドメイン名</li>
+<li>対象ユーザー: <code>https://graph.microsoft.com</code></li>
+<li>クライアント ID: 手順 7 で控えた値</li>
+<li>資格情報の種類: シークレット</li>
+<li>シークレット: 手順 13 で控えた値</li>
+</ul>
+<img src="/ja/use-microsoft-graph-reports-api-with-power-automate/2021011301.png" alt="Microsoft Graph reports API を呼び出す HTTP アクションの認証設定">
+</li>
+<li><p>[新しいステップ] を選択し、もう 1 つ HTTP コネクタを追加します。</p>
+</li>
+<li><p>追加した HTTP コネクタの […] を選択し、[実行条件の構成] を選択します。</p>
+</li>
+<li><p>[に失敗しました] のチェックのみをオンにして [完了] を選択します。</p>
+<img src="/ja/use-microsoft-graph-reports-api-with-power-automate/2021011302.png" alt="前の HTTP アクションが失敗した場合だけ実行する条件">
+</li>
+<li><p>追加した HTTP コネクタの [詳細オプションを表示する] を選択し、次のように構成します。</p>
+<ul>
+<li>方法: GET</li>
+<li>URI: [式] に <code>outputs(&#39;HTTP&#39;).headers.Location</code> と入力して [OK] を選択</li>
+<li>認証: なし</li>
+</ul>
+<img src="/ja/use-microsoft-graph-reports-api-with-power-automate/2021011303.png" alt="Location ヘッダーを URI に指定した 2 番目の HTTP アクション">
+</li>
+<li><p>[新しいステップ] を選択します。</p>
+</li>
+<li><p>[標準] タブを表示して [Office 365 Outlook] を選択し、[アクション] から [メールの送信 (V2)] を選択します。</p>
+</li>
+<li><p>[詳細オプションを表示する] を選択し、次のように構成します。</p>
+<ul>
+<li>宛先: メールの宛先</li>
+<li>件名: メールの件名</li>
+<li>本文: メールの本文</li>
+<li>添付ファイル 名前 - 1: 拡張子を <code>csv</code> にした任意のファイル名</li>
+<li>添付ファイル コンテンツ - 1: [動的なコンテンツ] から [HTTP 2] の [本文] を選択</li>
+</ul>
+<img src="/ja/use-microsoft-graph-reports-api-with-power-automate/2021011304.png" alt="HTTP 2 の本文を CSV 添付ファイルとして送信するメール アクション">
+</li>
+<li><p>[保存] を選択します。</p>
+</li>
+<li><p>左上の左向き矢印アイコン (前のページに戻る) を選択します。</p>
+</li>
+<li><p>[フローを開始する準備ができました] が表示された場合は [OK] を選択します。</p>
+</li>
+<li><p>[実行] を選択します。</p>
+</li>
+<li><p>Office 365 Outlook へのサインインが完了していない場合はサインインします。</p>
+</li>
+<li><p>[続行] を選択します。</p>
+</li>
+<li><p>[フローの実行] を選択します。</p>
+</li>
+<li><p>[完了] を選択します。</p>
+</li>
+<li><p>実行が完了し、レポートが添付されたメールが送信されていることを確認します。</p>
+</li>
+</ol>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Microsoft-365/" rel="tag">Microsoft 365</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Power-Automate/" rel="tag">Power Automate</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/use-microsoft-graph-reports-api-with-power-automate.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/use-microsoft-graph-reports-api-with-power-automate/" data-id="cuidXIIeDTmzj6rrVNYC1yU6-" data-title="Power Automate で Microsoft Graph reports API を利用する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/ja/exchange-online-remote-powershell-v2-dotnet-framework/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET Framework 4.7.2 編)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/ja/getting-started-with-microsoft-graph-reports-api/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph reports API の試し方
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

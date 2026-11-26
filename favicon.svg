@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Developer Messaging Lab</title>
+  <defs>
+    <clipPath id="tile-clip">
+      <rect x="0" y="0" width="512" height="512" rx="48"/>
+    </clipPath>
+    <linearGradient id="bubble-fill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#CFF3FF"/>
+      <stop offset="100%" stop-color="#6FD0EC"/>
+    </linearGradient>
+    <filter id="bubble-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="12" dy="14" stdDeviation="6" flood-color="#000000" flood-opacity="0.27"/>
+    </filter>
+  </defs>
+  <g clip-path="url(#tile-clip)">
+    <rect x="0" y="0" width="512" height="512" fill="#0B4A57"/>
+    <rect x="0" y="0" width="512" height="112" fill="#1FA6C9"/>
+    <rect x="0" y="0" width="112" height="512" fill="#136E85"/>
+    <rect x="0" y="0" width="112" height="112" fill="#5FD3EE"/>
+  </g>
+  <g filter="url(#bubble-shadow)">
+    <path d="M244 168H396A36 36 0 0 1 432 204V356A36 36 0 0 1 396 392L308 392L244 448L244 392A36 36 0 0 1 208 356V204A36 36 0 0 1 244 168Z"
+          fill="url(#bubble-fill)" stroke="#E9FBFF" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+</svg>

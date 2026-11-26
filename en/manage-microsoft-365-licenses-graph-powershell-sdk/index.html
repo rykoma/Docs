@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to view, assign, change, and remove Microsoft 365 licenses with the Microsoft Graph PowerShell SDK.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK">
+<meta property="og:url" content="https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to view, assign, change, and remove Microsoft 365 licenses with the Microsoft Graph PowerShell SDK.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-08-29T15:44:57.000Z">
+<meta property="article:modified_time" content="2022-05-13T14:49:51.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Licensing">
+<meta property="article:tag" content="Microsoft 365">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="Microsoft Graph PowerShell SDK">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/manage-microsoft-365-licenses-graph-powershell-sdk/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/manage-microsoft-365-licenses-graph-powershell-sdk/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/manage-microsoft-365-licenses-graph-powershell-sdk" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2021-08-29T15:44:57.000Z" title="2021-08-30 00:44:57 JST" itemprop="datePublished">2021-08-30</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2022-05-13T14:49:51.000Z" title="2022-05-13 23:49:51 JST" itemprop="dateModified">2022-05-13</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>This article explains how to manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK. Unless otherwise noted, the steps were tested with the following environment:</p>
+<ul>
+<li>Microsoft Graph PowerShell SDK 1.6.1</li>
+<li>Windows PowerShell 5.1</li>
+<li>PowerShell 7.1.4</li>
+</ul>
+<h2 id="About-the-Microsoft-Graph-PowerShell-SDK"><a href="#About-the-Microsoft-Graph-PowerShell-SDK" class="headerlink" title="About the Microsoft Graph PowerShell SDK"></a>About the Microsoft Graph PowerShell SDK</h2><p>The Microsoft Graph PowerShell SDK is an open-source PowerShell module that makes it easier to use Microsoft Graph from PowerShell. The project is managed on GitHub, and the PowerShell module is distributed under the MIT license. Unlike a paid product, this module is provided for free under the MIT license, so Microsoft technical support may be limited or may not be available, depending on the issue.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoftgraph/msgraph-sdk-powershell">Microsoft Graph PowerShell SDK GitHub repository</a></p>
+<h2 id="Install-the-Microsoft-Graph-PowerShell-SDK"><a href="#Install-the-Microsoft-Graph-PowerShell-SDK" class="headerlink" title="Install the Microsoft Graph PowerShell SDK"></a>Install the Microsoft Graph PowerShell SDK</h2><p>Install the Microsoft Graph PowerShell SDK by following the instructions on the page below. Many PowerShell modules are installed, so the process takes some time.</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation">Install the Microsoft Graph PowerShell SDK</a></p>
+<h2 id="Authentication"><a href="#Authentication" class="headerlink" title="Authentication"></a>Authentication</h2><p>You can use administrator credentials or application permissions. If an administrator manages licenses directly, administrator credentials are suitable. For unattended or automated tasks, such as batch processing, use application permissions.</p>
+<h3 id="Use-administrator-credentials"><a href="#Use-administrator-credentials" class="headerlink" title="Use administrator credentials"></a>Use administrator credentials</h3><p>Run the following command to sign in and consent to the permissions required for license management. <code>Organization.Read.All</code> is required to view license information associated with the tenant. <code>User.ReadWrite.All</code> is required to assign licenses and perform other license-management operations.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-Scopes</span> <span class="string">&quot;Organization.Read.All&quot;</span>,<span class="string">&quot;User.ReadWrite.All&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>When prompted, follow the instructions to sign in with an administrator account. When asked to consent to the permissions, select <strong>Accept</strong>. You can leave <strong>Consent on behalf of your organization</strong> turned off.</p>
+<h3 id="Use-application-permissions"><a href="#Use-application-permissions" class="headerlink" title="Use application permissions"></a>Use application permissions</h3><p>The following documentation describes the basic process:</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/microsoftgraph/app-only">Use app-only authentication with the Microsoft Graph PowerShell SDK</a></p>
+<p>First, register an application in Azure AD:</p>
+<ol>
+<li>Sign in to the Azure Portal.</li>
+<li>Select [Azure Active Directory] &gt; [App registrations] &gt; [New registration].</li>
+<li>Enter any application name, such as App01.</li>
+<li>Under [Supported account types], select [Accounts in this organizational directory only].</li>
+<li>Under [Redirect URI], select [Web] and leave the text box empty.</li>
+<li>Select [Register].</li>
+<li>Record the displayed [Application (client) ID] and [Directory (tenant) ID].</li>
+<li>Select [Manage] &gt; [API permissions] &gt; [Add a permission].</li>
+<li>Select [Microsoft Graph] &gt; [Application permissions], select <code>Organization.Read.All</code> and <code>User.ReadWrite.All</code>, and then select [Add permissions].</li>
+<li>Under [Configured permissions], select the ellipsis next to <code>User.Read</code> of type [Delegated], and select [Remove permission]. When prompted, select [Yes, remove].</li>
+<li>Select [Grant admin consent for <tenant name>]. When prompted, select [Yes].</li>
+</ol>
+<p>Next, create a certificate.</p>
+<ol start="12">
+<li><p>Start Windows PowerShell.</p>
+</li>
+<li><p>Run the following commands. A certificate is created, CER and PFX files are exported, and the certificate thumbprint is displayed in the console.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;&lt;application name&gt;&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> &lt;export file path&gt;</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> &lt;export file path&gt; <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;&lt;password to protect the exported PFX file&gt;&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;App01&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.cer</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.pfx <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;1234&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Return to the registered application’s page in the Azure Portal.</p>
+</li>
+<li><p>Select [Manage] &gt; [Certificates &amp; secrets].</p>
+</li>
+<li><p>Select [Upload certificate].</p>
+</li>
+<li><p>Select the CER file you exported, and then select [Add].</p>
+</li>
+</ol>
+<p>Setup is complete. To load a certificate from the certificate store by its thumbprint and connect, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;application (client) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;directory (tenant) ID&gt;&quot;</span> <span class="literal">-CertificateThumbprint</span> <span class="string">&quot;&lt;certificate thumbprint&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-CertificateThumbprint</span> <span class="string">&quot;C1BF2E11A13E4F898627AFAA7FF848A63AD2D68E&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>To connect by specifying an X509Certificate2 object, run the following command. This example loads the certificate from the certificate store.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;application (client) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;directory (tenant) ID&gt;&quot;</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\&lt;certificate thumbprint&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\C1BF2E11A13E4F898627AFAA7FF848A63AD2D68E)</span><br></pre></td></tr></table></figure>
+
+<p>To load a certificate from the certificate store by name and connect, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;application (client) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;directory (tenant) ID&gt;&quot;</span> <span class="literal">-CertificateName</span> <span class="string">&quot;CN=&lt;certificate subject name&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-CertificateName</span> <span class="string">&quot;CN=App01&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="View-license-information"><a href="#View-license-information" class="headerlink" title="View license information"></a>View license information</h2><p>To view the licenses associated with the tenant, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> | <span class="built_in">ft</span> Id, SkuId, SkuPartNumber</span><br></pre></td></tr></table></figure>
+
+<p>Use the <code>SkuId</code> value when assigning a license. You need to identify which <code>SkuId</code> belongs to the license you want to manage. You may be able to infer this from the <code>SkuPartNumber</code>, but see the following documentation for details. For example, the <code>SkuPartNumber</code> for Microsoft 365 E5 is <code>SPE_E5</code>, and its <code>SkuId</code> is <code>06ebc4ee-1bb5-47dd-8120-11324bc54e06</code>.</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference">Product names and service plan identifiers for licensing</a></p>
+<p>If you want to disable some service plans in a license, first view the service plan information by running the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> <span class="literal">-SubscribedSkuId</span> <span class="string">&quot;&lt;Id of the license whose service plans you want to view, found with Get-MgSubscribedSku&gt;&quot;</span> | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans | <span class="built_in">ft</span> ServicePlanId, ServicePlanName</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> <span class="literal">-SubscribedSkuId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e_06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span> | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans | <span class="built_in">ft</span> ServicePlanId, ServicePlanName</span><br></pre></td></tr></table></figure>
+
+<p>The service plan information is also available in the documentation above. For example, the <code>ServicePlanName</code> for Exchange Online Plan 2 is <code>EXCHANGE_S_ENTERPRISE</code>, and its <code>ServicePlanId</code> is <code>efb87545-963c-4e0d-99df-69c6916d9eb0</code>.</p>
+<h2 id="Set-a-user’s-UsageLocation"><a href="#Set-a-user’s-UsageLocation" class="headerlink" title="Set a user’s UsageLocation"></a>Set a user’s UsageLocation</h2><p>The user must have a <code>UsageLocation</code> set before you assign a license. License assignment fails if it is not set. For a user receiving a license for the first time, set <code>UsageLocation</code> with a command like the following. This example sets the user’s <code>UsageLocation</code> to <code>JP</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-MgUser</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -UsageLocation &quot;&lt;user&#x27;</span>s location&gt;<span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-UsageLocation</span> <span class="string">&quot;JP&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>To check the current <code>UsageLocation</code>, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -Property UsageLocation | fl UsageLocation</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> UsageLocation | <span class="built_in">fl</span> UsageLocation</span><br></pre></td></tr></table></figure>
+
+<h2 id="Scenario-1-Assign-licenses-to-a-user"><a href="#Scenario-1-Assign-licenses-to-a-user" class="headerlink" title="Scenario 1: Assign licenses to a user"></a>Scenario 1: Assign licenses to a user</h2><p>The process is the same whether the user has no licenses yet or already has licenses and you want to add more.</p>
+<h3 id="Assign-a-license-with-all-service-plans-enabled"><a href="#Assign-a-license-with-all-service-plans-enabled" class="headerlink" title="Assign a license with all service plans enabled"></a>Assign a license with all service plans enabled</h3><p>Create a <code>MicrosoftGraphAssignedLicense</code> object with the <code>SkuId</code> of the license to assign, and pass it as an array to the <code>AddLicenses</code> parameter of <code>Set-MgUserLicense</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the license to assign&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @($License1) -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>If you receive an error like the following, PowerShell has not loaded the data type used internally by the Microsoft Graph PowerShell SDK:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">New-Object: Cannot find type [Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense]: verify that the assembly containing this type is loaded.</span><br></pre></td></tr></table></figure>
+
+<p>You can work around this by loading the data type into PowerShell first, for example by running <code>Get-MgUser</code>.</p>
+<h3 id="Assign-multiple-licenses-with-all-service-plans-enabled"><a href="#Assign-multiple-licenses-with-all-service-plans-enabled" class="headerlink" title="Assign multiple licenses with all service plans enabled"></a>Assign multiple licenses with all service plans enabled</h3><p>To assign multiple licenses, create a <code>MicrosoftGraphAssignedLicense</code> object for each one and pass them as a comma-separated list to the <code>AddLicenses</code> parameter of <code>Set-MgUserLicense</code>. The following example assigns two licenses.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the first license to assign&gt;&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License2</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the second license to assign&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @($License1, $License2) -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License2</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;84a661c4-e949-4bd2-a560-ed7766fcaf2b&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>, <span class="variable">$License2</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Assign-a-license-with-specific-service-plans-disabled"><a href="#Assign-a-license-with-specific-service-plans-disabled" class="headerlink" title="Assign a license with specific service plans disabled"></a>Assign a license with specific service plans disabled</h3><p>If you want to disable service plans when assigning a license, pass the <code>ServicePlanId</code> values as an array to <code>DisabledPlans</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the license to assign&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;ServicePlanId to disable&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @($License1) -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Assign-a-license-with-multiple-service-plans-disabled"><a href="#Assign-a-license-with-multiple-service-plans-disabled" class="headerlink" title="Assign a license with multiple service plans disabled"></a>Assign a license with multiple service plans disabled</h3><p>If you want to disable multiple service plans, pass their <code>ServicePlanId</code> values as a comma-separated list to <code>DisabledPlans</code>. The following example assigns a license with two service plans disabled.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the license to assign&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;first ServicePlanId to disable&gt;&quot;</span>, <span class="string">&quot;&lt;second ServicePlanId to disable&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @($License1) -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>, <span class="string">&quot;0898bdbb-73b0-471a-81e5-20f1fe4dd66e&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="Scenario-2-Remove-licenses-from-a-user"><a href="#Scenario-2-Remove-licenses-from-a-user" class="headerlink" title="Scenario 2: Remove licenses from a user"></a>Scenario 2: Remove licenses from a user</h2><h3 id="Remove-a-specific-license-from-a-user"><a href="#Remove-a-specific-license-from-a-user" class="headerlink" title="Remove a specific license from a user"></a>Remove a specific license from a user</h3><p>To remove a license from a user, pass the <code>SkuId</code> of the license to remove as an array to the <code>RemoveLicenses</code> parameter of <code>Set-MgUserLicense</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @() -RemoveLicenses @(&quot;&lt;SkuId of the license to remove&gt;&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Remove-multiple-licenses-from-a-user"><a href="#Remove-multiple-licenses-from-a-user" class="headerlink" title="Remove multiple licenses from a user"></a>Remove multiple licenses from a user</h3><p>To remove multiple licenses, pass their <code>SkuId</code> values as a comma-separated list in the <code>RemoveLicenses</code> array of <code>Set-MgUserLicense</code>. The following example removes two licenses from a user.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses @() -RemoveLicenses @(&quot;&lt;first SkuId to remove&gt;&quot;, &quot;&lt;second SkuId to remove&gt;&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>, <span class="string">&quot;84a661c4-e949-4bd2-a560-ed7766fcaf2b&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Scenario-3-Change-disabled-service-plans-in-an-assigned-license"><a href="#Scenario-3-Change-disabled-service-plans-in-an-assigned-license" class="headerlink" title="Scenario 3: Change disabled service plans in an assigned license"></a>Scenario 3: Change disabled service plans in an assigned license</h2><p>You can change which service plans are disabled by changing <code>DisabledPlans</code> and running the same command used to assign a license. This replaces the existing list. If you want to keep a service plan disabled, include it again in <code>DisabledPlans</code>.</p>
+<h3 id="Change-disabled-service-plans-in-an-assigned-license"><a href="#Change-disabled-service-plans-in-an-assigned-license" class="headerlink" title="Change disabled service plans in an assigned license"></a>Change disabled service plans in an assigned license</h3><p>The following example disables only the two specified service plans in the assigned license. Service plans that are not specified are enabled.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the assigned license whose service plans you want to change&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;first ServicePlanId to disable&gt;&quot;</span>, <span class="string">&quot;&lt;second ServicePlanId to disable&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses $License1 -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>, <span class="string">&quot;0898bdbb-73b0-471a-81e5-20f1fe4dd66e&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Enable-all-service-plans-disabled-in-an-assigned-license"><a href="#Enable-all-service-plans-disabled-in-an-assigned-license" class="headerlink" title="Enable all service plans disabled in an assigned license"></a>Enable all service plans disabled in an assigned license</h3><p>To enable all service plans that are disabled in an assigned license, run the command without specifying any values in <code>DisabledPlans</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the assigned license whose service plans you want to enable&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>()&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -AddLicenses $License1 -RemoveLicenses @()</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>()&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Disable-an-additional-service-plan-in-a-license-that-already-has-disabled-plans"><a href="#Disable-an-additional-service-plan-in-a-license-that-already-has-disabled-plans" class="headerlink" title="Disable an additional service plan in a license that already has disabled plans"></a>Disable an additional service plan in a license that already has disabled plans</h3><p>To disable another service plan in a license that already has disabled plans, get the current <code>DisabledPlans</code> values and then add the new value.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -Property AssignedLicenses | Select-Object -ExpandProperty AssignedLicenses | ?&#123;$_.SkuId -eq &quot;&lt;SkuId of the assigned license&gt;&quot;&#125;</span></span><br><span class="line"><span class="string">$License1.DisabledPlans += &quot;&lt;ServicePlanId to disable&gt;&quot;</span></span><br><span class="line"><span class="string">Set-MgUserLicense -UserId &lt;user&#x27;</span>s UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans += <span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span></span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Enable-a-specific-service-plan-in-a-license-with-one-or-more-disabled-plans"><a href="#Enable-a-specific-service-plan-in-a-license-with-one-or-more-disabled-plans" class="headerlink" title="Enable a specific service plan in a license with one or more disabled plans"></a>Enable a specific service plan in a license with one or more disabled plans</h3><p>To enable a specific service plan in a license with one or more disabled plans, get the current <code>DisabledPlans</code> values and remove the service plan you want to enable.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -Property AssignedLicenses | Select-Object -ExpandProperty AssignedLicenses | ?&#123;$_.SkuId -eq &quot;&lt;SkuId of the assigned license&gt;&quot;&#125;</span></span><br><span class="line"><span class="string">$License1.DisabledPlans = @($License1.DisabledPlans | ?&#123;$_ -ne &quot;&lt;ServicePlanId to enable&gt;&quot;&#125;)</span></span><br><span class="line"><span class="string">Set-MgUserLicense -UserId &lt;user&#x27;</span>s UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans = <span class="selector-tag">@</span>(<span class="variable">$License1</span>.DisabledPlans | ?&#123;<span class="variable">$_</span> <span class="operator">-ne</span> <span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="Scenario-4-Change-a-license"><a href="#Scenario-4-Change-a-license" class="headerlink" title="Scenario 4: Change a license"></a>Scenario 4: Change a license</h2><p>To remove the currently assigned license and assign another one, specify the current license in <code>RemoveLicenses</code> and the new license in <code>AddLicenses</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;SkuId of the new license to assign&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;&lt;SkuId of the currently assigned license&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;6fd2c87f-b296-42f0-b197-1e91e994b900&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reference-Check-licenses-assigned-to-a-user"><a href="#Reference-Check-licenses-assigned-to-a-user" class="headerlink" title="Reference: Check licenses assigned to a user"></a>Reference: Check licenses assigned to a user</h2><p>You can check the licenses assigned to a user with either <code>Get-MgUser</code> or <code>Get-MgUserLicenseDetail</code>.</p>
+<h3 id="Use-Get-MgUser-to-check-licenses-assigned-to-a-user"><a href="#Use-Get-MgUser-to-check-licenses-assigned-to-a-user" class="headerlink" title="Use Get-MgUser to check licenses assigned to a user"></a>Use Get-MgUser to check licenses assigned to a user</h3><p>You can use <code>Get-MgUser</code> to view the <code>MicrosoftGraphAssignedLicense</code> values also used by <code>Set-MgUserLicense</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; -Property AssignedLicenses | Select-Object -ExpandProperty AssignedLicenses</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses</span><br></pre></td></tr></table></figure>
+
+<h3 id="Use-Get-MgUserLicenseDetail-to-check-licenses-assigned-to-a-user"><a href="#Use-Get-MgUserLicenseDetail-to-check-licenses-assigned-to-a-user" class="headerlink" title="Use Get-MgUserLicenseDetail to check licenses assigned to a user"></a>Use Get-MgUserLicenseDetail to check licenses assigned to a user</h3><p>Use <code>Get-MgUserLicenseDetail</code> to check the licenses assigned to a user and the provisioning status of their service plans. Run the following command to view the assigned license information:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com</span><br></pre></td></tr></table></figure>
+
+<p>To view service plan information, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> &lt;user<span class="string">&#x27;s UPN&gt; | Select-Object -ExpandProperty ServicePlans</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans</span><br></pre></td></tr></table></figure>
+
+<h2 id="Reference-List-users-with-and-without-assigned-licenses"><a href="#Reference-List-users-with-and-without-assigned-licenses" class="headerlink" title="Reference: List users with and without assigned licenses"></a>Reference: List users with and without assigned licenses</h2><p>You can determine whether a user has a license by checking <code>AssignedLicenses</code> from <code>Get-MgUser</code>.</p>
+<p>The steps in this section were tested with PowerShell 7, not Windows PowerShell. Because they use the <code>-All</code> switch, running them in Windows PowerShell may cause errors due to problems with the Microsoft Graph request query string. Also, the commands retrieve all users and then format the data in PowerShell. This may take time, and the request may fail if it reaches Microsoft Graph limits while retrieving all users. The examples retrieve only the properties needed to help avoid those limits.</p>
+<p>To list users who have licenses assigned, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | ?&#123;<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-ne</span> <span class="number">0</span>&#125; | <span class="built_in">ft</span> AssignedLicenses, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<p>To list users who do not have licenses assigned, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | ?&#123;<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-eq</span> <span class="number">0</span>&#125; | <span class="built_in">ft</span> AssignedLicenses, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<p>The following command adds a <code>Licensed</code> property to the user list. It outputs <code>True</code> if the user has a license and <code>False</code> if they do not.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | <span class="built_in">select</span> <span class="selector-tag">@</span>&#123;n=<span class="string">&quot;Licensed&quot;</span>; e=&#123;(<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-ne</span> <span class="number">0</span>)&#125;&#125;, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<h2 id="Disconnect"><a href="#Disconnect" class="headerlink" title="Disconnect"></a>Disconnect</h2><p>Run the following command to disconnect from the Microsoft Graph PowerShell SDK:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Disconnect-MgGraph</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Microsoft-365/" rel="tag">Microsoft 365</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/" rel="tag">Microsoft Graph PowerShell SDK</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Licensing/" rel="tag">Licensing</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/manage-microsoft-365-licenses-graph-powershell-sdk.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/" data-id="cuidBdmGdzkWCxtOXAGI_3Xxe" data-title="Manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/get-exchange-online-calendar-with-graph-powershell-sdk/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Get Exchange Online calendar events with the Microsoft Graph PowerShell SDK
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/exchange-online-remote-powershell-v2-dotnet-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET 5.0)
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

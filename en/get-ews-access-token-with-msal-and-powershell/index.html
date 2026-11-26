@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Get an EWS access token with MSAL and Windows PowerShell | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/get-ews-access-token-with-msal-and-powershell/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/get-ews-access-token-with-msal-and-powershell/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/get-ews-access-token-with-msal-and-powershell/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Learn how to acquire an EWS access token interactively or non-interactively using MSAL and Windows PowerShell.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Get an EWS access token with MSAL and Windows PowerShell">
+<meta property="og:url" content="https://blog.rykoma.net/en/get-ews-access-token-with-msal-and-powershell/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Learn how to acquire an EWS access token interactively or non-interactively using MSAL and Windows PowerShell.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-30T19:26:05.000Z">
+<meta property="article:modified_time" content="2026-11-21T13:27:55.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Web Services">
+<meta property="article:tag" content="MSAL">
+<meta property="article:tag" content="OAuth">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/get-ews-access-token-with-msal-and-powershell/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/get-ews-access-token-with-msal-and-powershell/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/get-ews-access-token-with-msal-and-powershell" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-12-30T19:26:05.000Z" title="2019-12-31 04:26:05 JST" itemprop="datePublished">2019-12-31</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Get an EWS access token with MSAL and Windows PowerShell
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-11-21T13:27:55.000Z" title="2026-11-21 22:27:55 JST" itemprop="dateModified">2026-11-21</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>EWS in Exchange Online is being disabled in stages starting in October 2026 and is scheduled to be fully disabled in April 2027. See <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online">Deprecation of EWS in Exchange Online</a> and consider migrating to Microsoft Graph or another suitable alternative.</p>
+</div>
+<div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The non-interactive example in this article uses the ROPC flow. It is incompatible with multifactor authentication (MFA), and Microsoft recommends against using it. It is also generally unsupported in federated environments such as AD FS. See the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc">ROPC documentation</a> for exceptions and alternatives. Do not store passwords in code.</p>
+</div>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/client-developer/exchange-web-services/how-to-authenticate-an-ews-application-by-using-oauth">Authenticate an EWS application by using OAuth</a> describes how to acquire an EWS access token in C# using MSAL (Microsoft.Identity.Client), but Docs does not describe the PowerShell case. An Exchange Team blog post describes PowerShell without using either ADAL or MSAL. Using a library may seem unnecessary when you can implement the process without one, but that blog’s approach cannot use federated accounts, such as accounts authenticated by AD FS.</p>
+<p>This article shows how to use MSAL from PowerShell to acquire an EWS access token, both interactively and non-interactively. The non-interactive example uses the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc">Resource Owner Password Credentials (ROPC) flow</a>. ROPC requires the application to handle the user ID and password, losing the benefits of OAuth, and Microsoft does not recommend it. In fact, the Docs article mentioned above only describes an interactive implementation. However, EWS was originally used with basic authentication, and many scenarios require automated access using a user’s permissions, so this article also shows a non-interactive implementation.</p>
+<p>The examples assume the following environment:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows PowerShell version</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td>MSAL version</td>
+<td>4.33.0</td>
+</tr>
+<tr>
+<td>MSAL installation path</td>
+<td><code>C:\temp\msal</code></td>
+</tr>
+<tr>
+<td>Script path</td>
+<td><code>C:\temp\scripts</code></td>
+</tr>
+</tbody></table>
+<p>This is only one possible implementation.</p>
+<h2 id="Get-the-MSAL-DLL"><a href="#Get-the-MSAL-DLL" class="headerlink" title="Get the MSAL DLL"></a>Get the MSAL DLL</h2><p>You can obtain the DLL in any way. Here, we use Windows PowerShell. If you already have the DLL for .NET Framework, for example from a Visual Studio project using MSAL, you can use that instead.</p>
+<ol>
+<li><p>Start Windows PowerShell as an administrator.</p>
+</li>
+<li><p>Run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-PackageProvider</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Check whether the output includes <code>NuGet</code>. If not, run the following command. If prompted, review the confirmation and continue if appropriate.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Find-PackageProvider</span> <span class="literal">-Name</span> NuGet | <span class="built_in">Install-PackageProvider</span> <span class="literal">-Force</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-PackageSource</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Check whether there is a source with <code>NuGet</code> as its ProviderName (the default Name is <code>nuget.org</code>). If not, run the following command:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Register-PackageSource</span> <span class="literal">-Name</span> nuget.org <span class="literal">-Location</span> https://www.nuget.org/api/v2 <span class="literal">-ProviderName</span> NuGet</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Run the following command to get MSAL. If prompted, review the confirmation and continue if appropriate.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Install-Package</span> Microsoft.Identity.Client <span class="literal">-Destination</span> <span class="string">&#x27;C:\temp\msal&#x27;</span> <span class="literal">-SkipDependencies</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>If no errors occur, MSAL is downloaded. In this example, the following two files should be in <code>C:\temp\msal\Microsoft.Identity.Client.4.7.1\lib\net45</code>. Windows PowerShell runs on .NET Framework, so use the DLL for .NET Framework.</p>
+<ul>
+<li><code>Microsoft.Identity.Client.dll</code></li>
+<li><code>Microsoft.Identity.Client.xml</code></li>
+</ul>
+</li>
+</ol>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>The original installation command does not specify a version. The path in step 7 uses 4.7.1, while the scripts use 4.33.0. Check the version and DLL path actually downloaded.</p>
+</div>
+<h2 id="Register-an-application"><a href="#Register-an-application" class="headerlink" title="Register an application"></a>Register an application</h2><ol>
+<li>Open the <a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure portal</a> and sign in to the Azure Active Directory admin center.</li>
+<li>Go to the Azure Active Directory blade.</li>
+<li>Select [Manage] - [App registrations] - [New registration].</li>
+<li>Configure the following settings and select [Register]:<ul>
+<li>Name: Any application name, such as <code>EwsMsalDemo1</code></li>
+<li>Supported account types: Accounts in this organizational directory only</li>
+<li>Redirect URI: Select [Public client&#x2F;native (mobile &amp; desktop)] from the drop-down list and enter <code>urn:ietf:wg:oauth:2.0:oob</code></li>
+</ul>
+</li>
+<li>Select [Manage] - [Authentication].</li>
+<li>Under recommended redirect URIs for public clients (mobile, desktop), select <a target="_blank" rel="noopener" href="https://login.microsoftonline.com/common/oauth2/nativeclient"><code>https://login.microsoftonline.com/common/oauth2/nativeclient</code></a>.</li>
+<li>Set [Enable the following mobile and desktop flows] to [Yes].</li>
+<li>Select [Save].</li>
+</ol>
+<p>Step 6 is required when an administrator grants consent using the procedure described below. Step 7 is required when acquiring a token non-interactively with a user ID and password in code. Neither is required when the user acquires a token interactively.</p>
+<h2 id="Implement-the-PowerShell-scripts"><a href="#Implement-the-PowerShell-scripts" class="headerlink" title="Implement the PowerShell scripts"></a>Implement the PowerShell scripts</h2><p>Save the following as <code>C:\temp\scripts\msal1.ps1</code>:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Change these values for your environment</span></span><br><span class="line"><span class="variable">$MsalDllPath</span> = <span class="string">&quot;C:\temp\msal\Microsoft.Identity.Client.4.33.0\lib\net45\Microsoft.Identity.Client.dll&quot;</span> <span class="comment"># MSAL path</span></span><br><span class="line"><span class="variable">$TenantName</span> = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span> <span class="comment"># onmicrosoft.com domain of the tenant</span></span><br><span class="line"><span class="variable">$ClientId</span> = <span class="string">&quot;259c1e28-242d-4b95-89aa-a88c45f3ac8e&quot;</span> <span class="comment"># Application ID registered in Azure Active Directory</span></span><br><span class="line"><span class="variable">$EwsManagedApiDllPath</span> = <span class="string">&quot;C:\Program Files\Microsoft\Exchange\Web Services\2.2\Microsoft.Exchange.WebServices.dll&quot;</span> <span class="comment"># EWS Managed API path</span></span><br><span class="line"><span class="variable">$EwsUrl</span> = <span class="string">&quot;https://outlook.office365.com/EWS/Exchange.asmx&quot;</span> <span class="comment"># EWS URL</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the MSAL DLL</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$MsalDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Acquire an access token</span></span><br><span class="line"><span class="variable">$PcaOptions</span> = <span class="built_in">New-Object</span> Microsoft.Identity.Client.PublicClientApplicationOptions</span><br><span class="line"><span class="variable">$PcaOptions</span>.ClientId = <span class="variable">$ClientId</span></span><br><span class="line"><span class="variable">$PcaOptions</span>.TenantId = <span class="variable">$TenantName</span></span><br><span class="line"><span class="variable">$Pca</span> = [<span class="type">Microsoft.Identity.Client.PublicClientApplicationBuilder</span>]::CreateWithApplicationOptions(<span class="variable">$PcaOptions</span>).WithDefaultRedirectUri().Build()</span><br><span class="line">[<span class="built_in">string</span>[]]<span class="variable">$EwsScopes</span> = <span class="selector-tag">@</span>(<span class="string">&quot;https://outlook.office.com/EWS.AccessAsUser.All&quot;</span>)</span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$Pca</span>.AcquireTokenInteractive(<span class="variable">$EwsScopes</span>).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the EWS Managed API DLL</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$EwsManagedApiDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create an ExchangeService instance</span></span><br><span class="line"><span class="variable">$Service</span> = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.ExchangeService([<span class="type">Microsoft.Exchange.WebServices.Data.ExchangeVersion</span>]::Exchange2013_SP1, <span class="variable">$TimeZone</span>)</span><br><span class="line"><span class="variable">$Service</span>.Url = <span class="built_in">New-Object</span> System.Uri(<span class="variable">$EwsUrl</span>)</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Continue with normal EWS operations</span></span><br><span class="line"><span class="variable">$Inbox</span> = [<span class="type">Microsoft.Exchange.WebServices.Data.Folder</span>]::Bind(<span class="variable">$Service</span>, [<span class="type">Microsoft.Exchange.WebServices.Data.WellKnownFolderName</span>]::Inbox)</span><br><span class="line"><span class="variable">$Inbox</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># If processing takes a long time</span></span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$null</span></span><br><span class="line"><span class="variable">$Accounts</span> = <span class="variable">$Pca</span>.GetAccountsAsync().Result</span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$Pca</span>.AcquireTokenSilent(<span class="variable">$EwsScopes</span>, <span class="variable">$Accounts</span>[<span class="number">0</span>]).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Continue processing</span></span><br><span class="line"><span class="comment"># $SentItems = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($Service, [Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::SentItems)</span></span><br></pre></td></tr></table></figure>
+
+<p>When you run <code>C:\temp\scripts\msal1.ps1</code>, a sign-in dialog appears. Sign in with the account used to connect to EWS. The first time, you are also asked to consent to the permissions. Review them and consent.</p>
+<p>The code above only displays information about the Inbox. After acquiring an access token, you can perform the EWS operations you need. Access tokens have a default lifetime of one hour, so if processing takes a long time, acquire another token using code like the section labeled “If processing takes a long time”. MSAL uses a refresh token to acquire another access token. This example is simplified; for an actual implementation, refer to:</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/msal/dotnet/acquiring-tokens/acquire-token-silently">Acquire a token from the cache (MSAL.NET)</a></p>
+<p>The code above acquires the token interactively. The following code does so non-interactively. Save it as <code>C:\temp\scripts\msal2.ps1</code>:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Change these values for your environment</span></span><br><span class="line"><span class="variable">$MsalDllPath</span> = <span class="string">&quot;C:\temp\msal\Microsoft.Identity.Client.4.33.0\lib\net45\Microsoft.Identity.Client.dll&quot;</span> <span class="comment"># MSAL path</span></span><br><span class="line"><span class="variable">$TenantName</span> = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span> <span class="comment"># onmicrosoft.com domain of the tenant</span></span><br><span class="line"><span class="variable">$ClientId</span> = <span class="string">&quot;259c1e28-242d-4b95-89aa-a88c45f3ac8e&quot;</span> <span class="comment"># Application ID registered in Azure Active Directory</span></span><br><span class="line"><span class="variable">$EwsManagedApiDllPath</span>  = <span class="string">&quot;C:\Program Files\Microsoft\Exchange\Web Services\2.2\Microsoft.Exchange.WebServices.dll&quot;</span> <span class="comment"># EWS Managed API path</span></span><br><span class="line"><span class="variable">$EwsUrl</span> = <span class="string">&quot;https://outlook.office365.com/EWS/Exchange.asmx&quot;</span> <span class="comment"># EWS URL</span></span><br><span class="line"><span class="variable">$UserName</span> = <span class="string">&quot;user01@contoso.onmicrosoft.com&quot;</span> <span class="comment"># User principal name (UPN) of the account used for EWS</span></span><br><span class="line"><span class="variable">$Password</span> = <span class="string">&quot;password&quot;</span> <span class="comment"># Password of the account used for EWS</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the MSAL DLL</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$MsalDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Acquire an access token</span></span><br><span class="line"><span class="variable">$Pca</span> = [<span class="type">Microsoft.Identity.Client.PublicClientApplicationBuilder</span>]::Create(<span class="variable">$ClientId</span>).WithAuthority(<span class="string">&quot;https://login.microsoftonline.com/<span class="variable">$TenantName</span>/&quot;</span>).Build()</span><br><span class="line">[<span class="built_in">string</span>[]]<span class="variable">$EwsScopes</span> = <span class="selector-tag">@</span>(<span class="string">&quot;https://outlook.office.com/EWS.AccessAsUser.All&quot;</span>)</span><br><span class="line"><span class="variable">$SecurePassword</span> = <span class="built_in">ConvertTo-SecureString</span> <span class="variable">$Password</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span></span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$pca</span>.AcquireTokenByUsernamePassword(<span class="variable">$EwsScopes</span>, <span class="variable">$UserName</span>, <span class="variable">$SecurePassword</span>).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the EWS Managed API DLL</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$EwsManagedApiDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create an ExchangeService instance</span></span><br><span class="line"><span class="variable">$Service</span> = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.ExchangeService([<span class="type">Microsoft.Exchange.WebServices.Data.ExchangeVersion</span>]::Exchange2013_SP1, <span class="variable">$TimeZone</span>)</span><br><span class="line"><span class="variable">$Service</span>.Url = <span class="built_in">New-Object</span> System.Uri(<span class="variable">$EwsUrl</span>)</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Continue with normal EWS operations</span></span><br><span class="line"><span class="variable">$Inbox</span> = [<span class="type">Microsoft.Exchange.WebServices.Data.Folder</span>]::Bind(<span class="variable">$Service</span>, [<span class="type">Microsoft.Exchange.WebServices.Data.WellKnownFolderName</span>]::Inbox)</span><br><span class="line"><span class="variable">$Inbox</span></span><br></pre></td></tr></table></figure>
+
+<p>First, set <code>UserName</code> to the account you used to run <code>msal1.ps1</code>, and run <code>C:\temp\scripts\msal2.ps1</code>. You should be able to use EWS without a dialog. The account already consented to using the application, so it is not asked again.</p>
+<p>If you change <code>UserName</code> to another account, the script should fail because that account has not consented to the application. No error appears in the console, but you can capture a Fiddler log to see the error details. Even for that account, running <code>msal1.ps1</code> and consenting first should allow <code>msal2.ps1</code> to work.</p>
+<p>In many cases, interactive user consent in advance is sufficient. However, some tenants do not allow ordinary users to consent. In the Azure portal’s Azure Active Directory blade, if [Manage] - [Enterprise applications] - [User settings] - [Users can consent to apps accessing company data on their behalf] is set to [No], users cannot consent themselves.</p>
+<p>In that case, ask an administrator to consent. For details, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-admin-consent">Microsoft identity platform admin consent protocols</a>. Create a URL like the following and ask a global administrator to open it:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://login.microsoftonline.com/contoso.onmicrosoft.com/v2.0/adminconsent?client_id=259c1e28-242d-4b95-89aa-a88c45f3ac8e&amp;state=12345&amp;redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient&amp;scope=https://outlook.office.com/EWS.AccessAsUser.All</span><br></pre></td></tr></table></figure>
+
+<p>Replace the tenant name (the onmicrosoft.com domain name) and <code>client_id</code> in the URL as appropriate. The administrator is asked whether to allow the organization to use the application. After consent, the browser redirects to <code>https://login.microsoftonline.com/common/oauth2/nativeclient</code>, a blank page. Administrator consent is now complete, so users in the tenant can use the application. The <code>msal2.ps1</code> code should also work for users who have not consented themselves.</p>
+<p>The access token in <code>msal2.ps1</code> still has a default lifetime of one hour. Since the process is non-interactive, you can acquire another token in the same way. You can also use a refresh token as in <code>msal1.ps1</code>.</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/OAuth/" rel="tag">OAuth</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/MSAL/" rel="tag">MSAL</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/get-ews-access-token-with-msal-and-powershell.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/get-ews-access-token-with-msal-and-powershell/" data-id="cuid48qg5M5-pH4h6Z1fpkk4Q" data-title="Get an EWS access token with MSAL and Windows PowerShell" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/microsoft-graph-powershell-sdk-preview/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph PowerShell SDK Preview
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/getting-started-with-microsoft-graph-toolkit/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Getting started with Microsoft Graph Toolkit
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Connect to Exchange Online PowerShell Non-Interactively | Developer Messaging Lab</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/en/non-interactive-exchange-online-powershell-connection/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/non-interactive-exchange-online-powershell-connection/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/non-interactive-exchange-online-powershell-connection/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Explore non-interactive Exchange Online PowerShell connections using credentials or certificates, and the risks of each approach.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Connect to Exchange Online PowerShell Non-Interactively">
+<meta property="og:url" content="https://blog.rykoma.net/en/non-interactive-exchange-online-powershell-connection/index.html">
+<meta property="og:site_name" content="Developer Messaging Lab">
+<meta property="og:description" content="Explore non-interactive Exchange Online PowerShell connections using credentials or certificates, and the risks of each approach.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-26T18:01:06.000Z">
+<meta property="article:modified_time" content="2026-11-21T15:06:05.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Authentication">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/en/rss.xml" title="Developer Messaging Lab" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/en/">Home</a>
+        
+          <a class="main-nav-link" href="/en/tutorials/">Tutorials</a>
+        
+          <a class="main-nav-link" href="/en/about/">About</a>
+        
+          <a class="main-nav-link" href="/en/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/en/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">English</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/non-interactive-exchange-online-powershell-connection/" tabindex="-1">日本語</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/non-interactive-exchange-online-powershell-connection/" tabindex="-1" aria-current="page">English (current)</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/en/rss.xml" title="RSS Feed" aria-label="RSS Feed"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="Search" aria-label="Search"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">Search</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="Search">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="Search">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/en/" id="logo">Developer Messaging Lab</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-en/non-interactive-exchange-online-powershell-connection" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2020-09-26T18:01:06.000Z" title="2020-09-27 03:01:06 JST" itemprop="datePublished">2020-09-27</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">Category:</span>
+    
+      
+      <span class="article-category-text">Exchange Online</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Connect to Exchange Online PowerShell Non-Interactively
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>Updated: <time class="dt-updated" datetime="2026-11-21T15:06:05.000Z" title="2026-11-22 00:06:05 JST" itemprop="dateModified">2026-11-22</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-important">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Important</span></p>
+<p>This article records procedures as of December 2022. Connecting to Exchange Online using Remote PowerShell has been retired, and connections using the old module or <code>New-PSSession</code> are no longer available. For current automation, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps">app-only authentication</a> or <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/connect-exo-powershell-managed-identity?view=exchange-ps">Azure managed identities</a>. Portal names and procedures have also changed. Protect credentials and certificate private keys, and do not embed passwords in scripts.</p>
+</div>
+<p>As Basic authentication is disabled in Exchange Online, existing connection methods need to be reviewed and replaced with more secure ones. In particular, automated systems such as overnight batch jobs need a way to connect to Exchange Online non-interactively.</p>
+<p>This article introduces possible non-interactive connection methods and their advantages and disadvantages.</p>
+<p>The possible methods are:</p>
+<ul>
+<li>Pass credentials to <code>New-PSSession</code> using <code>-Credential</code>, as before.</li>
+<li>Pass credentials to <code>Connect-EXOPSSession</code> in the old Exchange Online Remote PowerShell Module using <code>-Credential</code>.</li>
+<li>Create a <code>PSCredential</code> from a password embedded in a script and pass it to <code>-Credential</code> on <code>Connect-ExchangeOnline</code> in the Exchange Online PowerShell V3 Module.</li>
+<li>Read a <code>PSCredential</code> previously saved in XML and pass it to <code>-Credential</code> on <code>Connect-ExchangeOnline</code> in the Exchange Online Remote PowerShell V3 Module.</li>
+<li>Use a certificate with <code>Connect-ExchangeOnline</code> in the Exchange Online Remote PowerShell V3 Module.</li>
+</ul>
+<p>Let’s look at each method.</p>
+<h2 id="Pass-credentials-to-New-PSSession-using-Credential"><a href="#Pass-credentials-to-New-PSSession-using-Credential" class="headerlink" title="Pass credentials to New-PSSession using -Credential"></a>Pass credentials to New-PSSession using -Credential</h2><p>No matter how the <code>PSCredential</code> supplied to <code>-Credential</code> is created, this method cannot continue to be used because Basic authentication is being disabled.</p>
+<h2 id="Pass-credentials-to-Connect-EXOPSSession-in-the-old-Exchange-Online-Remote-PowerShell-Module-using-Credential"><a href="#Pass-credentials-to-Connect-EXOPSSession-in-the-old-Exchange-Online-Remote-PowerShell-Module-using-Credential" class="headerlink" title="Pass credentials to Connect-EXOPSSession in the old Exchange Online Remote PowerShell Module using -Credential"></a>Pass credentials to Connect-EXOPSSession in the old Exchange Online Remote PowerShell Module using -Credential</h2><p>The “old Exchange Online Remote PowerShell Module” is the module downloaded from the Exchange admin center under Hybrid, using the link stating that the Exchange Online PowerShell Module supports multifactor authentication and can be downloaded to manage Exchange Online more securely. This module must be started from the Start menu, and using it for automation is not supported.</p>
+<h2 id="Create-a-PSCredential-from-a-password-embedded-in-a-script-and-pass-it-to-Connect-ExchangeOnline-in-the-Exchange-Online-PowerShell-V3-Module"><a href="#Create-a-PSCredential-from-a-password-embedded-in-a-script-and-pass-it-to-Connect-ExchangeOnline-in-the-Exchange-Online-PowerShell-V3-Module" class="headerlink" title="Create a PSCredential from a password embedded in a script and pass it to Connect-ExchangeOnline in the Exchange Online PowerShell V3 Module"></a>Create a PSCredential from a password embedded in a script and pass it to Connect-ExchangeOnline in the Exchange Online PowerShell V3 Module</h2><p>The following methods use the Exchange Online PowerShell V3 Module. For installation instructions, see <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/exchange-online-powershell-v2?view=exchange-ps">Microsoft Learn</a>.</p>
+<p>With the V3 Module, you can still connect to Exchange Online by creating a <code>PSCredential</code> from a UPN and password and passing it to the <code>-Credential</code> parameter. For example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Credential</span> = <span class="built_in">New-Object</span> PSCredential(<span class="string">&quot;admin@contoso.onmicrosoft.com&quot;</span>, (<span class="built_in">ConvertTo-SecureString</span> <span class="string">&quot;pass&quot;</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span>))</span><br><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-Credential</span> <span class="variable">$Credential</span></span><br></pre></td></tr></table></figure>
+
+<p>Although authentication uses only a UPN and password, OAuth (modern authentication), rather than Basic authentication, is used behind the scenes. It is very similar to the previous <code>New-PSSession</code> approach, so existing scripts are easy to modify. However, it has the following problems:</p>
+<ul>
+<li>The UPN and password are written in plain text in the script, so an exposed script can lead to account compromise.</li>
+<li>Multifactor authentication cannot be configured for the account used for automation.</li>
+</ul>
+<p>You can reduce the risk in the following ways:</p>
+<ul>
+<li>Restrict who can access the computer running the script to reduce the chance of the script being exposed.</li>
+<li>Use the account only for script automation to limit the damage if it is compromised.</li>
+<li>Use RBAC to limit what the account can manage.</li>
+</ul>
+<p>If the account is compromised, you can respond by deleting it, changing its password, or enabling multifactor authentication. However, because the compromised account can manage Exchange Online, other accounts might have been modified or already compromised.</p>
+<h2 id="Read-a-PSCredential-previously-saved-in-XML-and-pass-it-to-Connect-ExchangeOnline-in-the-Exchange-Online-Remote-PowerShell-V3-Module"><a href="#Read-a-PSCredential-previously-saved-in-XML-and-pass-it-to-Connect-ExchangeOnline-in-the-Exchange-Online-Remote-PowerShell-V3-Module" class="headerlink" title="Read a PSCredential previously saved in XML and pass it to Connect-ExchangeOnline in the Exchange Online Remote PowerShell V3 Module"></a>Read a PSCredential previously saved in XML and pass it to Connect-ExchangeOnline in the Exchange Online Remote PowerShell V3 Module</h2><div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The credential protection described below applies to Windows. On other platforms, <code>Export-Clixml</code> does not encrypt credentials. See the <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/export-clixml?view=powershell-7.5">Export-Clixml documentation</a>.</p>
+</div>
+<p>You can save and load a <code>PSCredential</code> using the <code>Export-CliXml</code> and <code>Import-CliXml</code> commands:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Credential</span> = <span class="built_in">New-Object</span> PSCredential(<span class="string">&quot;admin@contoso.onmicrosoft.com&quot;</span>, (<span class="built_in">ConvertTo-SecureString</span> <span class="string">&quot;pass&quot;</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span>))</span><br><span class="line"><span class="variable">$Credential</span> | <span class="built_in">Export-CliXml</span> c:\temp\credential.xml</span><br><span class="line"><span class="variable">$Credential</span> = <span class="built_in">Import-CliXml</span> c:\temp\credential.xml</span><br></pre></td></tr></table></figure>
+
+<p>The saved file can only be read when the same user signs in on the same computer. This stores the password more safely than embedding it in the script. However, it has the following problems:</p>
+<ul>
+<li>If the computer is compromised, the account used to connect to Exchange Online can also be compromised.</li>
+<li>Multifactor authentication cannot be configured for the account used for automation.</li>
+</ul>
+<p>As with an embedded password, take steps to minimize the risk.</p>
+<h2 id="Use-a-certificate-with-Connect-ExchangeOnline-in-the-Exchange-Online-Remote-PowerShell-V3-Module"><a href="#Use-a-certificate-with-Connect-ExchangeOnline-in-the-Exchange-Online-Remote-PowerShell-V3-Module" class="headerlink" title="Use a certificate with Connect-ExchangeOnline in the Exchange Online Remote PowerShell V3 Module"></a>Use a certificate with Connect-ExchangeOnline in the Exchange Online Remote PowerShell V3 Module</h2><p>Exchange Online PowerShell V2 Module version 2.0.3 made it possible to connect to Exchange Online using application permissions instead of user permissions. The later Exchange Online PowerShell V3 Module supports this as well. This is the most recommended method for non-interactive Exchange Online connections. See also <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps">Microsoft Learn</a>.</p>
+<p>To use this feature, you must first register an app in Azure AD and issue a certificate. A self-signed certificate is acceptable. You no longer need a user account, so there is no risk of that account being compromised, and you can enable multifactor authentication for users. However, if the certificate with its private key is exposed, it is equivalent to exposing the application’s password, and a third party might connect to Exchange Online.</p>
+<p>A disadvantage of this method was that the Exchange Online PowerShell V2 Module did not support fine-grained control of commands using Exchange Online RBAC. With this connection method, you needed to assign a built-in Azure AD (Microsoft 365) administrator role, such as Exchange Administrator or Helpdesk Administrator, to the app. The Exchange Online PowerShell V3 Module added support for Exchange Online RBAC. For details, see the <a target="_blank" rel="noopener" href="https://techcommunity.microsoft.com/blog/exchange/notes-from-the-field-using-app-only-authentication-with-customized-rbac-roles-in/3690083">Exchange Team Blog article</a>.</p>
+<p>There are currently three ways to load a certificate. The first is to load a PFX file, which must be carefully protected. You can password-protect the PFX file itself, but then you need to put the password in the script or use a secure method, such as saving the password as a <code>SecureString</code> in a file.</p>
+<p>The second method is to specify the certificate thumbprint and load the certificate from the certificate store. The certificate must be stored in the user’s store.</p>
+<p>The third method is to specify a .NET Framework <code>X509Certificate2</code> object. Use this method if another mechanism provides the <code>X509Certificate2</code> object.</p>
+<p>In all cases, you first need to register an application in Azure AD:</p>
+<ol>
+<li>Sign in to the Azure Portal.</li>
+<li>Select <strong>Azure Active Directory</strong> &gt; <strong>App registrations</strong> &gt; <strong>New registration</strong>.</li>
+<li>Enter a name for the app, for example, App01.</li>
+<li>Under <strong>Supported account types</strong>, select <strong>Accounts in this organizational directory only</strong>.</li>
+<li>Under <strong>Redirect URI</strong>, select <strong>Web</strong> and enter a URI, for example, <code>https://localhost/App01</code>.</li>
+<li>Select <strong>Register</strong>.</li>
+<li>Record the displayed <strong>Application (client) ID</strong>.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>Manifest</strong>.</li>
+<li>Find <code>requiredResourceAccess</code> in the manifest and replace its contents as follows:</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;requiredResourceAccess&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;resourceAppId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;00000002-0000-0ff1-ce00-000000000000&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;resourceAccess&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dc50a0fb-09a3-484d-be87-e023b12c6440&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Role&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>Select <strong>Save</strong>.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>API permissions</strong>.</li>
+<li>Confirm that <strong>Exchange.ManageAsApp</strong> appears in the list.</li>
+<li>Select <strong>Grant admin consent for &lt;tenant name&gt;</strong>.</li>
+<li>Select <strong>Yes</strong> when prompted.</li>
+</ol>
+<p>Next, issue a certificate.</p>
+<div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>The following is the original certificate creation example. Current Exchange Online app-only authentication does not support CNG certificates and requires a certificate from a CSP key provider. See <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/exchange/app-only-auth-powershell-v2?view=exchange-ps">Microsoft Learn</a> for current creation instructions and restrictions.</p>
+</div>
+<ol start="15">
+<li>Start Windows PowerShell.</li>
+<li>Run the following commands. A certificate is created, CER and PFX files are exported, and the certificate thumbprint is displayed in the console.</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;&lt;app name&gt;&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> &lt;export file path&gt;</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> &lt;export file path&gt; <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;&lt;password to protect the exported PFX file&gt;&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;App01&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.cer</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.pfx <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;1234&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+
+<ol start="17">
+<li>Return to the app you registered in the Azure Portal.</li>
+<li>Select <strong>Manage</strong> &gt; <strong>Certificates &amp; secrets</strong>.</li>
+<li>Select <strong>Upload certificate</strong>.</li>
+<li>Select the exported CER file and select <strong>Add</strong>.</li>
+<li>In the Azure Portal, select <strong>Active Directory</strong> &gt; <strong>Manage</strong> &gt; <strong>Roles and administrators</strong>.</li>
+<li>Select <strong>Exchange Administrator</strong>.</li>
+<li>Select <strong>Add assignments</strong>.</li>
+<li>If you are not using PIM, search for and select the registered app, then select <strong>Add</strong>.</li>
+<li>If you are using PIM, select <strong>Select member</strong> &gt; <strong>No member selected</strong> (or <strong>xxx selected</strong>).</li>
+<li>Search for and select the registered app, then select <strong>Select</strong>.</li>
+<li>Select <strong>Next</strong>.</li>
+<li>Under <strong>Assignment type</strong>, select <strong>Active</strong>, enter the duration and reason if needed, and select <strong>Assign</strong>.</li>
+</ol>
+<p>The preparation is now complete.</p>
+<p>To connect by loading a PFX file, run:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-CertificateFilePath</span> <span class="string">&quot;&lt;path to PFX file&gt;&quot;</span> <span class="literal">-CertificatePassword</span> (<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;&lt;PFX file password&gt;&quot;</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span>) <span class="literal">-AppID</span> <span class="string">&quot;&lt;registered app&#x27;s application ID&gt;&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;&lt;onmicrosoft domain name&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-CertificateFilePath</span> <span class="string">&quot;c:\temp\cert.pfx&quot;</span> <span class="literal">-CertificatePassword</span> (<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;pass&quot;</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span>) <span class="literal">-AppID</span> <span class="string">&quot;3dc79906-a7ff-4493-b556-407945d80662&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;contoso.onmicrosoft.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>To connect by specifying a thumbprint and loading the certificate from the certificate store, run:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-CertificateThumbPrint</span> <span class="string">&quot;&lt;certificate thumbprint&gt;&quot;</span> <span class="literal">-AppID</span> <span class="string">&quot;&lt;registered app&#x27;s application ID&gt;&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;&lt;onmicrosoft domain name&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-CertificateThumbPrint</span> <span class="string">&quot;1844DDF33847CB699C6CAEF5DE9DF382380E127D&quot;</span> <span class="literal">-AppID</span> <span class="string">&quot;3dc79906-a7ff-4493-b556-407945d80662&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;contoso.onmicrosoft.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>To connect by specifying an <code>X509Certificate2</code> object, run the following command. This example loads the certificate from the certificate store.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\&lt;certificate thumbprint&gt;) <span class="literal">-AppID</span> <span class="string">&quot;&lt;registered app&#x27;s application ID&gt;&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;&lt;onmicrosoft domain name&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Example:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-ExchangeOnline</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\<span class="number">1844</span>DDF33847CB699C6CAEF5DE9DF382380E127D) <span class="literal">-AppID</span> <span class="string">&quot;3dc79906-a7ff-4493-b556-407945d80662&quot;</span> <span class="literal">-Organization</span> <span class="string">&quot;contoso.onmicrosoft.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/en/tags/Authentication/" rel="tag">Authentication</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/en/non-interactive-exchange-online-powershell-connection.md" class="article-source-link" target="_blank" rel="noopener noreferrer">Source</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/en/non-interactive-exchange-online-powershell-connection/" data-id="cuidkgbRcHoHhIWeYhy-GRUOQ" data-title="Connect to Exchange Online PowerShell Non-Interactively" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">Share</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/en/microsoft-graph-event-transaction-id/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph Event resource transactionId property
+        
+      </div>
+    </a>
+  
+  
+    <a href="/en/propose-alternative-meeting-time-with-microsoft-graph/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Propose an alternative meeting time with Microsoft Graph
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/en/migrate-wordpress-to-github-pages-with-copilot/">Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</a>
+          </li>
+        
+          <li>
+            <a href="/en/connect-exchange-server-2019-management-tools-snapin/">Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</a>
+          </li>
+        
+          <li>
+            <a href="/en/prevent-user-profile-photo-changes-in-microsoft-365/">Prevent users from changing profile photos in Microsoft 365</a>
+          </li>
+        
+          <li>
+            <a href="/en/microsoft-graph-email-attachments/">Microsoft Graph email attachments</a>
+          </li>
+        
+          <li>
+            <a href="/en/create-draft-meeting-with-microsoft-graph/">Create a draft meeting with Microsoft Graph</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/en/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/en/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>Show more tags</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/en/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/">All posts in 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2026/11/">November 2026</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/">All posts in 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2024/03/">March 2024</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/">All posts in 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2023/07/">July 2023</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/">All posts in 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/05/">May 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2022/02/">February 2022</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/">All posts in 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/09/">September 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2021/01/">January 2021</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/">All posts in 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/11/">November 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2020/02/">February 2020</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/">All posts in 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/07/">July 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2019/03/">March 2019</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/">All posts in 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2018/04/">April 2018</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/">All posts in 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2017/01/">January 2017</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/">All posts in 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/11/">November 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/09/">September 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/08/">August 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/07/">July 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/05/">May 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2016/01/">January 2016</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/">All posts in 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/06/">June 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/en/archives/2015/05/">May 2015</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">Advertisement</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/en/" class="mobile-nav-link">Home</a>
+  
+    <a href="/en/tutorials/" class="mobile-nav-link">Tutorials</a>
+  
+    <a href="/en/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/en/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/en/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

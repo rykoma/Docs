@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法 | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Microsoft Graph PowerShell SDK を使用して、Microsoft 365 のライセンスを確認、割り当て、変更、削除する方法を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法">
+<meta property="og:url" content="https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Microsoft Graph PowerShell SDK を使用して、Microsoft 365 のライセンスを確認、割り当て、変更、削除する方法を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2021-08-29T15:44:57.000Z">
+<meta property="article:modified_time" content="2022-05-13T14:49:51.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Licensing">
+<meta property="article:tag" content="Microsoft 365">
+<meta property="article:tag" content="Microsoft Graph">
+<meta property="article:tag" content="Microsoft Graph PowerShell SDK">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/manage-microsoft-365-licenses-graph-powershell-sdk/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/manage-microsoft-365-licenses-graph-powershell-sdk/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/manage-microsoft-365-licenses-graph-powershell-sdk" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2021-08-29T15:44:57.000Z" title="2021-08-30 00:44:57 JST" itemprop="datePublished">2021-08-30</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Microsoft Graph</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2022-05-13T14:49:51.000Z" title="2022-05-13 23:49:51 JST" itemprop="dateModified">2022-05-13</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法を紹介します。なお、特に記載がない場合、以下の環境で動作確認をしています。</p>
+<ul>
+<li>Microsoft Graph PowerShell SDK 1.6.1</li>
+<li>Windows PowerShell 5.1</li>
+<li>PowerShell 7.1.4</li>
+</ul>
+<h2 id="Microsoft-Graph-PowerShell-SDK-について"><a href="#Microsoft-Graph-PowerShell-SDK-について" class="headerlink" title="Microsoft Graph PowerShell SDK について"></a>Microsoft Graph PowerShell SDK について</h2><p>Microsoft Graph PowerShell SDK は、オープン ソースで開発されている PowerShell モジュールで、Microsoft Graph を PowerShell から実行しやすくしたものです。プロジェクトは GitHub で管理されており、PowerShell モジュールは MIT ライセンスで配布されています。有償で提供される製品とは異なり、MIT ライセンスで無償で配布されているモジュールのため、Microsoft による技術サポートの提供も限定的であったり、内容によっては対応されなかったりします。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/microsoftgraph/msgraph-sdk-powershell">Microsoft Graph PowerShell SDK の GitHub リポジトリ</a></p>
+<h2 id="Microsoft-Graph-PowerShell-SDK-のインストール"><a href="#Microsoft-Graph-PowerShell-SDK-のインストール" class="headerlink" title="Microsoft Graph PowerShell SDK のインストール"></a>Microsoft Graph PowerShell SDK のインストール</h2><p>以下のページに記載されている手順で Microsoft Graph PowerShell SDK をインストールします。たくさんの PowerShell モジュールがインストールされるため、それなりに時間がかかります。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/microsoftgraph/installation">Install the Microsoft Graph PowerShell SDK</a></p>
+<h2 id="認証"><a href="#認証" class="headerlink" title="認証"></a>認証</h2><p>管理者の資格情報を使用する方法と、アプリケーションのアクセス許可を使用する方法があります。管理者自身が操作してライセンスを管理する場合は、管理者の資格情報を使用する方法でよいでしょう。バッチ処理など、無人化や自動化を行う場合は、アプリケーションのアクセス許可を使用します。</p>
+<h3 id="管理者の資格情報を使用する場合"><a href="#管理者の資格情報を使用する場合" class="headerlink" title="管理者の資格情報を使用する場合"></a>管理者の資格情報を使用する場合</h3><p>以下のコマンドを実行してサインインし、ライセンスの管理に必要なアクセス許可への同意を行います。テナントに紐づくライセンスの情報を確認するには <code>Organization.Read.All</code> が必要です。また、ライセンスの付与などには <code>User.ReadWrite.All</code> が必要です。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-Scopes</span> <span class="string">&quot;Organization.Read.All&quot;</span>,<span class="string">&quot;User.ReadWrite.All&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>認証が求められたら、指示に従って管理者アカウントでサインインします。アクセス許可への同意を求められたら [承諾] をクリックします。[組織の代理として同意する] はオフのままで問題ありません。</p>
+<h3 id="アプリケーションのアクセス許可を使用する場合"><a href="#アプリケーションのアクセス許可を使用する場合" class="headerlink" title="アプリケーションのアクセス許可を使用する場合"></a>アプリケーションのアクセス許可を使用する場合</h3><p>基本的な内容は、以下の技術情報に記載されています。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/powershell/microsoftgraph/app-only">Use app-only authentication with the Microsoft Graph PowerShell SDK</a></p>
+<p>まず、Azure AD にアプリケーションを登録します。</p>
+<ol>
+<li>Azure Portal にサインインします。</li>
+<li>[Azure Active Directory] - [アプリの登録] - [新規登録] をクリックします。</li>
+<li>[名前] に任意のアプリ名を入力します (例: App01)。</li>
+<li>[サポートされているアカウントの種類] から [この組織ディレクトリのみに含まれるアカウント] を選択します。</li>
+<li>[リダイレクト URI] で [Web] を選択し、テキスト ボックスは空欄のままにします。</li>
+<li>[登録] をクリックします。</li>
+<li>表示された [アプリケーション (クライアント) ID] と [ディレクトリ (テナント) ID] の値を控えておきます。</li>
+<li>[管理] - [API のアクセス許可] - [アクセス許可の追加] をクリックします。</li>
+<li>[Microsoft Graph] - [アプリケーションの許可] をクリックし、<code>Organization.Read.All</code> と <code>User.ReadWrite.All</code> を選択して [アクセス許可の追加] をクリックします。</li>
+<li>[構成されたアクセス許可] の中の [種類] が [委任済み] である <code>User.Read</code> の右側の […] をクリックし、[アクセス許可の削除] をクリックします。確認が表示されたら [はい、削除します] をクリックします。</li>
+<li>[&lt;テナント名&gt; に管理者の同意を与えます] をクリックします。確認が表示されたら [はい] をクリックします。</li>
+</ol>
+<p>次に、証明書を発行します。</p>
+<ol start="12">
+<li><p>Windows PowerShell を起動します。</p>
+</li>
+<li><p>以下のコマンドを実行します。証明書が発行され、CER ファイルと PFX ファイルが出力され、コンソールに証明書の拇印が表示されます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;&lt;アプリの名前&gt;&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> &lt;エクスポート先のファイル名&gt;</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> &lt;エクスポート先のファイル名&gt; <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;&lt;エクスポートした PFX ファイルを保護する任意のパスワード&gt;&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$mycert</span> = <span class="built_in">New-SelfSignedCertificate</span> <span class="literal">-Subject</span> <span class="string">&quot;App01&quot;</span> <span class="literal">-CertStoreLocation</span> <span class="string">&quot;Cert:\CurrentUser\My&quot;</span> <span class="literal">-NotAfter</span> (<span class="built_in">Get-Date</span>).AddYears(<span class="number">1</span>) <span class="literal">-KeySpec</span> KeyExchange</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-Certificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.cer</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Export-PfxCertificate</span> <span class="literal">-FilePath</span> c:\temp\mycert.pfx <span class="literal">-Password</span> <span class="variable">$</span>(<span class="built_in">ConvertTo-SecureString</span> <span class="literal">-String</span> <span class="string">&quot;1234&quot;</span> <span class="literal">-Force</span> <span class="literal">-AsPlainText</span>)</span><br><span class="line"><span class="variable">$mycert</span> | <span class="built_in">Select</span> Thumbprint</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Azure Portal で先ほど登録したアプリのページに戻ります。</p>
+</li>
+<li><p>[管理] - [証明書とシークレット] をクリックします。</p>
+</li>
+<li><p>[証明書のアップロード] をクリックします。</p>
+</li>
+<li><p>先ほど出力された CER ファイルを選択して [追加] をクリックします。</p>
+</li>
+</ol>
+<p>以上で準備は完了です。証明書の拇印を指定して証明書ストアから読み込んで接続するには、以下のようにコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;登録したアプリのアプリケーション (クライアント) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;アプリを登録したテナントのディレクトリ (テナント) ID&gt;&quot;</span> <span class="literal">-CertificateThumbprint</span> <span class="string">&quot;&lt;証明書の拇印&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-CertificateThumbprint</span> <span class="string">&quot;C1BF2E11A13E4F898627AFAA7FF848A63AD2D68E&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>X509Certificate2 オブジェクトを指定して接続するには、以下のようにコマンドを実行します。この例では証明書ストアから証明書を読み込んでいます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;登録したアプリのアプリケーション (クライアント) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;アプリを登録したテナントのディレクトリ (テナント) ID&gt;&quot;</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\&lt;証明書の拇印&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-Certificate</span>:(<span class="built_in">Get-ChildItem</span> <span class="literal">-Path</span> Cert:\CurrentUser\My\C1BF2E11A13E4F898627AFAA7FF848A63AD2D68E)</span><br></pre></td></tr></table></figure>
+
+<p>証明書の名前を指定して証明書ストアから読み込んで接続するには、以下のようにコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;&lt;登録したアプリのアプリケーション (クライアント) ID&gt;&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;&lt;アプリを登録したテナントのディレクトリ (テナント) ID&gt;&quot;</span> <span class="literal">-CertificateName</span> <span class="string">&quot;CN=&lt;証明書のサブジェクト名&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Connect-MgGraph</span> <span class="literal">-ClientId</span> <span class="string">&quot;b502ac25-c0b0-4436-bd12-fdb79ece2341&quot;</span> <span class="literal">-TenantId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e&quot;</span> <span class="literal">-CertificateName</span> <span class="string">&quot;CN=App01&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ライセンス情報の確認"><a href="#ライセンス情報の確認" class="headerlink" title="ライセンス情報の確認"></a>ライセンス情報の確認</h2><p>テナントに紐づくライセンスの情報を確認するには、以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> | <span class="built_in">ft</span> Id, SkuId, SkuPartNumber</span><br></pre></td></tr></table></figure>
+
+<p>ライセンスの付与には <code>SkuId</code> の値を使用します。そのため、どの <code>SkuId</code> が管理対象のライセンスなのかを判別する必要があります。<code>SkuPartNumber</code> の値から推測できる場合もありますが、詳細は以下の技術情報を参照してください。例えば、Microsoft 365 E5 の <code>SkuPartNumber</code> は <code>SPE_E5</code>、<code>SkuId</code> は <code>06ebc4ee-1bb5-47dd-8120-11324bc54e06</code> です。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity/users/licensing-service-plan-reference">Product names and service plan identifiers for licensing</a></p>
+<p>ライセンス内の一部のサービス プランを無効にする場合は、サービス プランの情報も確認します。以下のコマンドを実行してください。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> <span class="literal">-SubscribedSkuId</span> <span class="string">&quot;&lt;Get-MgSubscribedSku コマンドで確認した、サービス プランを確認するライセンスの Id&gt;&quot;</span> | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans | <span class="built_in">ft</span> ServicePlanId, ServicePlanName</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgSubscribedSku</span> <span class="literal">-SubscribedSkuId</span> <span class="string">&quot;7d046331-5ea5-4306-87ae-8d51f3dcc71e_06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span> | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans | <span class="built_in">ft</span> ServicePlanId, ServicePlanName</span><br></pre></td></tr></table></figure>
+
+<p>サービス プランの情報も上記の技術情報に記載されています。例えば、Exchange Online Plan 2 の <code>ServicePlanName</code> は <code>EXCHANGE_S_ENTERPRISE</code>、<code>ServicePlanId</code> は <code>efb87545-963c-4e0d-99df-69c6916d9eb0</code> です。</p>
+<h2 id="ユーザーの-UsageLocation-の設定"><a href="#ユーザーの-UsageLocation-の設定" class="headerlink" title="ユーザーの UsageLocation の設定"></a>ユーザーの UsageLocation の設定</h2><p>ライセンスを割り当てるユーザーには、事前に <code>UsageLocation</code> が設定されている必要があります。設定されていない場合、ライセンスの割り当てに失敗します。そのため、はじめてライセンスを割り当てるユーザーには、以下のようなコマンドで <code>UsageLocation</code> を設定します。この例では、ユーザーの <code>UsageLocation</code> を <code>JP</code> に設定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-MgUser</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-UsageLocation</span> <span class="string">&quot;&lt;ユーザーの場所&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Update-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-UsageLocation</span> <span class="string">&quot;JP&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>現在の <code>UsageLocation</code> の値は、以下のコマンドで確認できます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-Property</span> UsageLocation | <span class="built_in">fl</span> UsageLocation</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> UsageLocation | <span class="built_in">fl</span> UsageLocation</span><br></pre></td></tr></table></figure>
+
+<h2 id="シナリオ-1-ユーザーにライセンスを割り当てる"><a href="#シナリオ-1-ユーザーにライセンスを割り当てる" class="headerlink" title="シナリオ 1: ユーザーにライセンスを割り当てる"></a>シナリオ 1: ユーザーにライセンスを割り当てる</h2><p>ユーザーにライセンスを割り当てます。ライセンスがまだ割り当てられていない場合も、すでに割り当てられていて追加する場合も、手順は同じです。</p>
+<h3 id="すべてのサービス-プランを有効にして特定のライセンスを割り当てる"><a href="#すべてのサービス-プランを有効にして特定のライセンスを割り当てる" class="headerlink" title="すべてのサービス プランを有効にして特定のライセンスを割り当てる"></a>すべてのサービス プランを有効にして特定のライセンスを割り当てる</h3><p>割り当てるライセンスの <code>SkuId</code> を指定した <code>MicrosoftGraphAssignedLicense</code> オブジェクトを作成し、<code>Set-MgUserLicense</code> コマンドの <code>AddLicenses</code> パラメーターに配列として指定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;割り当てるライセンスの SkuId&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>次のようなエラーが発生する場合は、PowerShell に Microsoft Graph PowerShell SDK が内部で使用するデータ型が読み込まれていません。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">New-Object: Cannot find type [Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense]: verify that the assembly containing this type is loaded.</span><br></pre></td></tr></table></figure>
+
+<p>この場合は、事前に <code>Get-MgUser</code> コマンドを実行するなどして、データ型を PowerShell に読み込ませることで回避できます。</p>
+<h3 id="すべてのサービス-プランを有効にして複数のライセンスを割り当てる"><a href="#すべてのサービス-プランを有効にして複数のライセンスを割り当てる" class="headerlink" title="すべてのサービス プランを有効にして複数のライセンスを割り当てる"></a>すべてのサービス プランを有効にして複数のライセンスを割り当てる</h3><p>複数のライセンスを割り当てる場合は、それぞれの <code>MicrosoftGraphAssignedLicense</code> オブジェクトを作成し、<code>Set-MgUserLicense</code> コマンドの <code>AddLicenses</code> パラメーターにカンマ区切りで指定します。以下の例では、2 つのライセンスを割り当てます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;割り当てるライセンスの SkuId (1 つ目)&gt;&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License2</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;割り当てるライセンスの SkuId (2 つ目)&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>, <span class="variable">$License2</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License2</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;84a661c4-e949-4bd2-a560-ed7766fcaf2b&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>, <span class="variable">$License2</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="特定のサービス-プランを無効にして特定のライセンスを割り当てる"><a href="#特定のサービス-プランを無効にして特定のライセンスを割り当てる" class="headerlink" title="特定のサービス プランを無効にして特定のライセンスを割り当てる"></a>特定のサービス プランを無効にして特定のライセンスを割り当てる</h3><p>ライセンスの割り当て時に無効にするサービス プランがある場合は、<code>DisablePlans</code> に <code>ServicePlanId</code> を配列として指定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;割り当てるライセンスの SkuId&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;無効にするサービス プランの ServicePlanId&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="複数のサービス-プランを無効にして特定のライセンスを割り当てる"><a href="#複数のサービス-プランを無効にして特定のライセンスを割り当てる" class="headerlink" title="複数のサービス プランを無効にして特定のライセンスを割り当てる"></a>複数のサービス プランを無効にして特定のライセンスを割り当てる</h3><p>無効にするサービス プランが複数ある場合は、<code>DisablePlans</code> に <code>ServicePlanId</code> をカンマ区切りで指定します。以下の例では、2 つのサービス プランを無効にしてライセンスを割り当てます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;割り当てるライセンスの SkuId&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;無効にするサービス プランの ServicePlanId (1 つ目)&gt;&quot;</span>, <span class="string">&quot;&lt;無効にするサービス プランの ServicePlanId (2 つ目)&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>, <span class="string">&quot;0898bdbb-73b0-471a-81e5-20f1fe4dd66e&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="シナリオ-2-ユーザーからライセンスを削除する"><a href="#シナリオ-2-ユーザーからライセンスを削除する" class="headerlink" title="シナリオ 2: ユーザーからライセンスを削除する"></a>シナリオ 2: ユーザーからライセンスを削除する</h2><h3 id="ユーザーから特定のライセンスを削除する"><a href="#ユーザーから特定のライセンスを削除する" class="headerlink" title="ユーザーから特定のライセンスを削除する"></a>ユーザーから特定のライセンスを削除する</h3><p>ユーザーからライセンスを削除するには、<code>Set-MgUserLicense</code> コマンドの <code>RemoveLicenses</code> パラメーターに削除するライセンスの <code>SkuId</code> を配列として指定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;&lt;削除するライセンスの SkuId&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="特定のユーザーから複数のライセンスを削除する"><a href="#特定のユーザーから複数のライセンスを削除する" class="headerlink" title="特定のユーザーから複数のライセンスを削除する"></a>特定のユーザーから複数のライセンスを削除する</h3><p>ユーザーから複数のライセンスを削除するには、<code>Set-MgUserLicense</code> コマンドの <code>RemoveLicenses</code> パラメーターの配列に、削除するライセンスの <code>SkuId</code> をカンマ区切りで指定します。以下の例では、ユーザーから 2 つのライセンスを削除します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;&lt;削除するライセンスの SkuId (1 つ目)&gt;&quot;</span>, <span class="string">&quot;&lt;削除するライセンスの SkuId (2 つ目)&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>() <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>, <span class="string">&quot;84a661c4-e949-4bd2-a560-ed7766fcaf2b&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="シナリオ-3-割り当て済みライセンスの無効にするサービス-プランを変更する"><a href="#シナリオ-3-割り当て済みライセンスの無効にするサービス-プランを変更する" class="headerlink" title="シナリオ 3: 割り当て済みライセンスの無効にするサービス プランを変更する"></a>シナリオ 3: 割り当て済みライセンスの無効にするサービス プランを変更する</h2><p>ライセンスを割り当てる場合と同じ方法で <code>DisabledPlans</code> の内容を変更してコマンドを実行することで、無効にするサービス プランを変更できます。上書きになるため、元々無効だったサービス プランを引き続き無効にする場合は、<code>DisabledPlans</code> に改めて指定する必要があります。</p>
+<h3 id="割り当て済みライセンスの無効にするサービス-プランを変更する"><a href="#割り当て済みライセンスの無効にするサービス-プランを変更する" class="headerlink" title="割り当て済みライセンスの無効にするサービス プランを変更する"></a>割り当て済みライセンスの無効にするサービス プランを変更する</h3><p>以下の例では、割り当て済みのライセンスについて、指定した 2 つのサービス プランだけを無効にします。指定していないサービス プランは有効になります。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;無効にするサービス プランを変更する割り当て済みライセンスの SkuId&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;&lt;無効にするサービス プランの ServicePlanId (1 つ目)&gt;&quot;</span>, <span class="string">&quot;&lt;無効にするサービス プランの ServicePlanId (2 つ目)&gt;&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>(<span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>, <span class="string">&quot;0898bdbb-73b0-471a-81e5-20f1fe4dd66e&quot;</span>)&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="割り当て済みライセンスの無効にしているサービス-プランをすべて有効にする"><a href="#割り当て済みライセンスの無効にしているサービス-プランをすべて有効にする" class="headerlink" title="割り当て済みライセンスの無効にしているサービス プランをすべて有効にする"></a>割り当て済みライセンスの無効にしているサービス プランをすべて有効にする</h3><p>割り当て済みライセンスで無効にしているサービス プランをすべて有効にするには、<code>DisabledPlans</code> に何も指定せずにコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;すべてのサービス プランを有効にする割り当て済みライセンスの SkuId&gt;&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>()&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>; DisabledPlans = <span class="selector-tag">@</span>()&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="すでに一部のサービス-プランを無効にしているライセンスで、追加のサービス-プランを無効にする"><a href="#すでに一部のサービス-プランを無効にしているライセンスで、追加のサービス-プランを無効にする" class="headerlink" title="すでに一部のサービス プランを無効にしているライセンスで、追加のサービス プランを無効にする"></a>すでに一部のサービス プランを無効にしているライセンスで、追加のサービス プランを無効にする</h3><p>すでに一部のサービス プランを無効にしているライセンスで追加のサービス プランを無効にするには、現在の <code>DisabledPlans</code> の内容を取得してから追加します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;&lt;対象の割り当て済みライセンスの SkuId&gt;&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans += <span class="string">&quot;&lt;追加で無効にするサービス プランの ServicePlanId&gt;&quot;</span></span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans += <span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span></span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h3 id="すでに-1-つ以上のサービス-プランを無効にしているライセンスで、特定のサービス-プランのみを有効にする"><a href="#すでに-1-つ以上のサービス-プランを無効にしているライセンスで、特定のサービス-プランのみを有効にする" class="headerlink" title="すでに 1 つ以上のサービス プランを無効にしているライセンスで、特定のサービス プランのみを有効にする"></a>すでに 1 つ以上のサービス プランを無効にしているライセンスで、特定のサービス プランのみを有効にする</h3><p>すでに 1 つ以上のサービス プランを無効にしているライセンスで、特定のサービス プランのみを無効から有効にするには、現在の <code>DisabledPlans</code> の内容を取得してから、有効にするサービス プランを取り除きます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;&lt;対象の割り当て済みライセンスの SkuId&gt;&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans = <span class="selector-tag">@</span>(<span class="variable">$License1</span>.DisabledPlans | ?&#123;<span class="variable">$_</span> <span class="operator">-ne</span> <span class="string">&quot;&lt;無効から有効にするサービス プランの ServicePlanId&gt;&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses | ?&#123;<span class="variable">$_</span>.SkuId <span class="operator">-eq</span> <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="variable">$License1</span>.DisabledPlans = <span class="selector-tag">@</span>(<span class="variable">$License1</span>.DisabledPlans | ?&#123;<span class="variable">$_</span> <span class="operator">-ne</span> <span class="string">&quot;b21a6b06-1988-436e-a07b-51ec6d9f52ad&quot;</span>&#125;)</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="variable">$License1</span> <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="シナリオ-4-ライセンスを変更する"><a href="#シナリオ-4-ライセンスを変更する" class="headerlink" title="シナリオ 4: ライセンスを変更する"></a>シナリオ 4: ライセンスを変更する</h2><p>現在割り当て済みのライセンスを削除して別のライセンスを割り当てるには、現在のライセンスを <code>RemoveLicenses</code> に指定し、新しく割り当てるライセンスを <code>AddLicenses</code> に指定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;&lt;新しく割り当てるライセンスの SkuId&gt;&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;&lt;現在割り当て済みのライセンスの SkuId&gt;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$License1</span> = <span class="built_in">New-Object</span> <span class="literal">-TypeName</span> Microsoft.Graph.PowerShell.Models.MicrosoftGraphAssignedLicense <span class="literal">-Property</span> <span class="selector-tag">@</span>&#123;SkuId = <span class="string">&quot;06ebc4ee-1bb5-47dd-8120-11324bc54e06&quot;</span>&#125;</span><br><span class="line"><span class="built_in">Set-MgUserLicense</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-AddLicenses</span> <span class="selector-tag">@</span>(<span class="variable">$License1</span>) <span class="literal">-RemoveLicenses</span> <span class="selector-tag">@</span>(<span class="string">&quot;6fd2c87f-b296-42f0-b197-1e91e994b900&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考-ユーザーに割り当て済みのライセンスを確認する"><a href="#参考-ユーザーに割り当て済みのライセンスを確認する" class="headerlink" title="参考: ユーザーに割り当て済みのライセンスを確認する"></a>参考: ユーザーに割り当て済みのライセンスを確認する</h2><p>ユーザーに割り当てられているライセンスは、<code>Get-MgUser</code> コマンドまたは <code>Get-MgUserLicenseDetail</code> コマンドで確認できます。</p>
+<h3 id="Get-MgUser-コマンドを使用してユーザーに割り当てられているライセンスを確認する"><a href="#Get-MgUser-コマンドを使用してユーザーに割り当てられているライセンスを確認する" class="headerlink" title="Get-MgUser コマンドを使用してユーザーに割り当てられているライセンスを確認する"></a>Get-MgUser コマンドを使用してユーザーに割り当てられているライセンスを確認する</h3><p><code>Get-MgUser</code> コマンドを使用すると、<code>Set-MgUserLicense</code> コマンドでも使用する <code>MicrosoftGraphAssignedLicense</code> の内容を確認できます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com <span class="literal">-Property</span> AssignedLicenses | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> AssignedLicenses</span><br></pre></td></tr></table></figure>
+
+<h3 id="Get-MgUserLicenseDetail-コマンドを使用してユーザーに割り当てられているライセンスを確認する"><a href="#Get-MgUserLicenseDetail-コマンドを使用してユーザーに割り当てられているライセンスを確認する" class="headerlink" title="Get-MgUserLicenseDetail コマンドを使用してユーザーに割り当てられているライセンスを確認する"></a>Get-MgUserLicenseDetail コマンドを使用してユーザーに割り当てられているライセンスを確認する</h3><p><code>Get-MgUserLicenseDetail</code> コマンドを使用すると、ユーザーに割り当てたライセンスやサービス プランのプロビジョニング状況を確認できます。ユーザーに割り当てたライセンスの情報は、以下のように実行して確認します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt;</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com</span><br></pre></td></tr></table></figure>
+
+<p>サービス プランの情報を確認するには、以下のようにコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> &lt;対象ユーザーの UPN&gt; | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUserLicenseDetail</span> <span class="literal">-UserId</span> TestGraphUser01@contoso.onmicrosoft.com | <span class="built_in">Select-Object</span> <span class="literal">-ExpandProperty</span> ServicePlans</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考-ライセンスが割り当てられているユーザーと割り当てられていないユーザーを一覧で取得する"><a href="#参考-ライセンスが割り当てられているユーザーと割り当てられていないユーザーを一覧で取得する" class="headerlink" title="参考: ライセンスが割り当てられているユーザーと割り当てられていないユーザーを一覧で取得する"></a>参考: ライセンスが割り当てられているユーザーと割り当てられていないユーザーを一覧で取得する</h2><p>ユーザーにライセンスが割り当てられているかどうかは、<code>Get-MgUser</code> コマンドの <code>AssignedLicenses</code> から判断します。</p>
+<p>本セクションの内容に限り、PowerShell 7 で動作確認をしています。<code>-All</code> スイッチを使用しているため、Windows PowerShell で実行すると Microsoft Graph のリクエストのクエリ文字列に問題が生じ、エラーになる可能性があります。また、全ユーザーを取得してから PowerShell 上でデータを整形するため、処理に時間がかかったり、全ユーザーの取得中に Microsoft Graph の制限に抵触して実行に失敗したりする可能性があります。なるべく制限に抵触しないよう、必要最低限のプロパティだけを取得する内容を紹介します。</p>
+<p>ライセンスが割り当てられているユーザーの一覧を取得するには、以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | ?&#123;<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-ne</span> <span class="number">0</span>&#125; | <span class="built_in">ft</span> AssignedLicenses, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<p>ライセンスが割り当てられていないユーザーの一覧を取得するには、以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | ?&#123;<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-eq</span> <span class="number">0</span>&#125; | <span class="built_in">ft</span> AssignedLicenses, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<p>以下のコマンドを実行すると、ユーザーの一覧に <code>Licensed</code> という名前のプロパティが追加で出力されます。ライセンスが割り当てられていれば <code>True</code>、割り当てられていなければ <code>False</code> が出力されます。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-MgUser</span> <span class="literal">-Property</span> AssignedLicenses, UserPrincipalName <span class="literal">-All</span> | <span class="built_in">select</span> <span class="selector-tag">@</span>&#123;n=<span class="string">&quot;Licensed&quot;</span>; e=&#123;(<span class="variable">$_</span>.AssignedLicenses.Count <span class="operator">-ne</span> <span class="number">0</span>)&#125;&#125;, UserPrincipalName</span><br></pre></td></tr></table></figure>
+
+<h2 id="切断"><a href="#切断" class="headerlink" title="切断"></a>切断</h2><p>以下のコマンドを実行して、Microsoft Graph PowerShell SDK から切断します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Disconnect-MgGraph</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Microsoft-Graph/" rel="tag">Microsoft Graph</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Microsoft-365/" rel="tag">Microsoft 365</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/" rel="tag">Microsoft Graph PowerShell SDK</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Licensing/" rel="tag">Licensing</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/manage-microsoft-365-licenses-graph-powershell-sdk.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/manage-microsoft-365-licenses-graph-powershell-sdk/" data-id="cuidmLXLpdKSlnNTXjkBwUZhy" data-title="Microsoft Graph PowerShell SDK を使用した Microsoft 365 のライセンス管理の方法" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/ja/get-exchange-online-calendar-with-graph-powershell-sdk/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph PowerShell SDK を使用して Exchange Online から予定を取得する
+        
+      </div>
+    </a>
+  
+  
+    <a href="/ja/exchange-online-remote-powershell-v2-dotnet-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          C# で Exchange Online Remote PowerShell V2 Module を使用して Exchange Online へ接続する (.NET 5.0 編)
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

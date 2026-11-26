@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer Messaging Lab</title>
+    <link>https://blog.rykoma.net/en/</link>
+    <description>The latest posts from Developer Messaging Lab</description>
+    <language>en</language>
+    <atom:link href="https://blog.rykoma.net/en/rss.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Migrating my blog from WordPress to GitHub Pages with GitHub Copilot</title>
+      <link>https://blog.rykoma.net/en/migrate-wordpress-to-github-pages-with-copilot/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/migrate-wordpress-to-github-pages-with-copilot/</guid>
+      <pubDate>Thu, 26 Nov 2026 13:33:41 GMT</pubDate>
+      <description>My experience migrating this blog from WordPress to Hexo and GitHub Pages with GitHub Copilot.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Server 2019 from C# with the Exchange Management Tools Snap-In</title>
+      <link>https://blog.rykoma.net/en/connect-exchange-server-2019-management-tools-snapin/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/connect-exchange-server-2019-management-tools-snapin/</guid>
+      <pubDate>Mon, 02 Dec 2024 05:31:03 GMT</pubDate>
+      <description>Learn how to connect to Exchange Server 2019 from C# by using the RecipientManagement snap-in in the Exchange Management Tools.</description>
+    </item>
+    <item>
+      <title>Prevent users from changing profile photos in Microsoft 365</title>
+      <link>https://blog.rykoma.net/en/prevent-user-profile-photo-changes-in-microsoft-365/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/prevent-user-profile-photo-changes-in-microsoft-365/</guid>
+      <pubDate>Mon, 07 Oct 2024 14:29:22 GMT</pubDate>
+      <description>Learn how to prevent users from changing their profile photos in Microsoft 365 by using Microsoft Graph.</description>
+    </item>
+    <item>
+      <title>Microsoft Graph email attachments</title>
+      <link>https://blog.rykoma.net/en/microsoft-graph-email-attachments/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/microsoft-graph-email-attachments/</guid>
+      <pubDate>Thu, 29 Aug 2024 14:28:02 GMT</pubDate>
+      <description>Understand the file, item, inline, and cloud attachment types in Exchange Online when using Microsoft Graph.</description>
+    </item>
+    <item>
+      <title>Create a draft meeting with Microsoft Graph</title>
+      <link>https://blog.rykoma.net/en/create-draft-meeting-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/create-draft-meeting-with-microsoft-graph/</guid>
+      <pubDate>Fri, 15 Mar 2024 09:23:21 GMT</pubDate>
+      <description>Learn how to create a draft meeting with Microsoft Graph and send it when it is ready.</description>
+    </item>
+    <item>
+      <title>Find EWS apps registered in a tenant</title>
+      <link>https://blog.rykoma.net/en/find-ews-applications-in-tenant/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/find-ews-applications-in-tenant/</guid>
+      <pubDate>Wed, 15 Nov 2023 15:51:50 GMT</pubDate>
+      <description>Learn how to find apps registered in Microsoft Entra ID and Exchange Online with preconfigured EWS permissions by using PowerShell.</description>
+    </item>
+    <item>
+      <title>Control which mailboxes an app can access with Role Based Access Control for Applications</title>
+      <link>https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/control-application-mailbox-access-with-rbac/</guid>
+      <pubDate>Thu, 03 Aug 2023 14:25:42 GMT</pubDate>
+      <description>Configure Application RBAC in Exchange Online and use resource scopes to limit which mailboxes an app can access.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online IMAP with the client credentials flow</title>
+      <link>https://blog.rykoma.net/en/connect-to-exchange-online-imap-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/connect-to-exchange-online-imap-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 07:23:21 GMT</pubDate>
+      <description>Configure an application and connect to Exchange Online IMAP using the client credentials flow and MSAL in C#.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online POP with the client credentials flow</title>
+      <link>https://blog.rykoma.net/en/connect-to-exchange-online-pop-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/connect-to-exchange-online-pop-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 05:58:02 GMT</pubDate>
+      <description>Configure an application and connect to Exchange Online POP using the client credentials flow and MSAL in C#.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online SMTP with the client credentials flow</title>
+      <link>https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-client-credentials/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/connect-to-exchange-online-smtp-with-client-credentials/</guid>
+      <pubDate>Fri, 14 Jul 2023 04:32:07 GMT</pubDate>
+      <description>Configure an application and connect to Exchange Online SMTP using the client credentials flow and MSAL in C#.</description>
+    </item>
+    <item>
+      <title>Send email from Exchange Online with the Microsoft Graph PowerShell SDK</title>
+      <link>https://blog.rykoma.net/en/send-exchange-online-email-with-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/send-exchange-online-email-with-graph-powershell-sdk/</guid>
+      <pubDate>Fri, 13 May 2022 15:10:13 GMT</pubDate>
+      <description>Learn how to send email from an Exchange Online mailbox with the Send-MgUserMail cmdlet in the Microsoft Graph PowerShell SDK.</description>
+    </item>
+    <item>
+      <title>Send email with @mentions using Microsoft Graph</title>
+      <link>https://blog.rykoma.net/en/send-email-mentions-with-microsoft-graph/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/send-email-mentions-with-microsoft-graph/</guid>
+      <pubDate>Fri, 06 May 2022 15:29:55 GMT</pubDate>
+      <description>Learn how to send an email with an @mention using Microsoft Graph beta and what Outlook needs to recognize and display it.</description>
+    </item>
+    <item>
+      <title>Use only specific Microsoft Graph PowerShell SDK modules</title>
+      <link>https://blog.rykoma.net/en/use-specific-microsoft-graph-powershell-sdk-modules/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/use-specific-microsoft-graph-powershell-sdk-modules/</guid>
+      <pubDate>Tue, 22 Feb 2022 08:24:56 GMT</pubDate>
+      <description>Learn how to find and install only the Microsoft Graph PowerShell SDK modules that contain the commands you need.</description>
+    </item>
+    <item>
+      <title>Get Exchange Online calendar events with the Microsoft Graph PowerShell SDK</title>
+      <link>https://blog.rykoma.net/en/get-exchange-online-calendar-with-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/get-exchange-online-calendar-with-graph-powershell-sdk/</guid>
+      <pubDate>Wed, 29 Sep 2021 14:28:17 GMT</pubDate>
+      <description>Learn how to use Get-MgUserCalendarView in the Microsoft Graph PowerShell SDK to retrieve and format events from an Exchange Online calendar.</description>
+    </item>
+    <item>
+      <title>Manage Microsoft 365 licenses with the Microsoft Graph PowerShell SDK</title>
+      <link>https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/manage-microsoft-365-licenses-graph-powershell-sdk/</guid>
+      <pubDate>Sun, 29 Aug 2021 15:44:57 GMT</pubDate>
+      <description>Learn how to view, assign, change, and remove Microsoft 365 licenses with the Microsoft Graph PowerShell SDK.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET 5.0)</title>
+      <link>https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-5/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-5/</guid>
+      <pubDate>Fri, 11 Jun 2021 15:53:50 GMT</pubDate>
+      <description>Learn the historical steps for connecting to Exchange Online from C# and .NET 5.0 using the Remote PowerShell V2 module.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET Core 3.1)</title>
+      <link>https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-core-3-1/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-core-3-1/</guid>
+      <pubDate>Fri, 11 Jun 2021 15:32:36 GMT</pubDate>
+      <description>Learn the historical steps for connecting to Exchange Online from C# and .NET Core 3.1 using the Remote PowerShell V2 module.</description>
+    </item>
+    <item>
+      <title>Convert PR_ENTRYID to a Microsoft Graph REST ID</title>
+      <link>https://blog.rykoma.net/en/convert-pr-entryid-to-microsoft-graph-rest-id/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/convert-pr-entryid-to-microsoft-graph-rest-id/</guid>
+      <pubDate>Tue, 11 May 2021 13:03:20 GMT</pubDate>
+      <description>Learn how to convert a PR_ENTRYID value from MFCMAPI to a REST ID using Microsoft Graph translateExchangeIds.</description>
+    </item>
+    <item>
+      <title>Connect to Exchange Online with the Remote PowerShell V2 Module in C# (.NET Framework 4.7.2)</title>
+      <link>https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-framework/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/exchange-online-remote-powershell-v2-dotnet-framework/</guid>
+      <pubDate>Mon, 18 Jan 2021 15:14:01 GMT</pubDate>
+      <description>Learn the historical steps for connecting to Exchange Online from C# and .NET Framework 4.7.2 using the Exchange Online PowerShell V2 module.</description>
+    </item>
+    <item>
+      <title>Use the Microsoft Graph reports API with Power Automate</title>
+      <link>https://blog.rykoma.net/en/use-microsoft-graph-reports-api-with-power-automate/</link>
+      <guid isPermaLink="true">https://blog.rykoma.net/en/use-microsoft-graph-reports-api-with-power-automate/</guid>
+      <pubDate>Wed, 13 Jan 2021 14:25:56 GMT</pubDate>
+      <description>Create a Power Automate flow that retrieves a report using the Microsoft Graph reports API and sends it as an email attachment.</description>
+    </item>
+  </channel>
+</rss>

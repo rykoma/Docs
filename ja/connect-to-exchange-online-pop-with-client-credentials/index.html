@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Client Credential Flow を使って Exchange Online に POP で接続する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/connect-to-exchange-online-pop-with-client-credentials/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Client Credential Flow と MSAL を使い、Exchange Online に POP で接続するための設定と C# のサンプルを紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Client Credential Flow を使って Exchange Online に POP で接続する">
+<meta property="og:url" content="https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Client Credential Flow と MSAL を使い、Exchange Online に POP で接続するための設定と C# のサンプルを紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2023-07-14T05:58:02.000Z">
+<meta property="article:modified_time" content="2026-11-24T14:47:37.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Client Credential Flow">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="MSAL">
+<meta property="article:tag" content="OAuth">
+<meta property="article:tag" content="POP">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/connect-to-exchange-online-pop-with-client-credentials/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/connect-to-exchange-online-pop-with-client-credentials/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/connect-to-exchange-online-pop-with-client-credentials" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2023-07-14T05:58:02.000Z" title="2023-07-14 14:58:02 JST" itemprop="datePublished">2023-07-14</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Online</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Client Credential Flow を使って Exchange Online に POP で接続する
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-11-24T14:47:37.000Z" title="2026-11-24 23:47:37 JST" itemprop="dateModified">2026-11-24</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>この記事のサンプルは当時の記録として掲載しています。証明書を無条件に受け入れ、アクセストークンを含む認証データをコンソールに出力するため、このまま実行しないでください。実装する場合は証明書を検証し、認証データをログに出力せず、シークレットを安全に管理してください。</p>
+</div>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>Azure Active Directory は現在 Microsoft Entra ID という名称です。アプリの登録手順は執筆当時の画面に基づいています。また、サンプルの動作確認に使用した .NET 7 は<a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core">サポートを終了しています</a>。</p>
+</div>
+<p>POP でも Client Credential Flow がサポートされるようになりました。開発者向けの情報は以下のページに記載されています。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth">Authenticate an IMAP, POP or SMTP connection using OAuth</a></p>
+<p>アプリの登録や Exchange Online での準備、そして C# で実装する場合の基本的な内容を紹介します。コード自体に対する説明は特にないので、上記の開発者向けページと併せてお読みください。必要最低限の内容のみを実装しているため、本格的に実装するには Microsoft Identity Platform や POP の知識が必要になります。C# のコンソール アプリケーションで、認証ライブラリとして MSAL を使用しています。</p>
+<p>なお、POP を使用して Exchange Online へ接続しなければならない明確な要件がないのであれば、Microsoft Graph への移行を検討すべきです。</p>
+<p>Device Authentication Grant Flow を使用する場合は <a href="../../ja/connect-to-exchange-online-pop-with-oauth/">OAuth を使って Exchange Online に POP で接続する</a>を参照してください。</p>
+<h2 id="アプリの登録"><a href="#アプリの登録" class="headerlink" title="アプリの登録"></a>アプリの登録</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure ポータル</a> にアクセスして、サインインします。</li>
+<li>Azure Active Directory ブレードに移動します。</li>
+<li>[管理] - [アプリの登録] - [新規登録] をクリックします。</li>
+<li>以下のように設定し、[登録] をクリックします。<ul>
+<li>名前: 任意のアプリケーションの名前を指定します (例: PopTest02)。</li>
+<li>サポートされているアカウントの種類: 任意の組織ディレクトリ内のアカウント (任意の Azure AD ディレクトリ - マルチテナント)。</li>
+<li>リダイレクト URI: ドロップダウンから [パブリック クライアント&#x2F;ネイティブ (モバイルとデスクトップ)] を選択して、値を <code>https://login.microsoftonline.com/common/oauth2/nativeclient</code> にします。</li>
+</ul>
+</li>
+<li>[概要] - [基本] - [アプリケーション (クライアント) ID] の値を控えておきます。</li>
+<li>[管理] - [API のアクセス許可] をクリックします。</li>
+<li>[アクセス許可の追加] をクリックします。</li>
+<li>[所属する組織で使用している API] から [Office 365 Exchange Online] をクリックします。</li>
+<li>[アプリケーションの許可] をクリックします。</li>
+<li>[POP] - [POP.AccessAsApp] を選択し、[アクセス許可の追加] をクリックします。</li>
+<li>[構成されたアクセス許可] に既定で含まれていた [Microsoft Graph] - [User.Read] の右側の […] から [アクセス許可の削除] をクリックします。</li>
+<li>[はい、削除します] をクリックします。</li>
+<li>[&lt;テナント名&gt; に管理者の同意を与えます] をクリックします。</li>
+<li>[はい] をクリックします。</li>
+<li>[管理] - [証明書とシークレット] をクリックします。</li>
+<li>[クライアント シークレット] - [新しいクライアント シークレット] をクリックします。</li>
+<li>[説明] に任意の説明を入力し、[追加] をクリックします。</li>
+<li>追加されたクライアント シークレットの値を控えておきます。</li>
+<li>Azure Active Directory ブレードのトップに移動します。</li>
+<li>[管理] - [エンタープライズ アプリケーション] をクリックします。</li>
+<li>一覧から先ほど登録したアプリを探して [オブジェクト ID] の値を控えておきます。</li>
+</ol>
+<h2 id="Exchange-Online-の設定"><a href="#Exchange-Online-の設定" class="headerlink" title="Exchange Online の設定"></a>Exchange Online の設定</h2><ol>
+<li><p>Exchange Online の管理者権限で PowerShell から Exchange Online に接続します。</p>
+</li>
+<li><p>以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ServicePrincipal</span> <span class="literal">-AppId</span> &lt;控えておいたアプリケーション (クライアント) ID&gt; <span class="literal">-ObjectId</span> &lt;控えておいたオブジェクト ID&gt; <span class="literal">-DisplayName</span> &lt;登録したアプリの名前&gt; | <span class="built_in">fl</span></span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ServicePrincipal</span> <span class="literal">-AppId</span> <span class="number">05</span>cd6963<span class="literal">-153d-437f-92c7-2ddbc195d595</span> <span class="literal">-ObjectId</span> <span class="number">8</span>e1edc86<span class="literal">-3a23-4afa-99d9-0cc0794b123d</span> <span class="literal">-DisplayName</span> <span class="string">&quot;PopTest02&quot;</span> | <span class="built_in">fl</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>さらに以下のコマンドを実行して、アプリが接続するメールボックスに対するフル アクセス権を設定します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Add-MailboxPermission</span> <span class="literal">-Identity</span> &lt;アクセス先のメールボックス&gt; <span class="literal">-User</span> &lt;手順 <span class="number">2</span> の <span class="built_in">New-ServicePrincipal</span> コマンドの出力に表示された Identity の値&gt; <span class="literal">-AccessRights</span> FullAccess</span><br></pre></td></tr></table></figure>
+
+<p>実行例:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Add-MailboxPermission</span> <span class="literal">-Identity</span> ExoUser01 <span class="literal">-User</span> <span class="number">8</span>e1edc86<span class="literal">-3a23-4afa-99d9-0cc0794b123d</span> <span class="literal">-AccessRights</span> FullAccess</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="サンプル-コード"><a href="#サンプル-コード" class="headerlink" title="サンプル コード"></a>サンプル コード</h2><p>.NET 7.0 環境で MSAL (Microsoft.Identity.Client) バージョン 4.54.1 にて動作確認をしています。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> Microsoft.Identity.Client;</span><br><span class="line"><span class="keyword">using</span> System.Net.Security;</span><br><span class="line"><span class="keyword">using</span> System.Net.Sockets;</span><br><span class="line"><span class="keyword">using</span> System.Security.Cryptography.X509Certificates;</span><br><span class="line"><span class="keyword">using</span> System.Text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">PopOAuthCcfDemo</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">internal</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> ClientId = <span class="string">&quot;&lt;控えておいたアプリケーション (クライアント) ID&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> Secret = <span class="string">&quot;&lt;控えておいたクライアント シークレット&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> TenantId = <span class="string">&quot;&lt;接続先のテナント名 (contoso.onmicrosoft.com など)&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">readonly</span> <span class="built_in">string</span>[] Scopes = <span class="keyword">new</span> <span class="built_in">string</span>[] &#123; <span class="string">&quot;https://outlook.office365.com/.default&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> SmtpAddress = <span class="string">&quot;&lt;接続先メールボックスの SMTP アドレス (アプリがフル アクセス権を与えられているメールボックス)&gt;&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] <span class="keyword">args</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> tokenResult = GetToken().Result;</span><br><span class="line">            <span class="built_in">string</span> token = tokenResult.AccessToken;</span><br><span class="line">            <span class="built_in">string</span> XOAUTH2 = Base64Encode(<span class="string">$&quot;user=<span class="subst">&#123;SmtpAddress&#125;</span>\u0001auth=Bearer <span class="subst">&#123;token&#125;</span>\u0001\u0001&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">using</span> (ExoPopClient client = <span class="keyword">new</span>())</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// Receive the greeting.</span></span><br><span class="line">                <span class="keyword">var</span> response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;+OK&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;AUTH XOAUTH2&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;+&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;OAuth is not supported&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(XOAUTH2);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;+OK&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Authentication failure&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Download the first message.</span></span><br><span class="line">                client.Send(<span class="string">&quot;STAT&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;+OK&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;LIST 1&quot;</span>);</span><br><span class="line">                response = client.Receive();</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!response.StartsWith(<span class="string">&quot;+OK&quot;</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;Unexpected response received.&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                client.Send(<span class="string">&quot;QUIT&quot;</span>);</span><br><span class="line">                client.Receive();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Console.ReadLine();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">async</span> Task&lt;AuthenticationResult&gt; <span class="title">GetToken</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> cca = ConfidentialClientApplicationBuilder</span><br><span class="line">                .Create(ClientId)</span><br><span class="line">                .WithClientSecret(Secret)</span><br><span class="line">                .Build();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">await</span> cca.AcquireTokenForClient(Scopes)</span><br><span class="line">                .WithAuthority(AzureCloudInstance.AzurePublic, TenantId)</span><br><span class="line">                .ExecuteAsync();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">Base64Encode</span>(<span class="params"><span class="built_in">string</span> plainText</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> plainTextBytes = Encoding.UTF8.GetBytes(plainText);</span><br><span class="line">            <span class="keyword">return</span> Convert.ToBase64String(plainTextBytes);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ExoPopClient</span> : <span class="title">TcpClient</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">private</span> Stream stream;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">string</span> host = <span class="string">&quot;outlook.office365.com&quot;</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="built_in">byte</span>[] receiveBuffer = <span class="keyword">new</span> <span class="built_in">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ExoPopClient</span>()</span></span><br><span class="line"><span class="function">            : <span class="title">base</span>(<span class="params"><span class="string">&quot;outlook.office365.com&quot;</span>, <span class="number">995</span></span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            stream = GetStream();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> sslStream = <span class="keyword">new</span> SslStream(stream, <span class="literal">false</span>, ValidateRemoteCertificate);</span><br><span class="line">            sslStream.AuthenticateAsClient(host);</span><br><span class="line">            stream = sslStream;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">ValidateRemoteCertificate</span>(<span class="params"><span class="built_in">object</span> sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Send</span>(<span class="params"><span class="built_in">string</span> command</span>)</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> commandBytes = Encoding.ASCII.GetBytes(command + Environment.NewLine);</span><br><span class="line">            stream.Write(commandBytes, <span class="number">0</span>, commandBytes.Length);</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;C:\t<span class="subst">&#123;command&#125;</span>&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="built_in">string</span> <span class="title">Receive</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">var</span> stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (; ; )</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> temp = stream.Read(receiveBuffer, <span class="number">0</span>, receiveBuffer.Length);</span><br><span class="line">                stringBuilder.Append(Encoding.ASCII.GetString(receiveBuffer, <span class="number">0</span>, temp));</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="number">0</span> &lt; Available)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (<span class="number">2</span> &lt;= stringBuilder.Length &amp;&amp; stringBuilder[stringBuilder.Length - <span class="number">2</span>] == <span class="string">&#x27;\r&#x27;</span> &amp;&amp; stringBuilder[stringBuilder.Length - <span class="number">1</span>] == <span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="number">0</span> != Available)</span><br><span class="line">                    &#123;</span><br><span class="line">                        stringBuilder.Append(Environment.NewLine);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> response = stringBuilder.ToString();</span><br><span class="line"></span><br><span class="line">            Console.WriteLine(<span class="string">$&quot;S:\t<span class="subst">&#123;stringBuilder.Replace(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\r\n\t&quot;</span>).ToString(<span class="number">0</span>, stringBuilder.Length - <span class="number">1</span>)&#125;</span>&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> response;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/OAuth/" rel="tag">OAuth</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/MSAL/" rel="tag">MSAL</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Client-Credential-Flow/" rel="tag">Client Credential Flow</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/POP/" rel="tag">POP</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/connect-to-exchange-online-pop-with-client-credentials.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/connect-to-exchange-online-pop-with-client-credentials/" data-id="cuidKxFrdHSl7cu4gdSUQOgvE" data-title="Client Credential Flow を使って Exchange Online に POP で接続する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/ja/connect-to-exchange-online-imap-with-client-credentials/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Client Credential Flow を使って Exchange Online に IMAP で接続する
+        
+      </div>
+    </a>
+  
+  
+    <a href="/ja/connect-to-exchange-online-smtp-with-client-credentials/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Client Credential Flow を使って Exchange Online に SMTP で接続する
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話 | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/migrate-wordpress-to-github-pages-with-copilot/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="WordPress から Hexo と GitHub Pages へのブログ移行を GitHub Copilot と一緒に進めた経験を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話">
+<meta property="og:url" content="https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="WordPress から Hexo と GitHub Pages へのブログ移行を GitHub Copilot と一緒に進めた経験を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2026-11-26T13:33:41.000Z">
+<meta property="article:modified_time" content="2026-11-26T13:33:41.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Blog">
+<meta property="article:tag" content="GitHub Copilot">
+<meta property="article:tag" content="GitHub Pages">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="WordPress">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/migrate-wordpress-to-github-pages-with-copilot/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/migrate-wordpress-to-github-pages-with-copilot/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/migrate-wordpress-to-github-pages-with-copilot" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2026-11-26T13:33:41.000Z" title="2026-11-26 22:33:41 JST" itemprop="datePublished">2026-11-26</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Blog</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話
+    </h1>
+  
+
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>このブログを WordPress から GitHub Pages に移行しました。移行先の選定から、サイトの構築、記事の移行、英語版の作成まで、ほぼすべての作業を GitHub Copilot と一緒に進めました。</p>
+<p>この記事では、移行を決めた理由と、新しいブログの構成、Copilot との作業で印象に残ったことを紹介します。</p>
+<h2 id="移行しようと思った理由"><a href="#移行しようと思った理由" class="headerlink" title="移行しようと思った理由"></a>移行しようと思った理由</h2><p>以前のブログは、Azure App Service 上の WordPress と Azure Database for MySQL を使って運用していました。しかし、私はこれらのサービスに関する知識がほとんどなく、メンテナンスが大変でした。</p>
+<p>また、個人ブログに潤沢なリソースを割り当てるほどの投資はできず、動作が遅いことにもストレスを感じていました。もう少しシンプルで、費用や保守の負担を抑えられる構成にしたいと考え、移行を検討することにしました。</p>
+<h2 id="移行先に-Hexo-と-GitHub-Pages-を選んだ"><a href="#移行先に-Hexo-と-GitHub-Pages-を選んだ" class="headerlink" title="移行先に Hexo と GitHub Pages を選んだ"></a>移行先に Hexo と GitHub Pages を選んだ</h2><p>移行先を考えるにあたって、別の WordPress ホスティング サービスやブログ サービスも比較しました。その中で、ランニング コストがかからない GitHub Pages を選びました。</p>
+<p>記事を管理する仕組みとして選んだのは、静的サイト ジェネレーターの Hexo です。普段の仕事で Hexo を使っていて、なじみがあったことが決め手でした。</p>
+<p>新しいブログでは、記事を Markdown ファイルとして Git で管理し、GitHub Actions でサイトをビルドして GitHub Pages に公開しています。テーマには Landscape を使用し、必要なカスタマイズも行いました。</p>
+<p>移行にあたっては、これまでの記事へのリンクをできるだけ維持するため、旧 WordPress の URL から新しい URL へリダイレクトするようにしました。WordPress では日本語の記事しか用意していませんでしたが、移行に合わせて英語版も作成し、日本語と英語それぞれのページを用意しました。</p>
+<h2 id="GitHub-Copilot-にほぼすべての作業を手伝ってもらった"><a href="#GitHub-Copilot-にほぼすべての作業を手伝ってもらった" class="headerlink" title="GitHub Copilot にほぼすべての作業を手伝ってもらった"></a>GitHub Copilot にほぼすべての作業を手伝ってもらった</h2><p>今回の移行では、GitHub Copilot にコードを書いてもらうだけでなく、移行先のプラットフォーム選定や移行計画の策定から相談しました。その後の Hexo やテーマのカスタマイズ、記事の移行、英語版の作成まで、ほぼすべてを Copilot と一緒に進めました。</p>
+<p>むしろ、私自身が直接行った作業のほうが少なかったと思います。主に行ったのは、コードや記事などの成果物のレビュー、GitHub 上で必要な設定、DNS レコードの変更です。</p>
+<p>Copilot が作成したものをそのまま公開したわけではありません。特に記事については、移行が正しくできているか、日本語と英語の両方を読み直しました。すべての記事を確認するのは大変でしたが、自分のブログとして公開する以上、内容を確認することは大切だと考えています。</p>
+<h2 id="親セッションと子セッションで記事移行を並列に進めた"><a href="#親セッションと子セッションで記事移行を並列に進めた" class="headerlink" title="親セッションと子セッションで記事移行を並列に進めた"></a>親セッションと子セッションで記事移行を並列に進めた</h2><p>記事の移行では、1 つの親セッションに進捗管理用の CSV ファイルを管理してもらい、記事ごとの移行作業はそれぞれ専属の子セッションに任せました。子セッションには、日本語記事の移行と英語版の作成を依頼し、複数の記事を並列に進めました。</p>
+<p>子セッションには、移行が終わったら必ずプレビューを確認するか私に聞くこと、勝手に親セッションに完了を報告しないこともお願いしました。これにより、記事ごとの作業を分けながら、私が内容を確認する機会を設けました。</p>
+<p>指示が毎回同じように親セッションから子セッションへ伝わるとは限らず、作業にばらつきが出ることもありました。そのため、子セッションを作成するときのプロンプトは、毎回詳細に指示するようにしました。基本的には移行対象の記事 ID を変えて、同じプロンプトをコピーして貼り付けるだけです。</p>
+<h2 id="古い情報への注釈も追加してくれた"><a href="#古い情報への注釈も追加してくれた" class="headerlink" title="古い情報への注釈も追加してくれた"></a>古い情報への注釈も追加してくれた</h2><p>記事の移行で特に驚いたのは、Copilot が記事の内容が古くなっていないかを調べ、必要に応じて注釈を追加してくれたことです。</p>
+<p>当初は、記事の本文をそのまま移行できればよいと思っていました。しかし、例えば Exchange Web Services (EWS) に関する記事では、Exchange Online の EWS の廃止が進んでいることまで調べ、読者向けの注釈を追加してくれました。<a href="../../ja/find-ews-applications-in-tenant/">テナントに登録されている EWS アプリを探す</a>もその一例です。</p>
+<p>過去の記事を記録として残しつつ、現在の状況も読者に伝えられるようになったのは、うれしい発見でした。今回追加された情報を手がかりに、今後は記事の内容自体も最新化していきたいと思っています。</p>
+<h2 id="移行を終えて"><a href="#移行を終えて" class="headerlink" title="移行を終えて"></a>移行を終えて</h2><p>移行後は、ページの表示速度が圧倒的に改善しました。GitHub Pages を使うことで、ブログのホスティングにかかる費用も抑えられます。また、これからは記事を Markdown のテキスト ファイルとして書けるので、運用も楽になるのではないかと期待しています。</p>
+<p>今回、Copilot の提案が大きく間違っていると感じることは、基本的にはありませんでした。それでも、記事を日英両方で読み直すなど、最後に人が確認する作業は欠かせませんでした。</p>
+<p>移行先の検討から公開まで、これだけ多くの作業を Copilot と一緒に進められたことは印象的でした。しばらく新しい記事を書いていませんでしたが、ブログの移行をきっかけに、また少しずつ記事を書いていこうと思います。</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Blog/" rel="tag">Blog</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/GitHub-Copilot/" rel="tag">GitHub Copilot</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/GitHub-Pages/" rel="tag">GitHub Pages</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Hexo/" rel="tag">Hexo</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/WordPress/" rel="tag">WordPress</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/migrate-wordpress-to-github-pages-with-copilot.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/migrate-wordpress-to-github-pages-with-copilot/" data-id="cuidEPcWMTeUYDsR5FjfX0oxE" data-title="GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+  
+    <a href="/ja/connect-exchange-server-2019-management-tools-snapin/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

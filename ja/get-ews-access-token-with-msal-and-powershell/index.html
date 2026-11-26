@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <!-- Google Analytics -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){window.dataLayer.push(arguments);};
+    window.gtag('js', new Date());
+    window.gtag('config', "G-HMDMWWKBVY");
+
+    var analyticsScript = document.createElement('script');
+    analyticsScript.async = true;
+    analyticsScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent("G-HMDMWWKBVY");
+    document.head.appendChild(analyticsScript);
+  }
+</script>
+<!-- End Google Analytics -->
+  <!-- Google AdSense -->
+<script>
+  if (window.location.hostname === 'blog.rykoma.net') {
+    var adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent("ca-pub-6208566823743408");
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+  }
+</script>
+<!-- End Google AdSense -->
+  
+  <title>Windows PowerShell で MSAL を使って EWS 用のアクセス トークンを取得する | Developer Messaging 研究所</title>
+  
+    <link rel="canonical" href="https://blog.rykoma.net/ja/get-ews-access-token-with-msal-and-powershell/">
+  
+  
+    
+      <link rel="alternate" hreflang="ja" href="https://blog.rykoma.net/ja/get-ews-access-token-with-msal-and-powershell/">
+    
+  
+    
+      <link rel="alternate" hreflang="en" href="https://blog.rykoma.net/en/get-ews-access-token-with-msal-and-powershell/">
+    
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Windows PowerShell と MSAL を使い、対話的または非対話的に EWS 用のアクセス トークンを取得する方法を紹介します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows PowerShell で MSAL を使って EWS 用のアクセス トークンを取得する">
+<meta property="og:url" content="https://blog.rykoma.net/ja/get-ews-access-token-with-msal-and-powershell/index.html">
+<meta property="og:site_name" content="Developer Messaging 研究所">
+<meta property="og:description" content="Windows PowerShell と MSAL を使い、対話的または非対話的に EWS 用のアクセス トークンを取得する方法を紹介します。">
+<meta property="og:locale" content="ja_JP">
+<meta property="article:published_time" content="2019-12-30T19:26:05.000Z">
+<meta property="article:modified_time" content="2026-11-21T13:27:55.000Z">
+<meta property="article:author" content="Ryutaro Koma">
+<meta property="article:tag" content="Exchange Online">
+<meta property="article:tag" content="Exchange Web Services">
+<meta property="article:tag" content="MSAL">
+<meta property="article:tag" content="OAuth">
+<meta property="article:tag" content="PowerShell">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/ja/rss.xml" title="Developer Messaging 研究所" type="application/rss+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  
+  <div id="header-outer" class="outer">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <button type="button" id="main-nav-toggle" class="nav-icon" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-nav"><span class="fa fa-bars" aria-hidden="true"></span></button>
+        
+          <a class="main-nav-link" href="/ja/">Home</a>
+        
+          <a class="main-nav-link" href="/ja/tutorials/">試し方シリーズ</a>
+        
+          <a class="main-nav-link" href="/ja/about/">About</a>
+        
+          <a class="main-nav-link" href="/ja/contact/">Contact</a>
+        
+          <a class="main-nav-link" href="/ja/archives/">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+          <div class="language-switcher">
+            <button type="button" class="language-switcher-button" aria-haspopup="true" aria-expanded="false" aria-controls="language-switcher-menu">
+              <span class="language-switcher-current">日本語</span>
+              <span class="language-switcher-arrow" aria-hidden="true"></span>
+            </button>
+            <ul id="language-switcher-menu" class="language-switcher-menu" role="menu" hidden aria-label="Language">
+            
+              <li role="none">
+                <a role="menuitem" href="/ja/get-ews-access-token-with-msal-and-powershell/" tabindex="-1" aria-current="page">日本語 (現在)</a>
+              </li>
+            
+              <li role="none">
+                <a role="menuitem" href="/en/get-ews-access-token-with-msal-and-powershell/" tabindex="-1">English</a>
+              </li>
+            
+            </ul>
+          </div>
+        
+        
+        
+          <a class="nav-icon" href="/ja/rss.xml" title="RSSフィード" aria-label="RSSフィード"><span class="fa fa-rss" aria-hidden="true"></span></a>
+        
+        <button type="button" class="nav-icon nav-search-btn" title="検索" aria-label="検索"><span class="fa fa-search" aria-hidden="true"></span></button>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.bing.com/search" method="get" accept-charset="UTF-8" class="search-form" data-site-domain="blog.rykoma.net">
+          <label for="search-form-input" class="sr-only">検索</label>
+          <input type="search" id="search-form-input" class="search-form-input" placeholder="検索">
+          <input type="hidden" name="q" class="search-form-query">
+          <button type="submit" class="search-form-submit" aria-label="検索">&#xF002;</button>
+        </form>
+      </div>
+    </div>
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/ja/" id="logo">Developer Messaging 研究所</a>
+      </h1>
+      
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main" tabindex="-1"><article id="post-ja/get-ews-access-token-with-msal-and-powershell" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    
+      
+  <span class="article-date">
+    <time class="dt-published" datetime="2019-12-30T19:26:05.000Z" title="2019-12-31 04:26:05 JST" itemprop="datePublished">2019-12-31</time>
+  </span>
+
+    
+    
+  <div class="article-category">
+    <span class="article-category-label">カテゴリ:</span>
+    
+      
+      <span class="article-category-text">Exchange Web Services</span>
+    
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Windows PowerShell で MSAL を使って EWS 用のアクセス トークンを取得する
+    </h1>
+  
+
+        
+          <p class="article-updated"><span class="fa fa-clock-o" aria-hidden="true"></span><span>更新日: <time class="dt-updated" datetime="2026-11-21T13:27:55.000Z" title="2026-11-21 22:27:55 JST" itemprop="dateModified">2026-11-21</time></span></p>
+        
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>Exchange Online の EWS は 2026 年 10 月から段階的に無効化され、2027 年 4 月に完全に無効化される予定です。詳細は <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/deprecation-of-ews-exchange-online">Exchange Online の EWS 廃止について</a>を参照し、用途に応じて Microsoft Graph などへの移行を検討してください。</p>
+</div>
+<div class="markdown-alert markdown-alert-warning">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg><span>Warning</span></p>
+<p>この記事の非対話的な例で使用する ROPC フローは、多要素認証 (MFA) と互換性がなく、Microsoft は使用を推奨していません。また、通常は AD FS などのフェデレーション環境でもサポートされません。例外や代替手段については <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc">ROPC フローの説明</a>を参照してください。コード内にパスワードを保存しないでください。</p>
+</div>
+<p>C# で MSAL (Microsoft.Identity.Client) を使って EWS 用のアクセス トークンを取得する方法は <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/exchange/client-developer/exchange-web-services/how-to-authenticate-an-ews-application-by-using-oauth">Authenticate an EWS application by using OAuth</a> に記載されています。しかしながら PowerShell の場合については Docs に記載がありません。Exchange Team のブログには PowerShell の場合についての記載がありますが、ADAL も MSAL も使用しない実装になっています。「ライブラリを使用しなくても実装できることをわざわざライブラリを使用して実装するのは面倒」と考えることもできますが、ブログに記載の方法ではフェデレーション アカウント (AD FS で認証を行うようなアカウント) を使用できません。</p>
+<p>そこで今回は、PowerShell で MSAL を使って EWS 用のアクセス トークンを取得する方法を紹介します。また、対話的な処理の実装方法と非対話的な処理の実装方法の両方を紹介します。非対話的な処理では <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc">Resource Owner Password Credentials (ROPC) フロー</a>を使用します。ROPC は ID とパスワードをアプリで扱わなくてはならないので OAuth のメリットが失われ、Microsoft としても推奨されていません。実際、先述の Docs に記載されている方法も対話式な処理の実装のみです。ですが、もともと基本認証で使用されてきた EWS ではユーザーの権限での接続と自動化が求められるシナリオが多いため、今回は非対話的な処理の実装方法も紹介します。</p>
+<p>なお今回の内容は、以下の環境を想定しています。</p>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>値</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Windows PowerShell Version</td>
+<td>5.1</td>
+</tr>
+<tr>
+<td>MSAL Version</td>
+<td>4.33.0</td>
+</tr>
+<tr>
+<td>MSAL のインストール先</td>
+<td><code>C:\temp\msal</code></td>
+</tr>
+<tr>
+<td>スクリプトを保存するパス</td>
+<td><code>C:\temp\scripts</code></td>
+</tr>
+</tbody></table>
+<p>あくまで実装の一例を紹介するのみであるため、この方法がすべてではありません。</p>
+<h2 id="MSAL-の-DLL-を入手する"><a href="#MSAL-の-DLL-を入手する" class="headerlink" title="MSAL の DLL を入手する"></a>MSAL の DLL を入手する</h2><p>どんな方法であっても DLL さえあれば構いませんが、ここでは Windows PowerShell で MSAL の DLL を入手します。Visual Studio で開発しているプロジェクトで MSAL を使用しているなど、すでに .NET Framework 用の DLL を持っている場合はそれを使用すれば問題ありません。</p>
+<ol>
+<li><p>Windows PowerShell を管理者権限で起動します。</p>
+</li>
+<li><p>以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-PackageProvider</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>出力結果に <code>NuGet</code> が含まれているか確認します。含まれていなければ以下のコマンドを実行します。確認が表示されたらよく確認し、問題がなければ続行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Find-PackageProvider</span> <span class="literal">-Name</span> NuGet | <span class="built_in">Install-PackageProvider</span> <span class="literal">-Force</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-PackageSource</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ProviderName が <code>NuGet</code> であるもの (Name は既定では <code>nuget.org</code>) があるか確認します。含まれていなければ以下のコマンドを実行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Register-PackageSource</span> <span class="literal">-Name</span> nuget.org <span class="literal">-Location</span> https://www.nuget.org/api/v2 <span class="literal">-ProviderName</span> NuGet</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以下のコマンドを実行して、MSAL を入手します。確認が表示されたらよく確認し、問題がなければ続行します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Install-Package</span> Microsoft.Identity.Client <span class="literal">-Destination</span> <span class="string">&#x27;C:\temp\msal&#x27;</span> <span class="literal">-SkipDependencies</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>エラーなどが発生しなければ MSAL がダウンロードされています。今回の例の場合は <code>C:\temp\msal\Microsoft.Identity.Client.4.7.1\lib\net45</code> に以下の 2 つのファイルがあるはずです。Windows PowerShell は .NET Framework 上で動作するため、この .NET Framework 用の DLL を使用します。</p>
+<ul>
+<li><code>Microsoft.Identity.Client.dll</code></li>
+<li><code>Microsoft.Identity.Client.xml</code></li>
+</ul>
+</li>
+</ol>
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Note</span></p>
+<p>元記事のインストール例ではバージョンを指定しておらず、手順 7 のパスは 4.7.1、スクリプトのパスは 4.33.0 です。実際に取得したバージョンと DLL のパスを確認してください。</p>
+</div>
+<h2 id="アプリの登録"><a href="#アプリの登録" class="headerlink" title="アプリの登録"></a>アプリの登録</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://portal.azure.com/">Azure ポータル</a>にアクセスして、Azure Active Directory 管理センターにサインインします。</li>
+<li>Azure Active Directory ブレードに移動します。</li>
+<li>[管理] - [アプリの登録] - [新規登録] をクリックします。</li>
+<li>以下のように設定し、[登録] をクリックします。<ul>
+<li>名前: 任意のアプリケーションの名前を指定します (例: <code>EwsMsalDemo1</code>)</li>
+<li>サポートされているアカウントの種類: この組織ディレクトリのみに含まれるアカウント</li>
+<li>リダイレクト URI: ドロップダウンから [パブリック クライアント&#x2F;ネイティブ (モバイルとデスクトップ)] を選択して、値を <code>urn:ietf:wg:oauth:2.0:oob</code> にします</li>
+</ul>
+</li>
+<li>[管理] - [認証] をクリックします。</li>
+<li>[パブリック クライアント (モバイル、デスクトップ) に推奨されるリダイレクト URI] で <a target="_blank" rel="noopener" href="https://login.microsoftonline.com/common/oauth2/nativeclient"><code>https://login.microsoftonline.com/common/oauth2/nativeclient</code></a> のチェックをオンにします。</li>
+<li>[次のモバイルとデスクトップのフローを有効にする] を [はい] にします。</li>
+<li>[保存] をクリックします。</li>
+</ol>
+<p>なお手順 6 は管理者による同意を後述の手順で実施する場合に必要になります。手順 7 は ID とパスワードをコード上に埋め込んで非対話式にアクセス トークンの取得を行う場合に必要になります。ユーザー自身が対話的にアクセス トークンの取得を行う場合には、どちらも必要ありません。</p>
+<h2 id="PowerShell-スクリプトの実装"><a href="#PowerShell-スクリプトの実装" class="headerlink" title="PowerShell スクリプトの実装"></a>PowerShell スクリプトの実装</h2><p>以下の内容を <code>C:\temp\scripts\msal1.ps1</code> として保存します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 環境に合わせて変更</span></span><br><span class="line"><span class="variable">$MsalDllPath</span> = <span class="string">&quot;C:\temp\msal\Microsoft.Identity.Client.4.33.0\lib\net45\Microsoft.Identity.Client.dll&quot;</span> <span class="comment"># MSAL のパス</span></span><br><span class="line"><span class="variable">$TenantName</span> = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span> <span class="comment"># 接続するテナントの onmicrosoft.com のドメイン名</span></span><br><span class="line"><span class="variable">$ClientId</span> = <span class="string">&quot;259c1e28-242d-4b95-89aa-a88c45f3ac8e&quot;</span> <span class="comment"># Azure Active Directory に登録したアプリケーションのアプリケーション ID</span></span><br><span class="line"><span class="variable">$EwsManagedApiDllPath</span> = <span class="string">&quot;C:\Program Files\Microsoft\Exchange\Web Services\2.2\Microsoft.Exchange.WebServices.dll&quot;</span> <span class="comment"># EWS Managed API のパス</span></span><br><span class="line"><span class="variable">$EwsUrl</span> = <span class="string">&quot;https://outlook.office365.com/EWS/Exchange.asmx&quot;</span> <span class="comment"># EWS の URL</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># MSAL の DLL をロード</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$MsalDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># アクセス トークンの取得</span></span><br><span class="line"><span class="variable">$PcaOptions</span> = <span class="built_in">New-Object</span> Microsoft.Identity.Client.PublicClientApplicationOptions</span><br><span class="line"><span class="variable">$PcaOptions</span>.ClientId = <span class="variable">$ClientId</span></span><br><span class="line"><span class="variable">$PcaOptions</span>.TenantId = <span class="variable">$TenantName</span></span><br><span class="line"><span class="variable">$Pca</span> = [<span class="type">Microsoft.Identity.Client.PublicClientApplicationBuilder</span>]::CreateWithApplicationOptions(<span class="variable">$PcaOptions</span>).WithDefaultRedirectUri().Build()</span><br><span class="line">[<span class="built_in">string</span>[]]<span class="variable">$EwsScopes</span> = <span class="selector-tag">@</span>(<span class="string">&quot;https://outlook.office.com/EWS.AccessAsUser.All&quot;</span>)</span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$Pca</span>.AcquireTokenInteractive(<span class="variable">$EwsScopes</span>).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"></span><br><span class="line"><span class="comment"># EWS Managed API の DLL をロード</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$EwsManagedApiDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ExchangeService インスタンスの生成</span></span><br><span class="line"><span class="variable">$Service</span> = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.ExchangeService([<span class="type">Microsoft.Exchange.WebServices.Data.ExchangeVersion</span>]::Exchange2013_SP1, <span class="variable">$TimeZone</span>)</span><br><span class="line"><span class="variable">$Service</span>.Url = <span class="built_in">New-Object</span> System.Uri(<span class="variable">$EwsUrl</span>)</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以降、通常と同じ EWS の処理</span></span><br><span class="line"><span class="variable">$Inbox</span> = [<span class="type">Microsoft.Exchange.WebServices.Data.Folder</span>]::Bind(<span class="variable">$Service</span>, [<span class="type">Microsoft.Exchange.WebServices.Data.WellKnownFolderName</span>]::Inbox)</span><br><span class="line"><span class="variable">$Inbox</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 処理が長時間におよぶ場合</span></span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$null</span></span><br><span class="line"><span class="variable">$Accounts</span> = <span class="variable">$Pca</span>.GetAccountsAsync().Result</span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$Pca</span>.AcquireTokenSilent(<span class="variable">$EwsScopes</span>, <span class="variable">$Accounts</span>[<span class="number">0</span>]).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 処理を継続</span></span><br><span class="line"><span class="comment"># $SentItems = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($Service, [Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::SentItems)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>C:\temp\scripts\msal1.ps1</code> を実行すると、サインイン画面のダイアログが出てくるので EWS に接続するアカウントでサインインします。初回はアクセス許可の同意も求められるので、内容を確認して同意します。</p>
+<p>上記のコードでは受信トレイの情報を表示するだけになっていますが、アクセス トークンを取得できたあとは必要な実際の EWS の処理を行うだけです。アクセス トークンには既定で 1 時間の有効期限があるため、もし処理が長時間におよぶ場合は「処理が長時間におよぶ場合」のようなコードでアクセス トークンを取得しなおします。これにより MSAL がリフレッシュ トークンを使用してアクセス トークンを取得しなおしてくれます。なおここではかなり簡略化して書いているので、実際には以下のページを参照して実装したほうが良いです。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/msal/dotnet/acquiring-tokens/acquire-token-silently">Acquire a token from the cache (MSAL.NET)</a></p>
+<p>このコードではアクセス トークンの取得が対話的に行われます。非対話的に行う場合は以下のようなコードになります。以下の内容を <code>C:\temp\scripts\msal2.ps1</code> として保存します。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 環境に合わせて変更</span></span><br><span class="line"><span class="variable">$MsalDllPath</span> = <span class="string">&quot;C:\temp\msal\Microsoft.Identity.Client.4.33.0\lib\net45\Microsoft.Identity.Client.dll&quot;</span> <span class="comment"># MSAL のパス</span></span><br><span class="line"><span class="variable">$TenantName</span> = <span class="string">&quot;contoso.onmicrosoft.com&quot;</span> <span class="comment"># 接続するテナントの onmicrosoft.com のドメイン名</span></span><br><span class="line"><span class="variable">$ClientId</span> = <span class="string">&quot;259c1e28-242d-4b95-89aa-a88c45f3ac8e&quot;</span> <span class="comment"># Azure Active Directory に登録したアプリケーションのアプリケーション ID</span></span><br><span class="line"><span class="variable">$EwsManagedApiDllPath</span>  = <span class="string">&quot;C:\Program Files\Microsoft\Exchange\Web Services\2.2\Microsoft.Exchange.WebServices.dll&quot;</span> <span class="comment"># EWS Managed API のパス</span></span><br><span class="line"><span class="variable">$EwsUrl</span> = <span class="string">&quot;https://outlook.office365.com/EWS/Exchange.asmx&quot;</span> <span class="comment"># EWS の URL</span></span><br><span class="line"><span class="variable">$UserName</span> = <span class="string">&quot;user01@contoso.onmicrosoft.com&quot;</span> <span class="comment"># EWS 接続に利用するアカウントのユーザー プリンシパル名 (UPN)</span></span><br><span class="line"><span class="variable">$Password</span> = <span class="string">&quot;password&quot;</span> <span class="comment"># EWS 接続に利用するアカウントのパスワード</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># MSAL の DLL をロード</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$MsalDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># アクセス トークンの取得</span></span><br><span class="line"><span class="variable">$Pca</span> = [<span class="type">Microsoft.Identity.Client.PublicClientApplicationBuilder</span>]::Create(<span class="variable">$ClientId</span>).WithAuthority(<span class="string">&quot;https://login.microsoftonline.com/<span class="variable">$TenantName</span>/&quot;</span>).Build()</span><br><span class="line">[<span class="built_in">string</span>[]]<span class="variable">$EwsScopes</span> = <span class="selector-tag">@</span>(<span class="string">&quot;https://outlook.office.com/EWS.AccessAsUser.All&quot;</span>)</span><br><span class="line"><span class="variable">$SecurePassword</span> = <span class="built_in">ConvertTo-SecureString</span> <span class="variable">$Password</span> <span class="literal">-AsPlainText</span> <span class="literal">-Force</span></span><br><span class="line"><span class="variable">$AuthResult</span> = <span class="variable">$pca</span>.AcquireTokenByUsernamePassword(<span class="variable">$EwsScopes</span>, <span class="variable">$UserName</span>, <span class="variable">$SecurePassword</span>).ExecuteAsync().Result</span><br><span class="line"><span class="variable">$Token</span> = <span class="variable">$AuthResult</span>.AccessToken</span><br><span class="line"></span><br><span class="line"><span class="comment"># EWS Managed API の DLL をロード</span></span><br><span class="line"><span class="built_in">Add-Type</span> <span class="literal">-Path</span> <span class="variable">$EwsManagedApiDllPath</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ExchangeService インスタンスの生成</span></span><br><span class="line"><span class="variable">$Service</span> = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.ExchangeService([<span class="type">Microsoft.Exchange.WebServices.Data.ExchangeVersion</span>]::Exchange2013_SP1, <span class="variable">$TimeZone</span>)</span><br><span class="line"><span class="variable">$Service</span>.Url = <span class="built_in">New-Object</span> System.Uri(<span class="variable">$EwsUrl</span>)</span><br><span class="line"><span class="variable">$Service</span>.Credentials = <span class="built_in">New-Object</span> Microsoft.Exchange.WebServices.Data.OAuthCredentials(<span class="variable">$Token</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以降、通常と同じ EWS の処理</span></span><br><span class="line"><span class="variable">$Inbox</span> = [<span class="type">Microsoft.Exchange.WebServices.Data.Folder</span>]::Bind(<span class="variable">$Service</span>, [<span class="type">Microsoft.Exchange.WebServices.Data.WellKnownFolderName</span>]::Inbox)</span><br><span class="line"><span class="variable">$Inbox</span></span><br></pre></td></tr></table></figure>
+
+<p>一旦コード内に指定する <code>UserName</code> は先の <code>msal1.ps1</code> を実行する際に使用したアカウントにして、<code>C:\temp\scripts\msal2.ps1</code> を実行してください。ダイアログは表示されずに EWS を使用できているはずです。これは、先ほど使用したアカウントはすでにアプリの利用に同意しているため、改めて同意を求められることはありません。</p>
+<p><code>UserName</code> を別のアカウントにするとうまくいかなくなるはずです。これは、まだそのアカウントはアプリの利用に同意していないためです。コンソール上にエラーは表示されませんが、Fiddler でログを取ればエラーの内容などを確認できます。エラーが発生したアカウントであっても、先に <code>msal1.ps1</code> のコードを使用して同意すれば <code>msal2.ps1</code> のコードがうまく動くようになるはずです。</p>
+<p>多くの場合はこのように事前に自分で対話的に同意をすることで問題はありませんが、テナントによっては一般ユーザーは自分で同意することができなくなっています。Azure ポータルの Azure Active Directory ブレードで、[管理] - [エンタープライズ アプリケーション] - [ユーザー設定] - [ユーザーはアプリが自身の代わりに会社のデータにアクセスすることを許可できます] が [いいえ] の場合、ユーザー自身で同意することができません。</p>
+<p>その場合は管理者に同意してもらうことになります。管理者による同意について詳しくは <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-admin-consent">Microsoft identity platform admin consent protocols</a> に記載されています。内容としては、以下のような URL を作り、全体管理者にアクセスしてもらいます。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://login.microsoftonline.com/contoso.onmicrosoft.com/v2.0/adminconsent?client_id=259c1e28-242d-4b95-89aa-a88c45f3ac8e&amp;state=12345&amp;redirect_uri=https://login.microsoftonline.com/common/oauth2/nativeclient&amp;scope=https://outlook.office.com/EWS.AccessAsUser.All</span><br></pre></td></tr></table></figure>
+
+<p>URL 内のテナント名 (onmicrosoft.com のドメイン名) と <code>client_id</code> は適宜変更が必要です。アクセスするとアプリの使用を組織として許可するかどうかの確認が表示され、同意すると <code>https://login.microsoftonline.com/common/oauth2/nativeclient</code> にリダイレクトされます。このページは真っ白なページです。これで管理者による同意が完了したので、テナント内のユーザーはアプリを使用できるようになります。ユーザー自身では同意していなかった場合にも <code>msal2.ps1</code> のコードで動作するはずです。</p>
+<p>なお <code>msal2.ps1</code> の場合もアクセス トークンに既定で 1 時間の有効期限があることには変わりはないです。ですが処理がそもそも非対話になっているので同じ方法で再度アクセス トークンを取得すれば問題はありません。もちろん <code>msal1.ps1</code> のようにリフレッシュ トークンを使用するのでもよいです。</p>
+
+      
+    </div>
+    
+      
+<div class="adsense-ad article-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="9998882942"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+    
+    <footer class="article-footer">
+      
+  
+  <ul class="article-tag-list" itemprop="keywords">
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/PowerShell/" rel="tag">PowerShell</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Exchange-Online/" rel="tag">Exchange Online</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/Exchange-Web-Services/" rel="tag">Exchange Web Services</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/OAuth/" rel="tag">OAuth</a></li>
+    
+      <li class="article-tag-list-item"><a class="article-tag-list-link" href="/ja/tags/MSAL/" rel="tag">MSAL</a></li>
+    
+  </ul>
+
+      
+      
+      <span class="article-action-links">
+      
+      <a href="https://github.com/rykoma/Docs/blob/main/source/_posts/ja/get-ews-access-token-with-msal-and-powershell.md" class="article-source-link" target="_blank" rel="noopener noreferrer">ソース</a>
+      
+      <a href="#" data-url="https://blog.rykoma.net/ja/get-ews-access-token-with-msal-and-powershell/" data-id="cuidvMErlIQrsJFyUwkCzmFbD" data-title="Windows PowerShell で MSAL を使って EWS 用のアクセス トークンを取得する" class="article-share-link" role="button" aria-expanded="false"><span class="fa fa-share" aria-hidden="true"></span><span class="article-share-text">共有</span></a>
+      </span>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+
+<nav id="article-nav">
+  
+    <a href="/ja/microsoft-graph-powershell-sdk-preview/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">次の記事</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph PowerShell SDK Preview
+        
+      </div>
+    </a>
+  
+  
+    <a href="/ja/getting-started-with-microsoft-graph-toolkit/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前の記事</strong>
+      <div class="article-nav-title">
+        
+          Microsoft Graph Toolkit の試し方
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近の投稿</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/ja/migrate-wordpress-to-github-pages-with-copilot/">GitHub Copilot と一緒に WordPress から GitHub Pages へブログを移行した話</a>
+          </li>
+        
+          <li>
+            <a href="/ja/connect-exchange-server-2019-management-tools-snapin/">C# で Exchange Management Tools のスナップインを使用して Exchange Server 2019 へ接続する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/prevent-user-profile-photo-changes-in-microsoft-365/">Microsoft 365 でユーザーによるプロフィール写真の変更を禁止する</a>
+          </li>
+        
+          <li>
+            <a href="/ja/microsoft-graph-email-attachments/">Microsoft Graph とメールのいろいろな添付</a>
+          </li>
+        
+          <li>
+            <a href="/ja/create-draft-meeting-with-microsoft-graph/">Microsoft Graph で下書き状態の会議を作成する</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">カテゴリ</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/ja/categories/NET/">.NET</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Blog/">Blog</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Online/">Exchange Online</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Server/">Exchange Server</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Exchange-Web-Services/">Exchange Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-365/">Microsoft 365</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Microsoft-Graph/">Microsoft Graph</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-REST-API/">Outlook REST API</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/Outlook-com/">Outlook.com</a></li><li class="category-list-item"><a class="category-list-link" href="/ja/categories/PowerShell/">PowerShell</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">タグ</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online/">Exchange Online</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PowerShell/">PowerShell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph/">Microsoft Graph</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Server/">Exchange Server</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Web-Services/">Exchange Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/OAuth/">OAuth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-365/">Microsoft 365</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MSAL/">MSAL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-PowerShell-SDK/">Microsoft Graph PowerShell SDK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-REST-API/">Outlook REST API</a></li></ul><details class="more-tags"><summary>その他のタグを表示</summary><ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office365APIEditor/">Office365APIEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Client-Credential-Flow/">Client Credential Flow</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET/">.NET</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Online-PowerShell-V2-Module/">Exchange Online PowerShell V2 Module</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/IMAP/">IMAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/MAPI/">MAPI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Management-Activity-API/">Office 365 Management Activity API</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Office-365-Reporting-Web-Services/">Office 365 Reporting Web Services</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-com/">Outlook.com</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/POP/">POP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SMTP/">SMTP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/SmtpClient/">SmtpClient</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Core/">.NET Core</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/NET-Framework/">.NET Framework</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/ActiveSync/">ActiveSync</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Attachments/">Attachments</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Authentication/">Authentication</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/EWSEditor/">EWSEditor</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Exchange-Management-Tools/">Exchange Management Tools</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Copilot/">GitHub Copilot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/GitHub-Pages/">GitHub Pages</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/LDAP/">LDAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Licensing/">Licensing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Mentions/">Mentions</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Microsoft-Graph-Toolkit/">Microsoft Graph Toolkit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Outlook-Add-ins/">Outlook Add-ins</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Power-Automate/">Power Automate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/PR-ENTRYID/">PR_ENTRYID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RecipientManagement/">RecipientManagement</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Reports/">Reports</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/RobustCloudCommand/">RobustCloudCommand</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Sunrise/">Sunrise</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio/">Visual Studio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/Visual-Studio-Code/">Visual Studio Code</a></li><li class="tag-list-item"><a class="tag-list-link" href="/ja/tags/WordPress/">WordPress</a></li></ul></details>
+    </div>
+  </div>
+
+
+  
+    
+
+
+  <div class="widget-wrap">
+    <h3 class="widget-title">アーカイブ</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><details class="archive-months"><summary>2026 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/">2026 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2026/11/">2026 年 11 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2024 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/">2024 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/12/">2024 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/10/">2024 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/08/">2024 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2024/03/">2024 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2023 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/">2023 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/11/">2023 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/08/">2023 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2023/07/">2023 年 7 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2022 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/">2022 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/05/">2022 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2022/02/">2022 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2021 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/">2021 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/09/">2021 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/08/">2021 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/06/">2021 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/05/">2021 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2021/01/">2021 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2020 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/">2020 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/11/">2020 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/10/">2020 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/09/">2020 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/07/">2020 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/05/">2020 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2020/02/">2020 年 2 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2019 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/">2019 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/12/">2019 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/11/">2019 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/08/">2019 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/07/">2019 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/05/">2019 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2019/03/">2019 年 3 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2018 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/">2018 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/12/">2018 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/06/">2018 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/05/">2018 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2018/04/">2018 年 4 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2017 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/">2017 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/06/">2017 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/04/">2017 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2017/01/">2017 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2016 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/">2016 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/11/">2016 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/09/">2016 年 9 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/08/">2016 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/07/">2016 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/06/">2016 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/05/">2016 年 5 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/04/">2016 年 4 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/02/">2016 年 2 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2016/01/">2016 年 1 月</a></li></ul></details></li><li class="archive-list-item"><details class="archive-months"><summary>2015 年</summary><ul class="archive-month-list"><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/">2015 年のすべての記事</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/12/">2015 年 12 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/11/">2015 年 11 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/10/">2015 年 10 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/08/">2015 年 8 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/07/">2015 年 7 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/06/">2015 年 6 月</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ja/archives/2015/05/">2015 年 5 月</a></li></ul></details></li></ul>
+    </div>
+  </div>
+
+
+  
+  
+<div class="adsense-ad sidebar-ad">
+  <p class="adsense-ad-label">広告</p>
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-6208566823743408"
+    data-ad-slot="1021211470"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>
+    if (window.location.hostname === 'blog.rykoma.net') {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } else {
+      document.currentScript.parentElement.remove();
+    }
+  </script>
+</div>
+
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026
+      <a href="https://github.com/rykoma" target="_blank" rel="noopener noreferrer">Ryutaro Koma</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+  
+    <a href="/ja/" class="mobile-nav-link">Home</a>
+  
+    <a href="/ja/tutorials/" class="mobile-nav-link">試し方シリーズ</a>
+  
+    <a href="/ja/about/" class="mobile-nav-link">About</a>
+  
+    <a href="/ja/contact/" class="mobile-nav-link">Contact</a>
+  
+    <a href="/ja/archives/" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
